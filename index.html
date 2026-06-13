@@ -1,0 +1,1542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>DİN — Do It Now</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#08080e;--sf:rgba(255,255,255,.035);--sf2:rgba(255,255,255,.06);--bd:rgba(255,255,255,.07);--bd2:rgba(255,255,255,.12);--gold:#c9a84c;--gh:#eacf7a;--glo:rgba(201,168,76,.14);--gg:rgba(201,168,76,.25);--tx:#ededf2;--tx2:rgba(237,237,242,.55);--tx3:rgba(237,237,242,.28);--gr:#3ecf8e;--grl:rgba(62,207,142,.13);--rd:#ff5f5f;--rdl:rgba(255,95,95,.12);--bl:#5b9cf6;--bll:rgba(91,156,246,.12);--pu:#8b7ede;--pul:rgba(139,126,222,.12);--r:18px;--rsm:12px;--nw:240px;--nc:68px}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var(--tx);min-height:100vh;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+button,input,select,textarea{font-family:inherit}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1);border-radius:2px}
+
+/* ── LOADING SCREEN ── */
+#loading{position:fixed;inset:0;z-index:99999;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px}
+#loading.gone{display:none}
+.load-logo{font-size:52px;font-weight:800;letter-spacing:14px;background:linear-gradient(135deg,#fff,var(--gh) 55%,var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.load-spinner{width:32px;height:32px;border:2px solid rgba(255,255,255,.08);border-top-color:var(--gold);border-radius:50%;animation:spin .8s linear infinite}
+.load-msg{font-size:12px;color:var(--tx3);letter-spacing:2px}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ── AUTH ── */
+#auth{position:fixed;inset:0;z-index:9000;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:20px}
+#auth.gone{display:none}
+.abox{width:100%;max-width:400px;background:var(--sf);border:1px solid rgba(255,255,255,.09);border-radius:24px;padding:40px 36px 36px;animation:up .4s cubic-bezier(.4,0,.2,1) both}
+@keyframes up{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+.alogo{font-size:32px;font-weight:800;letter-spacing:10px;background:linear-gradient(135deg,#fff,var(--gh) 55%,var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;text-align:center;margin-bottom:3px}
+.atag{font-size:9px;letter-spacing:4px;color:var(--tx3);text-transform:uppercase;text-align:center;margin-bottom:32px}
+.atabs{display:flex;background:rgba(255,255,255,.04);border-radius:10px;padding:3px;margin-bottom:24px}
+.atab{flex:1;padding:8px;border-radius:8px;border:none;background:transparent;color:var(--tx3);font-size:13px;font-weight:600;cursor:pointer;transition:all .2s}
+.atab.on{background:rgba(255,255,255,.08);color:var(--tx)}
+.afield{margin-bottom:13px}
+.afield label{display:block;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--tx3);margin-bottom:6px}
+.ainp{width:100%;padding:11px 14px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09);border-radius:10px;color:var(--tx);font-size:14px;outline:none;transition:border-color .18s}
+.ainp:focus{border-color:rgba(201,168,76,.5)}
+.ainp::placeholder{color:var(--tx3)}
+.abtn{width:100%;padding:12px;border:none;border-radius:10px;background:linear-gradient(135deg,var(--gold),var(--gh));color:#08080e;font-size:14px;font-weight:700;cursor:pointer;margin-top:6px;letter-spacing:.5px;transition:all .18s;position:relative}
+.abtn:hover{opacity:.88;transform:translateY(-1px)}
+.abtn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.abtn .spin{display:none;width:16px;height:16px;border:2px solid rgba(0,0,0,.2);border-top-color:#000;border-radius:50%;animation:spin .7s linear infinite;margin:0 auto}
+.abtn.loading .btn-text{display:none}
+.abtn.loading .spin{display:block}
+.amsg{border-radius:9px;padding:9px 13px;font-size:13px;margin-bottom:12px;display:none;text-align:center}
+.amsg.err{background:var(--rdl);border:1px solid rgba(255,95,95,.25);color:var(--rd);display:block}
+.amsg.ok{background:var(--grl);border:1px solid rgba(62,207,142,.25);color:var(--gr);display:block}
+.anote{font-size:11px;color:var(--tx3);text-align:center;margin-top:18px;line-height:1.6}
+
+/* ── SIDEBAR ── */
+#sb{position:fixed;top:0;left:0;bottom:0;width:var(--nw);background:rgba(8,8,14,.9);backdrop-filter:blur(24px);border-right:1px solid var(--bd);display:flex;flex-direction:column;z-index:200;transition:width .3s cubic-bezier(.4,0,.2,1);overflow:hidden}
+#sb.col{width:var(--nc)}
+.sb-top{padding:18px 14px 14px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--bd);min-height:76px;flex-shrink:0;gap:8px}
+.sb-logo{font-size:18px;font-weight:800;letter-spacing:5px;background:linear-gradient(135deg,#fff,var(--gh) 55%,var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;white-space:nowrap}
+.sb-sub{font-size:8px;letter-spacing:3px;color:var(--tx3);text-transform:uppercase;white-space:nowrap;margin-top:1px}
+.sb-lw{flex:1;min-width:0;overflow:hidden;transition:opacity .25s,max-width .3s;max-width:160px}
+#sb.col .sb-lw{opacity:0;max-width:0;flex:0}
+.sb-tog{width:30px;height:30px;border-radius:8px;background:var(--sf);border:1px solid var(--bd2);color:var(--tx2);cursor:pointer;display:grid;place-items:center;font-size:14px;flex-shrink:0;transition:all .2s}
+.sb-tog:hover{background:var(--sf2);color:var(--tx)}
+.sb-nav{flex:1;overflow-y:auto;overflow-x:hidden;padding:10px 8px}
+.ni{display:flex;align-items:center;gap:12px;padding:10px 11px;border-radius:var(--rsm);cursor:pointer;transition:all .18s;color:var(--tx2);font-size:13px;font-weight:500;white-space:nowrap;margin-bottom:2px;border:1px solid transparent;user-select:none}
+.ni:hover{background:var(--sf2);color:var(--tx);border-color:var(--bd)}
+.ni.on{background:var(--glo);color:var(--gh);border-color:rgba(201,168,76,.22)}
+.ni-ic{font-size:17px;flex-shrink:0;width:20px;text-align:center}
+.ni-lb{transition:opacity .2s,width .2s;overflow:hidden;white-space:nowrap}
+#sb.col .ni-lb{opacity:0;width:0}
+.nb{margin-left:auto;font-size:10px;font-weight:700;padding:2px 6px;border-radius:20px;background:var(--glo);color:var(--gh);flex-shrink:0;transition:opacity .2s}
+#sb.col .nb{opacity:0;width:0;padding:0}
+.sb-bot{padding:14px 8px;border-top:1px solid var(--bd);flex-shrink:0}
+.sb-user{display:flex;align-items:center;gap:9px;padding:9px 10px;border-radius:var(--rsm);border:1px solid var(--bd);background:var(--sf);margin-bottom:8px;overflow:hidden}
+.sb-av{width:30px;height:30px;border-radius:8px;flex-shrink:0;background:linear-gradient(135deg,var(--gold),var(--gh));color:#08080e;font-size:12px;font-weight:800;display:grid;place-items:center;text-transform:uppercase}
+.sb-un{font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1;transition:opacity .2s,max-width .3s;max-width:110px}
+#sb.col .sb-un{opacity:0;max-width:0;flex:0}
+.sb-lo{width:26px;height:26px;border-radius:6px;border:1px solid var(--bd);background:var(--sf);color:var(--tx2);cursor:pointer;display:grid;place-items:center;font-size:12px;transition:all .18s;flex-shrink:0}
+.sb-lo:hover{background:var(--rdl);border-color:rgba(255,95,95,.3);color:var(--rd)}
+.sb-dt{font-size:10px;color:var(--tx3);text-align:center;padding:6px 0;transition:opacity .2s;white-space:nowrap}
+#sb.col .sb-dt{opacity:0}
+.sb-sync{display:flex;gap:5px;margin-top:6px;transition:opacity .2s}
+#sb.col .sb-sync{opacity:0;pointer-events:none}
+.sync-btn{flex:1;padding:5px;border-radius:7px;border:1px solid var(--bd);background:var(--sf);color:var(--tx3);cursor:pointer;font-size:10px;transition:all .18s;text-align:center}
+.sync-btn:hover{border-color:rgba(201,168,76,.3);color:var(--gh)}
+.sync-ind{width:7px;height:7px;border-radius:50%;flex-shrink:0;background:var(--gr);transition:background .3s;margin-right:4px;display:inline-block;vertical-align:middle}
+.sync-ind.saving{background:var(--gold);animation:pulse 1s ease-in-out infinite}
+.sync-ind.err{background:var(--rd)}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+
+/* ── MOBILE ── */
+#mob-tog{display:none;position:fixed;top:12px;left:12px;z-index:300;width:36px;height:36px;border-radius:9px;background:rgba(16,16,24,.92);border:1px solid var(--bd);color:var(--tx);font-size:16px;cursor:pointer;align-items:center;justify-content:center;backdrop-filter:blur(12px)}
+#sb-ov{display:none;position:fixed;inset:0;z-index:199;background:rgba(0,0,0,.5)}
+@media(max-width:900px){
+  #mob-tog{display:flex}
+  #sb{transform:translateX(-100%);transition:transform .3s cubic-bezier(.4,0,.2,1);width:var(--nw)!important}
+  #sb.mob-open{transform:translateX(0)}
+  #sb-ov.show{display:block}
+  #main{margin-left:0!important}
+  #topbar{padding:0 14px 0 56px}
+  .page{padding:22px 14px 60px}
+  .quiz-opts,.eng-grid{grid-template-columns:1fr!important}
+  .habit-row,.habit-head{grid-template-columns:1fr repeat(7,28px)!important;gap:3px!important}
+  .hck{width:24px!important;height:24px!important;font-size:10px!important;border-radius:5px!important}
+  .ch-grid{grid-template-columns:1fr!important}
+}
+
+/* ── MAIN ── */
+#main{margin-left:var(--nw);min-height:100vh;position:relative;transition:margin-left .3s cubic-bezier(.4,0,.2,1)}
+#main.col{margin-left:var(--nc)}
+#topbar{position:sticky;top:0;z-index:100;background:rgba(8,8,14,.8);backdrop-filter:blur(20px);border-bottom:1px solid var(--bd);padding:0 28px;height:58px;display:flex;align-items:center;gap:14px}
+.tb-title{font-size:16px;font-weight:600;flex:1}
+.tb-date{font-size:11px;color:var(--tx3)}
+.page{display:none;padding:32px 28px 60px;max-width:1080px}
+.page.on{display:block;animation:pg .3s cubic-bezier(.4,0,.2,1) both}
+@keyframes pg{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+
+/* ── CARDS ── */
+.glass{background:var(--sf);border:1px solid var(--bd);backdrop-filter:blur(20px);border-radius:var(--r)}
+.gsm{background:var(--sf);border:1px solid var(--bd);border-radius:var(--rsm)}
+
+/* ── TYPOGRAPHY ── */
+.ph{margin-bottom:28px}.ph h1{font-size:26px;font-weight:700;letter-spacing:-.3px;margin-bottom:3px}.ph p{font-size:13px;color:var(--tx2)}
+.slbl{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--tx3);margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.slbl::after{content:'';flex:1;height:1px;background:var(--bd)}
+
+/* ── INPUTS ── */
+.inp{background:var(--sf);border:1px solid var(--bd);border-radius:var(--rsm);padding:10px 13px;color:var(--tx);font-size:13px;outline:none;transition:border-color .18s;width:100%}
+.inp::placeholder{color:var(--tx3)}.inp:focus{border-color:rgba(201,168,76,.4)}
+textarea.inp{resize:vertical;line-height:1.7}
+
+/* ── BUTTONS ── */
+.btn{border:none;cursor:pointer;font-weight:600;border-radius:var(--rsm);padding:9px 16px;font-size:12px;transition:all .18s;display:inline-flex;align-items:center;gap:5px;white-space:nowrap}
+.btn-g{background:linear-gradient(135deg,var(--gold),var(--gh));color:#08080e}
+.btn-g:hover{opacity:.88;transform:translateY(-1px);box-shadow:0 5px 18px var(--gg)}
+.btn-gh{background:var(--sf);border:1px solid var(--bd);color:var(--tx2)}
+.btn-gh:hover{background:var(--sf2);border-color:var(--bd2);color:var(--tx)}
+.btn-sm{padding:6px 12px;font-size:11px;border-radius:8px}
+.dbtn{width:26px;height:26px;padding:0;border-radius:6px;border:1px solid transparent;background:transparent;color:var(--tx3);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;font-size:12px;transition:all .15s;flex-shrink:0}
+.dbtn:hover{background:var(--rdl);border-color:rgba(255,95,95,.2);color:var(--rd)}
+
+/* ── OVERVIEW ── */
+.hero{text-align:center;padding:44px 20px 36px;margin-bottom:28px}
+.hero-din{font-size:clamp(60px,12vw,110px);font-weight:800;letter-spacing:16px;background:linear-gradient(150deg,#fff,var(--gh) 45%,var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;margin-bottom:8px}
+.hero-sl{font-size:12px;letter-spacing:6px;color:var(--tx3);text-transform:uppercase}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:28px}
+.sc{padding:20px 16px;text-align:center}
+.sc-n{font-size:32px;font-weight:700;background:linear-gradient(135deg,var(--gh),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;display:block;line-height:1;margin-bottom:4px}
+.sc-l{font-size:9px;color:var(--tx3);letter-spacing:1.5px;text-transform:uppercase}
+.sc-bar{height:2px;background:rgba(255,255,255,.04);border-radius:1px;margin-top:10px;overflow:hidden}
+.sc-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--gh));border-radius:1px;transition:width 1s cubic-bezier(.4,0,.2,1)}
+.mgrid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-bottom:10px}
+.md{aspect-ratio:1;border-radius:9px;background:var(--sf);border:1px solid var(--bd);display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:var(--tx3);position:relative}
+.md.td{border-color:var(--gold);color:var(--gh);box-shadow:0 0 10px var(--gg)}
+.md.dn{background:var(--glo);border-color:rgba(201,168,76,.35);color:var(--gh)}
+.md.pt{background:var(--bll);border-color:rgba(91,156,246,.22);color:var(--bl)}
+.md.ft{opacity:.3}
+.m-dots{display:flex;gap:2px;position:absolute;bottom:3px}
+.m-dot{width:3px;height:3px;border-radius:50%;background:var(--gold);opacity:.6}
+
+/* ── HABITS ── */
+.habit-head,.habit-row{display:grid;grid-template-columns:1fr repeat(7,38px);gap:5px;align-items:center}
+.habit-head{padding:0 12px 6px}
+.hth{font-size:9px;color:var(--tx3);text-align:center;letter-spacing:.3px}
+.hth-td{color:var(--gold);font-weight:700}
+.habit-row{padding:9px 12px;border-radius:var(--rsm);background:var(--sf);border:1px solid var(--bd);margin-bottom:5px;transition:all .18s}
+.habit-row:hover{background:var(--sf2);border-color:var(--bd2)}
+.hn{display:flex;align-items:center;gap:8px;min-width:0}
+.hck{width:28px;height:28px;border-radius:7px;border:1px solid rgba(255,255,255,.1);cursor:pointer;margin:0 auto;display:flex;align-items:center;justify-content:center;font-size:12px;transition:all .14s;background:rgba(255,255,255,.02);user-select:none;flex-shrink:0}
+.hck.on{background:linear-gradient(135deg,var(--gold),var(--gh));border-color:var(--gold);color:#08080e;font-weight:700}
+.hck:hover{transform:scale(1.1);border-color:var(--gold)}
+.hck.td-ck{border-color:rgba(201,168,76,.3)}
+.add-row{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+
+/* ── CHALLENGES ── */
+.ch-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;margin-bottom:20px}
+.ch-card{padding:20px;position:relative;overflow:hidden}
+.ch-top{display:flex;align-items:flex-start;gap:9px;margin-bottom:12px}
+.ch-em{font-size:28px;flex-shrink:0}
+.ch-inf{flex:1;min-width:0}
+.ch-tt{font-size:14px;font-weight:700;margin-bottom:2px}
+.ch-mt{font-size:10px;color:var(--tx3);letter-spacing:.3px}
+.ch-at{display:flex;gap:5px;flex-shrink:0;align-items:center}
+.badge{font-size:9px;font-weight:700;letter-spacing:.8px;padding:3px 8px;border-radius:20px;text-transform:uppercase}
+.ba{background:var(--grl);color:var(--gr);border:1px solid rgba(62,207,142,.2)}
+.bf{background:var(--rdl);color:var(--rd);border:1px solid rgba(255,95,95,.2)}
+.bd2{background:var(--glo);color:var(--gh);border:1px solid rgba(201,168,76,.2)}
+.bi{background:var(--sf2);color:var(--tx3);border:1px solid var(--bd)}
+.ch-bar{flex:1;height:3px;background:rgba(255,255,255,.05);border-radius:2px;overflow:hidden;margin-bottom:12px}
+.ch-fill{height:100%;border-radius:2px;transition:width .7s ease}
+.ch-big{font-size:28px;font-weight:800;color:var(--gh);line-height:1;margin-bottom:12px}
+.ch-u{font-size:10px;color:var(--tx3);text-transform:uppercase;letter-spacing:1px}
+.ch-btns{display:flex;gap:7px}
+.ck-btn{flex:1;padding:8px;border-radius:9px;border:none;font-size:15px;cursor:pointer;transition:all .15s;background:var(--grl);color:var(--gr);font-weight:700}
+.ck-btn:hover{background:rgba(62,207,142,.25);transform:scale(1.03)}
+.nx-btn{flex:1;padding:8px;border-radius:9px;border:none;font-size:15px;cursor:pointer;transition:all .15s;background:var(--rdl);color:var(--rd);font-weight:700}
+.nx-btn:hover{background:rgba(255,95,95,.22)}
+.rs-btn{padding:8px 12px;border-radius:9px;border:1px solid var(--bd);background:var(--sf);color:var(--tx3);cursor:pointer;font-size:13px;transition:all .15s}
+.rs-btn:hover{background:var(--sf2)}
+
+/* ── ENGLISH ── */
+.lv-strip,.cat-strip{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:20px}
+.chip{padding:5px 14px;border-radius:20px;font-size:11px;font-weight:700;cursor:pointer;border:1px solid var(--bd);background:var(--sf);color:var(--tx3);transition:all .18s;letter-spacing:.3px}
+.chip.on{background:var(--glo);border-color:rgba(201,168,76,.4);color:var(--gh)}
+.chip:hover:not(.on){border-color:var(--bd2);color:var(--tx2)}
+.cat-chip.on{background:var(--pul);border-color:rgba(139,126,222,.35);color:var(--pu)}
+.eng-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.ecard{padding:20px}
+.ecl{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--tx3);margin-bottom:12px}
+.wb{font-size:28px;font-weight:800;margin-bottom:2px}
+.wipa{font-size:12px;color:var(--tx3);margin-bottom:7px}
+.wdef{font-size:13px;color:var(--tx2);line-height:1.65}
+.wex{font-size:12px;color:var(--tx3);font-style:italic;margin-top:8px;padding:7px 11px;background:rgba(255,255,255,.02);border-left:2px solid var(--glo);border-radius:0 5px 5px 0}
+.wtags{display:flex;flex-wrap:wrap;gap:4px;margin-top:8px}
+.wtag{font-size:9px;padding:2px 7px;border-radius:20px;background:var(--sf2);border:1px solid var(--bd);color:var(--tx3)}
+.wtag.daily{border-color:rgba(62,207,142,.3);color:var(--gr)}.wtag.corporate{border-color:rgba(91,156,246,.3);color:var(--bl)}.wtag.family{border-color:rgba(201,168,76,.3);color:var(--gh)}.wtag.idiom,.wtag.academic{border-color:rgba(139,126,222,.3);color:var(--pu)}.wtag.emotion{border-color:rgba(255,95,95,.3);color:var(--rd)}.wtag.travel{border-color:rgba(62,207,142,.3);color:var(--gr)}
+.mode-tabs{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:20px}
+/* Flashcard */
+.fc-wrap{perspective:1000px;margin-bottom:14px}
+.fc{width:100%;min-height:180px;border-radius:var(--r);position:relative;transform-style:preserve-3d;transition:transform .5s cubic-bezier(.4,0,.2,1);cursor:pointer}
+.fc.flip{transform:rotateY(180deg)}
+.fc-f,.fc-b{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:var(--r);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;border:1px solid var(--bd);background:var(--sf)}
+.fc-b{transform:rotateY(180deg);background:var(--glo);border-color:rgba(201,168,76,.25)}
+.fc-fw{font-size:32px;font-weight:800;text-align:center;margin-bottom:6px}
+.fc-hint{font-size:11px;color:var(--tx3);letter-spacing:1px}
+.fc-def{font-size:13px;color:var(--tx2);text-align:center;line-height:1.6;margin-bottom:8px}
+.fc-ex{font-size:11px;color:var(--tx3);font-style:italic;text-align:center}
+/* Quiz */
+.qscore{display:flex;gap:14px;margin-bottom:12px;flex-wrap:wrap}
+.qscore span{font-size:11px;color:var(--tx3)}
+.qscore strong{color:var(--gh)}
+.qq{font-size:15px;font-weight:600;margin-bottom:16px;line-height:1.5}
+.quiz-opts{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:14px}
+.qo{padding:11px 14px;border-radius:var(--rsm);border:1px solid var(--bd);background:var(--sf);color:var(--tx2);cursor:pointer;font-size:12px;font-weight:500;text-align:left;transition:all .18s}
+.qo:hover{border-color:var(--bd2);background:var(--sf2);color:var(--tx)}
+.qo.cor{background:var(--grl);border-color:rgba(62,207,142,.4);color:var(--gr)}
+.qo.wro{background:var(--rdl);border-color:rgba(255,95,95,.3);color:var(--rd)}
+/* Phrases */
+.pc{padding:13px;background:var(--sf);border:1px solid var(--bd);border-radius:var(--rsm);margin-bottom:8px}
+.pen{font-size:14px;font-weight:600;margin-bottom:3px}
+.pus{font-size:11px;color:var(--tx3);line-height:1.5}
+
+/* ── LEARNING ── */
+.learn-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:14px;margin-bottom:18px}
+.lcard{padding:18px}
+.lhd{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+.ldot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.ltitle{font-size:14px;font-weight:700;flex:1}
+.lent{font-size:12px;color:var(--tx2);padding:7px 10px;background:rgba(255,255,255,.025);border-radius:7px;border-left:2px solid;line-height:1.5;display:flex;align-items:flex-start;gap:7px}
+.lent-t{flex:1}
+.lent-d{font-size:9px;color:var(--tx3);white-space:nowrap;flex-shrink:0}
+.lform{display:flex;gap:6px;margin-top:10px}
+
+/* ── JOURNAL ── */
+.jcomp{padding:20px;margin-bottom:20px}
+.jtb{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-bottom:14px}
+.jdt{font-size:11px;font-weight:600;color:var(--gh);background:var(--glo);padding:4px 11px;border-radius:20px;border:1px solid rgba(201,168,76,.2)}
+.mood-row{display:flex;gap:5px}
+.mb{width:32px;height:32px;border-radius:9px;border:1px solid var(--bd);background:var(--sf);cursor:pointer;font-size:16px;transition:all .15s;display:grid;place-items:center}
+.mb.on{border-color:rgba(201,168,76,.45);background:var(--glo);transform:scale(1.08)}
+.ja{margin-left:auto;display:flex;gap:7px}
+.jent{padding:15px 18px;border-radius:var(--rsm);margin-bottom:8px}
+.jeh{display:flex;align-items:center;gap:8px;margin-bottom:7px}
+.jem{font-size:18px}
+.jed{font-size:10px;color:var(--tx3)}
+.jet{font-size:13px;color:var(--tx2);line-height:1.75}
+
+/* ── TOAST ── */
+#toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(60px);background:rgba(16,16,24,.97);border:1px solid var(--bd2);backdrop-filter:blur(20px);color:var(--tx);font-size:12px;font-weight:500;padding:10px 20px;border-radius:40px;transition:transform .3s cubic-bezier(.175,.885,.32,1.275);z-index:9999;pointer-events:none;white-space:nowrap}
+#toast.show{transform:translateX(-50%) translateY(0)}
+
+/* ── CONFIRM ── */
+#conf-ov{position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(5px);z-index:8000;display:none;align-items:center;justify-content:center}
+#conf-ov.show{display:flex}
+#conf-box{background:rgba(16,16,24,.97);border:1px solid var(--bd2);border-radius:var(--r);padding:24px 28px;text-align:center;max-width:300px;width:90%}
+#conf-box h3{font-size:16px;font-weight:700;margin-bottom:7px}
+#conf-box p{font-size:12px;color:var(--tx2);margin-bottom:20px;line-height:1.6}
+#conf-box .btns{display:flex;gap:9px;justify-content:center}
+
+footer{text-align:center;padding:28px 0 44px;font-size:10px;color:var(--tx3);letter-spacing:2px}
+#ambient{position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(ellipse 70% 55% at 15% 5%,rgba(139,126,222,.09) 0%,transparent 65%),radial-gradient(ellipse 55% 45% at 88% 85%,rgba(201,168,76,.07) 0%,transparent 60%)}
+</style>
+</head>
+<body>
+<div id="ambient"></div>
+
+<!-- LOADING -->
+<div id="loading">
+  <div class="load-logo">DİN</div>
+  <div class="load-spinner"></div>
+  <div class="load-msg" id="load-msg">CONNECTING…</div>
+</div>
+
+<!-- AUTH -->
+<div id="auth" class="gone">
+  <div class="abox">
+    <div class="alogo">DİN</div>
+    <div class="atag">Do It Now</div>
+    <div id="amsg" class="amsg"></div>
+    <div class="atabs">
+      <button class="atab on" id="t-login" onclick="aTab('login')">Sign In</button>
+      <button class="atab" id="t-signup" onclick="aTab('signup')">Sign Up</button>
+    </div>
+    <div id="f-login">
+      <div class="afield"><label>Username</label><input class="ainp" id="l-user" type="text" placeholder="your username" autocomplete="username" autocapitalize="none" autocorrect="off"></div>
+      <div class="afield"><label>Password</label><input class="ainp" id="l-pass" type="password" placeholder="••••••••" autocomplete="current-password"></div>
+      <button class="abtn" id="l-btn" onclick="doLogin()"><span class="btn-text">Sign In →</span><div class="spin"></div></button>
+    </div>
+    <div id="f-signup" style="display:none">
+      <div class="afield"><label>Username</label><input class="ainp" id="s-user" type="text" placeholder="choose a username" autocomplete="username" autocapitalize="none" autocorrect="off" maxlength="24"></div>
+      <div class="afield"><label>Password</label><input class="ainp" id="s-pass" type="password" placeholder="min 6 characters" autocomplete="new-password"></div>
+      <div class="afield"><label>Confirm Password</label><input class="ainp" id="s-pass2" type="password" placeholder="repeat password" autocomplete="new-password"></div>
+      <button class="abtn" id="s-btn" onclick="doSignup()"><span class="btn-text">Create Account →</span><div class="spin"></div></button>
+    </div>
+    <p class="anote">Your data is stored securely in the cloud.<br>Works on any device, any browser.</p>
+  </div>
+</div>
+
+<!-- SIDEBAR -->
+<aside id="sb">
+  <div class="sb-top">
+    <div class="sb-lw"><div class="sb-logo">DİN</div><div class="sb-sub">Do it now</div></div>
+    <button class="sb-tog" id="sbTog">☰</button>
+  </div>
+  <nav class="sb-nav">
+    <div class="ni on" data-p="overview"><span class="ni-ic">⚡</span><span class="ni-lb">Overview</span></div>
+    <div class="ni" data-p="habits"><span class="ni-ic">🔥</span><span class="ni-lb">Habits</span><span class="nb" id="nb-h">0</span></div>
+    <div class="ni" data-p="challenges"><span class="ni-ic">⚔️</span><span class="ni-lb">Challenges</span><span class="nb" id="nb-c">0</span></div>
+    <div class="ni" data-p="english"><span class="ni-ic">🇬🇧</span><span class="ni-lb">English</span></div>
+    <div class="ni" data-p="learning"><span class="ni-ic">🧠</span><span class="ni-lb">Learning</span></div>
+    <div class="ni" data-p="journal"><span class="ni-ic">📓</span><span class="ni-lb">Journal</span><span class="nb" id="nb-j">0</span></div>
+  </nav>
+  <div class="sb-bot">
+    <div class="sb-user">
+      <div class="sb-av" id="sbAv">?</div>
+      <span class="sb-un" id="sbUn">—</span>
+      <button class="sb-lo" onclick="doLogout()" title="Sign out">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      </button>
+    </div>
+    <div class="sb-dt" id="sbDt"></div>
+    <div class="sb-sync">
+      <span class="sync-btn" id="sync-status"><span class="sync-ind" id="sync-dot"></span>Saved</span>
+    </div>
+  </div>
+</aside>
+
+<button id="mob-tog" onclick="mobNav()">☰</button>
+<div id="sb-ov" onclick="mobNav()"></div>
+
+<!-- MAIN -->
+<div id="main">
+  <div id="topbar">
+    <span class="tb-title" id="tbTitle">Overview</span>
+    <span class="tb-date" id="tbDate"></span>
+  </div>
+
+  <!-- OVERVIEW -->
+  <div class="page on" id="page-overview">
+    <div class="hero glass"><div class="hero-din">DİN</div><div class="hero-sl">Do It Now</div></div>
+    <div class="stats" id="statsGrid"></div>
+    <div class="slbl">31-Day Map — <span id="mlbl" style="font-weight:400;letter-spacing:0;text-transform:none;font-size:11px;color:var(--tx2)"></span></div>
+    <div class="glass" style="padding:18px;margin-bottom:28px">
+      <div class="mgrid" id="mgrid"></div>
+      <div style="display:flex;gap:14px;flex-wrap:wrap;margin-top:8px">
+        <span style="font-size:10px;color:var(--tx3);display:flex;align-items:center;gap:5px"><span style="width:9px;height:9px;background:var(--glo);border:1px solid rgba(201,168,76,.35);border-radius:2px;display:inline-block"></span>All done</span>
+        <span style="font-size:10px;color:var(--tx3);display:flex;align-items:center;gap:5px"><span style="width:9px;height:9px;background:var(--bll);border:1px solid rgba(91,156,246,.22);border-radius:2px;display:inline-block"></span>Partial</span>
+        <span style="font-size:10px;color:var(--tx3);display:flex;align-items:center;gap:5px"><span style="width:9px;height:9px;background:var(--sf);border:1px solid var(--bd);border-radius:2px;display:inline-block"></span>Upcoming</span>
+      </div>
+    </div>
+    <div class="slbl">Active Challenges</div>
+    <div id="ovCh" style="margin-bottom:24px"></div>
+    <div class="slbl">Today's Habits</div>
+    <div id="ovH"></div>
+    <footer>DİN · Every day is a choice.</footer>
+  </div>
+
+  <!-- HABITS -->
+  <div class="page" id="page-habits">
+    <div class="ph"><h1>🔥 Daily Habits</h1><p>Build consistency. One day at a time.</p></div>
+    <div class="slbl">7-Day Tracker</div>
+    <div id="hHead" class="habit-head" style="margin-bottom:3px"></div>
+    <div id="hList"></div>
+    <div class="slbl" style="margin-top:24px">Add New Habit</div>
+    <div class="gsm" style="padding:16px">
+      <div class="add-row">
+        <select id="hEmoji" class="inp" style="max-width:58px;cursor:pointer;padding:9px 5px">
+          <option>🎯</option><option>💪</option><option>📚</option><option>🧘</option><option>🏃</option><option>💧</option><option>🥗</option><option>😴</option><option>✍️</option><option>🎵</option><option>🧠</option><option>🌿</option><option>🧊</option><option>⚡</option><option>🌅</option><option>🚫</option>
+        </select>
+        <input id="hInput" class="inp" placeholder="Name your habit…" maxlength="42">
+        <button class="btn btn-g" onclick="addHabit()">+ Add</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHALLENGES -->
+  <div class="page" id="page-challenges">
+    <div class="ph"><h1>⚔️ Challenges</h1><p>Conquer them all. No mercy.</p></div>
+    <div class="slbl">Your Challenges</div>
+    <div class="ch-grid" id="chGrid"></div>
+    <div class="slbl">Create Challenge</div>
+    <div class="gsm" style="padding:16px">
+      <div class="add-row">
+        <select id="chEmoji" class="inp" style="max-width:58px;cursor:pointer;padding:9px 5px">
+          <option>🚫</option><option>⚔️</option><option>🏆</option><option>🧊</option><option>💪</option><option>🎯</option><option>🔒</option><option>🦁</option><option>🌙</option><option>⚡</option><option>🔥</option><option>🧘</option><option>📵</option><option>🏃</option><option>💧</option><option>🌿</option>
+        </select>
+        <input id="chName" class="inp" placeholder="Challenge name…" maxlength="42">
+        <input id="chDays" class="inp" type="number" placeholder="Days" min="1" max="999" style="max-width:90px">
+        <button class="btn btn-g" onclick="addCh()">⚔️ Create</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ENGLISH -->
+  <div class="page" id="page-english">
+    <div class="ph"><h1>🇬🇧 English Mastery</h1><p>5000+ words · All levels · Flashcards · Quiz · Phrases</p></div>
+    <div class="lv-strip" id="lvStrip"></div>
+    <div class="mode-tabs" id="modeTabs">
+      <button class="btn btn-g btn-sm" id="m-word" onclick="eMode('word')">📖 Word</button>
+      <button class="btn btn-gh btn-sm" id="m-flash" onclick="eMode('flash')">🃏 Flashcard</button>
+      <button class="btn btn-gh btn-sm" id="m-quiz" onclick="eMode('quiz')">🎯 Quiz</button>
+      <button class="btn btn-gh btn-sm" id="m-phrases" onclick="eMode('phrases')">💬 Phrases</button>
+      <button class="btn btn-gh btn-sm" id="m-write" onclick="eMode('write')">✍️ Writing</button>
+      <button class="btn btn-gh btn-sm" id="m-vocab" onclick="eMode('vocab')">📊 My Vocab</button>
+    </div>
+    <div class="cat-strip" id="catStrip">
+      <div class="chip cat-chip on" data-cat="all" onclick="setCat('all')">All</div>
+      <div class="chip cat-chip" data-cat="daily" onclick="setCat('daily')">🌅 Daily</div>
+      <div class="chip cat-chip" data-cat="corporate" onclick="setCat('corporate')">💼 Corporate</div>
+      <div class="chip cat-chip" data-cat="family" onclick="setCat('family')">👨‍👩‍👧 Family</div>
+      <div class="chip cat-chip" data-cat="idiom" onclick="setCat('idiom')">🎭 Idioms</div>
+      <div class="chip cat-chip" data-cat="emotion" onclick="setCat('emotion')">❤️ Emotions</div>
+      <div class="chip cat-chip" data-cat="travel" onclick="setCat('travel')">✈️ Travel</div>
+      <div class="chip cat-chip" data-cat="academic" onclick="setCat('academic')">🎓 Academic</div>
+    </div>
+    <!-- Word of day -->
+    <div id="e-word">
+      <div class="eng-grid">
+        <div class="glass ecard">
+          <div class="ecl">📖 Word of the Day</div>
+          <div style="display:flex;align-items:baseline;gap:9px;flex-wrap:wrap;margin-bottom:3px">
+            <div class="wb" id="wW">—</div><div style="font-size:11px;color:var(--tx3)" id="wPos"></div>
+          </div>
+          <div class="wipa" id="wIpa"></div>
+          <div class="wdef" id="wDef"></div>
+          <div class="wex" id="wEx"></div>
+          <div class="wtags" id="wTags"></div>
+          <div style="display:flex;gap:7px;margin-top:12px;flex-wrap:wrap">
+            <button class="btn btn-gh btn-sm" onclick="nWord()">→ Next</button>
+            <button class="btn btn-g btn-sm" onclick="lWord()">✓ Learned</button>
+          </div>
+          <div style="margin-top:10px;font-size:10px;color:var(--tx3)" id="wCnt"></div>
+        </div>
+        <div class="glass ecard">
+          <div class="ecl">🎓 Grammar Tip</div>
+          <div id="gTip" style="font-size:13px;color:var(--tx2);line-height:1.7;margin-bottom:9px"></div>
+          <div id="gEx" style="padding:9px 11px;background:rgba(255,255,255,.025);border-radius:7px;font-size:12px;color:var(--tx3);font-style:italic;line-height:1.5"></div>
+          <button class="btn btn-gh btn-sm" style="margin-top:10px;width:100%" onclick="nGram()">Next Tip →</button>
+        </div>
+      </div>
+    </div>
+    <!-- Flashcard -->
+    <div id="e-flash" style="display:none">
+      <div class="glass ecard">
+        <div class="ecl">🃏 Flashcards — tap card to flip</div>
+        <div class="fc-wrap"><div class="fc" id="fc" onclick="flipFC()">
+          <div class="fc-f"><div class="fc-fw" id="fcW">—</div><div class="fc-hint">tap to reveal</div></div>
+          <div class="fc-b"><div class="fc-def" id="fcD"></div><div class="fc-ex" id="fcE"></div></div>
+        </div></div>
+        <div style="display:flex;gap:7px;margin-bottom:7px">
+          <button class="btn btn-gh btn-sm" style="flex:1" onclick="fcPrev()">← Prev</button>
+          <button class="btn btn-gh btn-sm" style="flex:1" onclick="fcNext()">Next →</button>
+          <button class="btn btn-g btn-sm" style="flex:1" onclick="lWord()">✓ Learned</button>
+        </div>
+        <div style="text-align:center;font-size:10px;color:var(--tx3)" id="fcCnt"></div>
+      </div>
+    </div>
+    <!-- Quiz -->
+    <div id="e-quiz" style="display:none">
+      <div class="glass ecard">
+        <div class="ecl">🎯 Quiz</div>
+        <div class="qscore"><span>Score: <strong id="qSc">0</strong></span><span>Streak: <strong id="qSt">0</strong></span><span>Total: <strong id="qTo">0</strong></span></div>
+        <div class="qq" id="qQ">Loading…</div>
+        <div class="quiz-opts" id="qOpts"></div>
+        <div id="qFb" style="font-size:12px;margin-bottom:10px;min-height:18px"></div>
+        <button class="btn btn-gh btn-sm" onclick="nQuiz()">Skip →</button>
+      </div>
+    </div>
+    <!-- Phrases -->
+    <div id="e-phrases" style="display:none">
+      <div class="glass ecard">
+        <div class="ecl">💬 Phrases</div>
+        <select class="inp" id="phCat" onchange="renderPhrases()" style="max-width:220px;margin-bottom:14px">
+          <option value="greetings">Greetings & Small Talk</option>
+          <option value="work">Workplace & Corporate</option>
+          <option value="family">Family & Home</option>
+          <option value="travel">Travel</option>
+          <option value="emotions">Emotions & Support</option>
+          <option value="idioms_common">Common Idioms</option>
+          <option value="idioms_business">Business Idioms</option>
+          <option value="academic">Academic & Formal</option>
+          <option value="conflict">Handling Conflict</option>
+          <option value="compliments">Compliments</option>
+        </select>
+        <div id="phList"></div>
+      </div>
+    </div>
+    <!-- Writing -->
+    <div id="e-write" style="display:none">
+      <div class="eng-grid">
+        <div class="glass ecard">
+          <div class="ecl">✍️ Daily Writing</div>
+          <div id="wPrompt" style="font-size:12px;color:var(--tx3);margin-bottom:9px;font-style:italic;line-height:1.5"></div>
+          <textarea id="wInput" class="inp" rows="5" placeholder="Write your response…" style="margin-bottom:9px"></textarea>
+          <div style="display:flex;gap:7px;flex-wrap:wrap">
+            <button class="btn btn-gh btn-sm" onclick="newPrompt()" style="flex:1">New Prompt</button>
+            <button class="btn btn-g btn-sm" onclick="saveWriting()" style="flex:1">Save</button>
+          </div>
+          <div id="wLog" style="margin-top:12px;display:flex;flex-direction:column;gap:6px;max-height:180px;overflow-y:auto"></div>
+        </div>
+        <div class="glass ecard">
+          <div class="ecl">💡 Writing Tips</div>
+          <div id="wTips" style="font-size:12px;color:var(--tx2);line-height:1.7"></div>
+        </div>
+      </div>
+    </div>
+    <!-- Vocab -->
+    <div id="e-vocab" style="display:none">
+      <div class="glass ecard">
+        <div class="ecl">📊 My Vocabulary</div>
+        <div id="vStats" style="margin-bottom:14px"></div>
+        <div id="vChips" style="display:flex;flex-wrap:wrap;max-height:220px;overflow-y:auto;gap:4px"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LEARNING -->
+  <div class="page" id="page-learning">
+    <div class="ph"><h1>🧠 Learning Log</h1><p>Track every insight, every day.</p></div>
+    <div class="learn-grid" id="lGrid"></div>
+    <div class="slbl">Add Subject</div>
+    <div class="gsm" style="padding:16px">
+      <div class="add-row">
+        <input id="lName" class="inp" placeholder="Subject name…" maxlength="32">
+        <input id="lColor" type="color" value="#c9a84c" style="width:42px;height:42px;border-radius:8px;border:1px solid var(--bd);background:var(--sf);cursor:pointer;padding:3px;flex-shrink:0">
+        <button class="btn btn-g" onclick="addSubject()">+ Add</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- JOURNAL -->
+  <div class="page" id="page-journal">
+    <div class="ph"><h1>📓 Journal</h1><p>Your private space. Write freely.</p></div>
+    <div class="slbl">New Entry</div>
+    <div class="glass jcomp">
+      <div class="jtb">
+        <span class="jdt" id="jDt"></span>
+        <div class="mood-row">
+          <button class="mb" data-m="😊" onclick="pickMood(this)">😊</button>
+          <button class="mb" data-m="🔥" onclick="pickMood(this)">🔥</button>
+          <button class="mb" data-m="😤" onclick="pickMood(this)">😤</button>
+          <button class="mb" data-m="😔" onclick="pickMood(this)">😔</button>
+          <button class="mb" data-m="🧘" onclick="pickMood(this)">🧘</button>
+          <button class="mb" data-m="😴" onclick="pickMood(this)">😴</button>
+          <button class="mb" data-m="⚡" onclick="pickMood(this)">⚡</button>
+        </div>
+        <div class="ja">
+          <button class="btn btn-gh btn-sm" onclick="document.getElementById('jInp').value=''">Clear</button>
+          <button class="btn btn-g btn-sm" onclick="saveJournal()">Save</button>
+        </div>
+      </div>
+      <textarea id="jInp" class="inp" rows="6" placeholder="What happened today? How do you feel? Write freely…" style="width:100%;min-height:140px"></textarea>
+    </div>
+    <div class="slbl">Past Entries</div>
+    <div id="jList"></div>
+  </div>
+</div>
+
+<!-- CONFIRM -->
+<div id="conf-ov">
+  <div id="conf-box">
+    <h3 id="confT">Delete?</h3>
+    <p id="confM">This cannot be undone.</p>
+    <div class="btns">
+      <button class="btn btn-gh btn-sm" onclick="confRes(false)">Cancel</button>
+      <button class="btn" style="background:var(--rdl);border:1px solid rgba(255,95,95,.2);color:var(--rd);padding:7px 16px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer" onclick="confRes(true)">Delete</button>
+    </div>
+  </div>
+</div>
+<div id="toast"></div>
+<script>
+// ═══════════════════════════════════════════
+// CONFIG — set your Vercel URL after deploy
+// ═══════════════════════════════════════════
+const API = ''; // empty = same origin (works on Vercel automatically)
+
+// ═══════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════
+let TOKEN = null;
+let USER  = null;
+let S     = {};
+let _saveTimer = null;
+let _saving = false;
+
+const DEFAULT = {
+  habits:[
+    {id:1,name:'Morning workout',emoji:'💪',log:{}},
+    {id:2,name:'Read 30 min',emoji:'📚',log:{}},
+    {id:3,name:'Meditate',emoji:'🧘',log:{}},
+    {id:4,name:'Cold shower',emoji:'🧊',log:{}},
+    {id:5,name:'No junk food',emoji:'🥗',log:{}},
+    {id:6,name:'Sleep by 11 PM',emoji:'😴',log:{}},
+  ],
+  challenges:[
+    {id:1,name:'No Fap',emoji:'🔒',totalDays:90,curr:0,start:null,failed:false,done:false,log:{}},
+    {id:2,name:'Cold Showers',emoji:'🧊',totalDays:30,curr:0,start:null,failed:false,done:false,log:{}},
+    {id:3,name:'No Social Media',emoji:'📵',totalDays:21,curr:0,start:null,failed:false,done:false,log:{}},
+  ],
+  learnedWords:[],writingLog:[],engLevel:'B1',wordIdx:0,grammarIdx:0,engMode:'word',engCat:'all',
+  subjects:[
+    {id:1,name:'English',color:'#5b9cf6',entries:[]},
+    {id:2,name:'Programming',color:'#c9a84c',entries:[]},
+    {id:3,name:'Fitness',color:'#3ecf8e',entries:[]},
+  ],
+  journalEntries:[],sidebarCollapsed:false,
+};
+
+// ═══════════════════════════════════════════
+// API HELPERS
+// ═══════════════════════════════════════════
+async function apiFetch(path, opts={}) {
+  const headers = { 'Content-Type': 'application/json' };
+  if (TOKEN) headers['Authorization'] = 'Bearer ' + TOKEN;
+  const res = await fetch(API + path, { ...opts, headers });
+  const data = await res.json().catch(() => ({}));
+  return { ok: res.ok, status: res.status, data };
+}
+
+// ═══════════════════════════════════════════
+// SAVE to MongoDB — debounced
+// ═══════════════════════════════════════════
+function save() {
+  setSyncStatus('saving');
+  clearTimeout(_saveTimer);
+  _saveTimer = setTimeout(async () => {
+    if (!TOKEN) return;
+    _saving = true;
+    const { ok } = await apiFetch('/api/data', {
+      method: 'POST',
+      body: JSON.stringify({ state: S }),
+    });
+    _saving = false;
+    setSyncStatus(ok ? 'saved' : 'err');
+  }, 1200); // 1.2s debounce
+}
+
+function setSyncStatus(s) {
+  const dot = document.getElementById('sync-dot');
+  const lbl = document.getElementById('sync-status');
+  if (!dot) return;
+  dot.className = 'sync-ind' + (s === 'saving' ? ' saving' : s === 'err' ? ' err' : '');
+  lbl.innerHTML = `<span class="sync-ind${s==='saving'?' saving':s==='err'?' err':''}"></span>${s==='saving'?'Saving…':s==='err'?'Retry…':'Saved'}`;
+}
+
+// ═══════════════════════════════════════════
+// AUTH
+// ═══════════════════════════════════════════
+function aTab(t) {
+  document.getElementById('f-login').style.display  = t==='login'  ? '' : 'none';
+  document.getElementById('f-signup').style.display = t==='signup' ? '' : 'none';
+  document.getElementById('t-login').className  = 'atab' + (t==='login'  ? ' on' : '');
+  document.getElementById('t-signup').className = 'atab' + (t==='signup' ? ' on' : '');
+  document.getElementById('amsg').className = 'amsg';
+  document.getElementById('amsg').textContent = '';
+}
+
+function aMsg(msg, type) {
+  const el = document.getElementById('amsg');
+  el.textContent = msg;
+  el.className = 'amsg ' + type;
+}
+
+function setBtnLoading(id, loading) {
+  const btn = document.getElementById(id);
+  btn.disabled = loading;
+  btn.classList.toggle('loading', loading);
+}
+
+async function doLogin() {
+  const u = document.getElementById('l-user').value.trim().toLowerCase();
+  const p = document.getElementById('l-pass').value;
+  if (!u || !p) { aMsg('Please fill in all fields.', 'err'); return; }
+  setBtnLoading('l-btn', true);
+  const { ok, data } = await apiFetch('/api/auth?action=login', {
+    method: 'POST', body: JSON.stringify({ username: u, password: p }),
+  });
+  setBtnLoading('l-btn', false);
+  if (!ok) { aMsg(data.error || 'Login failed.', 'err'); return; }
+  TOKEN = data.token;
+  USER  = data.username;
+  localStorage.setItem('din_token', TOKEN);
+  localStorage.setItem('din_user', USER);
+  await beginSession();
+}
+
+async function doSignup() {
+  const u  = document.getElementById('s-user').value.trim().toLowerCase();
+  const p  = document.getElementById('s-pass').value;
+  const p2 = document.getElementById('s-pass2').value;
+  if (!u || !p || !p2) { aMsg('Please fill in all fields.', 'err'); return; }
+  if (p !== p2) { aMsg('Passwords do not match.', 'err'); return; }
+  setBtnLoading('s-btn', true);
+  const { ok, data } = await apiFetch('/api/auth?action=signup', {
+    method: 'POST', body: JSON.stringify({ username: u, password: p }),
+  });
+  setBtnLoading('s-btn', false);
+  if (!ok) { aMsg(data.error || 'Signup failed.', 'err'); return; }
+  TOKEN = data.token;
+  USER  = data.username;
+  localStorage.setItem('din_token', TOKEN);
+  localStorage.setItem('din_user', USER);
+  aMsg('Account created! Loading your app…', 'ok');
+  setTimeout(beginSession, 600);
+}
+
+async function beginSession() {
+  setLoadMsg('Loading your data…');
+  showLoading(true);
+  // Load state from MongoDB
+  const { ok, data } = await apiFetch('/api/data');
+  if (ok && data.state) {
+    S = Object.assign({}, JSON.parse(JSON.stringify(DEFAULT)), data.state);
+  } else {
+    S = JSON.parse(JSON.stringify(DEFAULT));
+  }
+  document.getElementById('sbAv').textContent = USER[0].toUpperCase();
+  document.getElementById('sbUn').textContent = USER;
+  document.getElementById('auth').classList.add('gone');
+  showLoading(false);
+  init();
+}
+
+async function doLogout() {
+  if (_saving) { toast('Saving… please wait.'); return; }
+  save(); // final save
+  await new Promise(r => setTimeout(r, 800));
+  TOKEN = null; USER = null; S = {};
+  localStorage.removeItem('din_token');
+  localStorage.removeItem('din_user');
+  document.getElementById('auth').classList.remove('gone');
+  document.getElementById('amsg').className = 'amsg';
+  document.getElementById('l-user').value = '';
+  document.getElementById('l-pass').value = '';
+  aTab('login');
+  toast('Signed out. See you soon!');
+}
+
+// Auto-login from stored token
+async function tryAutoLogin() {
+  setLoadMsg('Checking session…');
+  const t = localStorage.getItem('din_token');
+  const u = localStorage.getItem('din_user');
+  if (!t || !u) { showLoading(false); showAuth(); return; }
+  // Verify token is still valid
+  TOKEN = t; USER = u;
+  const { ok } = await apiFetch('/api/auth?action=verify');
+  if (!ok) {
+    TOKEN = null; USER = null;
+    localStorage.removeItem('din_token');
+    localStorage.removeItem('din_user');
+    showLoading(false); showAuth(); return;
+  }
+  await beginSession();
+}
+
+function showLoading(v) { document.getElementById('loading').classList.toggle('gone', !v); }
+function showAuth() { document.getElementById('auth').classList.remove('gone'); }
+function setLoadMsg(m) { document.getElementById('load-msg').textContent = m; }
+
+// Keyboard
+document.getElementById('l-pass').addEventListener('keydown', e => e.key==='Enter' && doLogin());
+document.getElementById('l-user').addEventListener('keydown', e => e.key==='Enter' && doLogin());
+document.getElementById('s-pass2').addEventListener('keydown', e => e.key==='Enter' && doSignup());
+
+// ═══════════════════════════════════════════
+// DATE
+// ═══════════════════════════════════════════
+const TODAY = new Date();
+const TKEY  = fmtD(TODAY);
+function fmtD(d) { return d.toISOString().split('T')[0]; }
+function dBack(n) { const d=new Date(TODAY); d.setDate(TODAY.getDate()-6+n); return d; }
+const WEEK = Array.from({length:7}, (_,i) => dBack(i));
+const DS = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+
+// ═══════════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════════
+const PT = {overview:'Overview',habits:'Habits',challenges:'Challenges',english:'English',learning:'Learning',journal:'Journal'};
+let curP = 'overview';
+
+function goTo(p) {
+  document.querySelectorAll('.page').forEach(x => x.classList.remove('on'));
+  document.querySelectorAll('.ni').forEach(x => x.classList.remove('on'));
+  document.getElementById('page-'+p).classList.add('on');
+  document.querySelector(`.ni[data-p="${p}"]`).classList.add('on');
+  document.getElementById('tbTitle').textContent = PT[p];
+  curP = p;
+  if (window.innerWidth <= 900) closeMob();
+}
+document.querySelectorAll('.ni').forEach(el => el.addEventListener('click', () => goTo(el.dataset.p)));
+
+document.getElementById('sbTog').addEventListener('click', () => {
+  document.getElementById('sb').classList.toggle('col');
+  document.getElementById('main').classList.toggle('col');
+  S.sidebarCollapsed = document.getElementById('sb').classList.contains('col');
+  save();
+});
+
+function mobNav() { document.getElementById('sb').classList.toggle('mob-open'); document.getElementById('sb-ov').classList.toggle('show'); }
+function closeMob() { document.getElementById('sb').classList.remove('mob-open'); document.getElementById('sb-ov').classList.remove('show'); }
+
+// ═══════════════════════════════════════════
+// CONFIRM
+// ═══════════════════════════════════════════
+let _confRes = null;
+function confirm2(t, m) {
+  document.getElementById('confT').textContent = t;
+  document.getElementById('confM').textContent = m;
+  document.getElementById('conf-ov').classList.add('show');
+  return new Promise(r => { _confRes = r; });
+}
+function confRes(v) { document.getElementById('conf-ov').classList.remove('show'); _confRes && _confRes(v); _confRes = null; }
+
+// ═══════════════════════════════════════════
+// TOAST
+// ═══════════════════════════════════════════
+let _toastT;
+function toast(m) { const e=document.getElementById('toast'); e.textContent=m; e.classList.add('show'); clearTimeout(_toastT); _toastT=setTimeout(()=>e.classList.remove('show'),2400); }
+
+// ═══════════════════════════════════════════
+// OVERVIEW
+// ═══════════════════════════════════════════
+function renderOv() {
+  const str = calcStreak();
+  const dn  = S.habits.filter(h => h.log[TKEY]).length;
+  const tot = S.habits.length;
+  const p   = tot ? Math.round(dn/tot*100) : 0;
+  document.getElementById('statsGrid').innerHTML = `
+    <div class="glass sc"><span class="sc-n">${str}</span><div class="sc-l">Day Streak</div><div class="sc-bar"><div class="sc-fill" style="width:${Math.min(100,str*5)}%"></div></div></div>
+    <div class="glass sc"><span class="sc-n">${dn}/${tot}</span><div class="sc-l">Habits Today</div><div class="sc-bar"><div class="sc-fill" style="width:${p}%"></div></div></div>
+    <div class="glass sc"><span class="sc-n">${S.challenges.filter(c=>c.start&&!c.failed&&!c.done).length}</span><div class="sc-l">Active Challenges</div><div class="sc-bar"><div class="sc-fill" style="width:${Math.min(100,S.challenges.filter(c=>c.start&&!c.failed&&!c.done).length*20)}%"></div></div></div>
+    <div class="glass sc"><span class="sc-n">${S.learnedWords.length}</span><div class="sc-l">Words Learned</div><div class="sc-bar"><div class="sc-fill" style="width:${Math.min(100,S.learnedWords.length)}%"></div></div></div>
+  `;
+  const m=TODAY.getMonth(), y=TODAY.getFullYear(), dim=new Date(y,m+1,0).getDate();
+  let mg='';
+  for(let d=1;d<=Math.min(31,dim);d++){
+    const dt=new Date(y,m,d), k=fmtD(dt), isT=k===TKEY, isFut=dt>TODAY;
+    const dn2=S.habits.filter(h=>h.log[k]).length, t2=S.habits.length;
+    let cls='md';
+    if(isT) cls+=' td';
+    else if(isFut) cls+=' ft';
+    else if(t2>0&&dn2===t2) cls+=' dn';
+    else if(dn2>0) cls+=' pt';
+    const dots=!isFut&&dn2>0?Array(Math.min(dn2,3)).fill('<div class="m-dot"></div>').join(''):'';
+    mg+=`<div class="${cls}" title="${dt.toLocaleDateString('en-US',{month:'short',day:'numeric'})} ${dn2}/${t2}">${d}${dots?`<div class="m-dots">${dots}</div>`:''}</div>`;
+  }
+  document.getElementById('mgrid').innerHTML = mg;
+  document.getElementById('mlbl').textContent = TODAY.toLocaleDateString('en-US',{month:'long',year:'numeric'});
+  const ach = S.challenges.filter(c=>c.start&&!c.failed&&!c.done);
+  document.getElementById('ovCh').innerHTML = ach.length
+    ? `<div style="display:flex;flex-wrap:wrap;gap:9px">${ach.map(c=>{const pp=Math.round(c.curr/c.totalDays*100);return `<div style="padding:12px 16px;background:var(--sf);border:1px solid var(--bd);border-radius:var(--rsm);display:flex;align-items:center;gap:10px;min-width:200px"><span style="font-size:22px">${c.emoji}</span><div><div style="font-size:12px;font-weight:700;margin-bottom:3px">${c.name}</div><div style="font-size:10px;color:var(--tx3)">Day ${c.curr}/${c.totalDays}</div><div style="margin-top:5px;height:2px;width:100px;background:rgba(255,255,255,.05);border-radius:1px;overflow:hidden"><div style="height:100%;width:${pp}%;background:var(--gr);border-radius:1px"></div></div></div></div>`;}).join('')}</div>`
+    : '<p style="font-size:12px;color:var(--tx3)">No active challenges yet.</p>';
+  document.getElementById('ovH').innerHTML = S.habits.length
+    ? `<div style="display:flex;flex-wrap:wrap;gap:7px">${S.habits.map(h=>`<div style="display:flex;align-items:center;gap:7px;padding:7px 12px;background:var(--sf);border:1px solid var(--bd);border-radius:var(--rsm)"><span>${h.emoji}</span><span style="font-size:12px;color:var(--tx2)">${h.name}</span><span style="width:18px;height:18px;border-radius:5px;display:grid;place-items:center;font-size:10px;${h.log[TKEY]?'background:var(--glo);color:var(--gh);border:1px solid rgba(201,168,76,.3)':'background:var(--sf2);color:var(--tx3);border:1px solid var(--bd)'}">${h.log[TKEY]?'✓':'○'}</span></div>`).join('')}</div>`
+    : '<p style="font-size:12px;color:var(--tx3)">No habits yet.</p>';
+  document.getElementById('nb-h').textContent = S.habits.length;
+  document.getElementById('nb-c').textContent = S.challenges.filter(c=>c.start&&!c.failed&&!c.done).length;
+  document.getElementById('nb-j').textContent = S.journalEntries.length;
+}
+function calcStreak(){let s=0,d=new Date(TODAY);while(s<400){const k=fmtD(d);const n=S.habits.filter(h=>h.log[k]).length;if(n===0&&k!==TKEY)break;if(n>0)s++;d.setDate(d.getDate()-1);}return s;}
+
+// ═══════════════════════════════════════════
+// HABITS
+// ═══════════════════════════════════════════
+function renderHabits() {
+  document.getElementById('hHead').innerHTML = '<div></div>' + WEEK.map(d => {
+    const isT = fmtD(d)===TKEY;
+    return `<div class="hth${isT?' hth-td':''}">${DS[d.getDay()]}<br><span style="font-size:8px;opacity:.6">${d.getDate()}</span></div>`;
+  }).join('');
+  const list = document.getElementById('hList');
+  if (!S.habits.length) { list.innerHTML = '<div style="padding:24px;text-align:center;font-size:13px;color:var(--tx3)">No habits yet.</div>'; return; }
+  list.innerHTML = S.habits.map(h => `
+    <div class="habit-row">
+      <div class="hn">
+        <button class="dbtn" onclick="delHabit(${h.id})">✕</button>
+        <span style="font-size:15px">${h.emoji}</span>
+        <span style="font-size:12px;font-weight:500;color:var(--tx2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${h.name}</span>
+      </div>
+      ${WEEK.map(d=>{const k=fmtD(d),isT=k===TKEY,on=!!h.log[k];return `<div class="hck${on?' on':''}${isT?' td-ck':''}" onclick="togH(${h.id},'${k}')">${on?'✓':''}</div>`;}).join('')}
+    </div>`).join('');
+}
+function togH(id,key){const h=S.habits.find(x=>x.id===id);if(!h)return;h.log[key]?delete h.log[key]:(h.log[key]=true);save();renderHabits();renderOv();}
+function addHabit(){const v=document.getElementById('hInput').value.trim(),e=document.getElementById('hEmoji').value;if(!v)return;S.habits.push({id:Date.now(),name:v,emoji:e,log:{}});document.getElementById('hInput').value='';save();renderHabits();renderOv();toast(`Habit added: ${e} ${v}`);}
+async function delHabit(id){const h=S.habits.find(x=>x.id===id);if(!h)return;const ok=await confirm2('Delete habit?',`"${h.emoji} ${h.name}" and all history will be removed.`);if(!ok)return;S.habits=S.habits.filter(x=>x.id!==id);save();renderHabits();renderOv();toast('Habit deleted.');}
+document.getElementById('hInput').addEventListener('keydown',e=>{if(e.key==='Enter')addHabit();});
+
+// ═══════════════════════════════════════════
+// CHALLENGES
+// ═══════════════════════════════════════════
+function renderCh(){
+  const g=document.getElementById('chGrid');
+  if(!S.challenges.length){g.innerHTML='<div style="padding:24px;font-size:13px;color:var(--tx3)">No challenges yet.</div>';return;}
+  g.innerHTML=S.challenges.map(c=>{
+    const pct=c.totalDays?Math.round(c.curr/c.totalDays*100):0;
+    const col=c.failed?'var(--rd)':c.done?'var(--gold)':'var(--gr)';
+    const badge=c.failed?'<span class="badge bf">Failed</span>':c.done?'<span class="badge bd2">✓ Done</span>':c.start?'<span class="badge ba">Active</span>':'<span class="badge bi">Not started</span>';
+    return `<div class="glass ch-card">
+      <div class="ch-top"><span class="ch-em">${c.emoji}</span><div class="ch-inf"><div class="ch-tt">${c.name}</div><div class="ch-mt">Day ${c.curr}/${c.totalDays} · ${pct}%</div></div><div class="ch-at">${badge}<button class="dbtn" onclick="delCh(${c.id})">✕</button></div></div>
+      <div style="display:flex;align-items:center;gap:9px;margin-bottom:12px"><div class="ch-bar"><div class="ch-fill" style="width:${pct}%;background:${col}"></div></div><span style="font-size:10px;color:var(--tx3);min-width:28px;text-align:right">${pct}%</span></div>
+      <div style="margin-bottom:12px"><span class="ch-big">${c.curr}</span><span class="ch-u"> days · ${c.totalDays-c.curr} left</span></div>
+      ${!c.done&&!c.failed?`<div class="ch-btns"><button class="ck-btn" onclick="chTick(${c.id})">✓ Done</button><button class="nx-btn" onclick="chFail(${c.id})">✗ Failed</button><button class="rs-btn" onclick="chReset(${c.id})">↺</button></div>`:`<div class="ch-btns"><button class="rs-btn" style="flex:1" onclick="chReset(${c.id})">↺ Restart</button></div>`}
+    </div>`;
+  }).join('');
+}
+function chTick(id){const c=S.challenges.find(x=>x.id===id);if(!c||c.done||c.failed)return;if(c.log[TKEY]){toast('Already logged today.');return;}if(!c.start)c.start=TKEY;c.curr++;c.log[TKEY]='done';if(c.curr>=c.totalDays){c.done=true;toast(`🏆 DONE: ${c.name}!`);}else toast(`✓ Day ${c.curr}/${c.totalDays} — ${c.name}`);save();renderCh();renderOv();}
+function chFail(id){const c=S.challenges.find(x=>x.id===id);if(!c)return;c.failed=true;save();renderCh();renderOv();toast('Challenge paused.');}
+function chReset(id){const c=S.challenges.find(x=>x.id===id);if(!c)return;c.curr=0;c.start=null;c.failed=false;c.done=false;c.log={};save();renderCh();renderOv();toast(`↺ ${c.name} restarted.`);}
+async function delCh(id){const c=S.challenges.find(x=>x.id===id);if(!c)return;const ok=await confirm2('Delete challenge?',`"${c.emoji} ${c.name}" will be permanently removed.`);if(!ok)return;S.challenges=S.challenges.filter(x=>x.id!==id);save();renderCh();renderOv();toast('Challenge deleted.');}
+function addCh(){const n=document.getElementById('chName').value.trim(),days=parseInt(document.getElementById('chDays').value),e=document.getElementById('chEmoji').value;if(!n||!days)return;S.challenges.push({id:Date.now(),name:n,emoji:e,totalDays:days,curr:0,start:null,failed:false,done:false,log:{}});document.getElementById('chName').value='';document.getElementById('chDays').value='';save();renderCh();renderOv();toast(`⚔️ Challenge created: ${n}`);}
+document.getElementById('chName').addEventListener('keydown',e=>{if(e.key==='Enter')addCh();});
+// ═══════════════════════════════════════════
+// ENGLISH WORD DATABASE
+// ═══════════════════════════════════════════
+const LEVELS=['A1','A2','B1','B2','C1','C2'];
+const WORDS={
+A1:[
+  {w:'Hello',pos:'excl.',ipa:'/həˈloʊ/',def:'A greeting used when meeting someone.',ex:'Hello! How are you today?',cat:'daily'},
+  {w:'Thank you',pos:'phrase',ipa:'/θæŋk juː/',def:'An expression of gratitude.',ex:'Thank you for your help!',cat:'daily'},
+  {w:'Please',pos:'adv.',ipa:'/pliːz/',def:'Used to make requests polite.',ex:'Please pass the salt.',cat:'daily'},
+  {w:'Sorry',pos:'adj.',ipa:'/ˈsɒri/',def:'An apology or expression of regret.',ex:'Sorry, I made a mistake.',cat:'emotion'},
+  {w:'Family',pos:'n.',ipa:'/ˈfæmɪli/',def:'A group of people related by blood or marriage.',ex:'My family is very important to me.',cat:'family'},
+  {w:'Mother',pos:'n.',ipa:'/ˈmʌðər/',def:'A female parent.',ex:'My mother cooks amazing food.',cat:'family'},
+  {w:'Father',pos:'n.',ipa:'/ˈfɑːðər/',def:'A male parent.',ex:'My father works in an office.',cat:'family'},
+  {w:'Brother',pos:'n.',ipa:'/ˈbrʌðər/',def:'A male sibling.',ex:'My brother is two years older.',cat:'family'},
+  {w:'Sister',pos:'n.',ipa:'/ˈsɪstər/',def:'A female sibling.',ex:'My sister and I are very close.',cat:'family'},
+  {w:'Friend',pos:'n.',ipa:'/frɛnd/',def:'A person you know well and like.',ex:'She is my best friend.',cat:'daily'},
+  {w:'Water',pos:'n.',ipa:'/ˈwɔːtər/',def:'A clear liquid essential for life.',ex:'Drink eight glasses of water daily.',cat:'daily'},
+  {w:'Food',pos:'n.',ipa:'/fuːd/',def:'Things that people eat.',ex:'This food tastes delicious.',cat:'daily'},
+  {w:'Happy',pos:'adj.',ipa:'/ˈhæpi/',def:'Feeling pleasure or contentment.',ex:'She was happy to see her friends.',cat:'emotion'},
+  {w:'Sad',pos:'adj.',ipa:'/sæd/',def:'Feeling unhappy or sorrowful.',ex:'I felt sad when they left.',cat:'emotion'},
+  {w:'Good',pos:'adj.',ipa:'/ɡʊd/',def:'Of a high quality or standard.',ex:'You did a good job today.',cat:'daily'},
+  {w:'Work',pos:'n./v.',ipa:'/wɜːrk/',def:'Activity involving mental or physical effort.',ex:'I work hard every day.',cat:'corporate'},
+  {w:'Home',pos:'n.',ipa:'/hoʊm/',def:'The place where someone lives.',ex:'I am going home now.',cat:'family'},
+  {w:'School',pos:'n.',ipa:'/skuːl/',def:'A place for learning and education.',ex:'The children walk to school.',cat:'academic'},
+  {w:'Money',pos:'n.',ipa:'/ˈmʌni/',def:'A medium of exchange for goods and services.',ex:'I save money every month.',cat:'daily'},
+  {w:'Time',pos:'n.',ipa:'/taɪm/',def:'The measured sequence of events.',ex:'Time flies when you are busy.',cat:'daily'},
+  {w:'Help',pos:'v./n.',ipa:'/hɛlp/',def:'To make something easier for someone.',ex:'Can you help me with this?',cat:'daily'},
+  {w:'Love',pos:'n./v.',ipa:'/lʌv/',def:'A deep feeling of affection.',ex:'I love spending time with my family.',cat:'emotion'},
+  {w:'Day',pos:'n.',ipa:'/deɪ/',def:'A period of 24 hours.',ex:'Have a great day!',cat:'daily'},
+  {w:'Yes',pos:'adv.',ipa:'/jɛs/',def:'Used to give a positive answer.',ex:'Yes, I agree with you.',cat:'daily'},
+  {w:'No',pos:'adv.',ipa:'/noʊ/',def:'Used to give a negative answer.',ex:'No, that is not correct.',cat:'daily'},
+  {w:'Big',pos:'adj.',ipa:'/bɪɡ/',def:'Of large size or amount.',ex:'That is a very big house.',cat:'daily'},
+  {w:'Small',pos:'adj.',ipa:'/smɔːl/',def:'Of limited size.',ex:'The small dog ran fast.',cat:'daily'},
+  {w:'New',pos:'adj.',ipa:'/njuː/',def:'Not existing before; recently made.',ex:'I bought a new phone.',cat:'daily'},
+  {w:'Old',pos:'adj.',ipa:'/oʊld/',def:'Having lived or existed for a long time.',ex:'That is an old building.',cat:'daily'},
+  {w:'Open',pos:'v./adj.',ipa:'/ˈoʊpən/',def:'Not closed; to make accessible.',ex:'Please open the window.',cat:'daily'},
+],
+A2:[
+  {w:'Suggest',pos:'v.',ipa:'/səˈdʒɛst/',def:'To put forward an idea for consideration.',ex:'I suggest we meet on Monday.',cat:'corporate'},
+  {w:'Decide',pos:'v.',ipa:'/dɪˈsaɪd/',def:'To make a choice or reach a conclusion.',ex:'I decided to wake up earlier.',cat:'daily'},
+  {w:'Improve',pos:'v.',ipa:'/ɪmˈpruːv/',def:'To make or become better.',ex:'Practice will improve your skills.',cat:'daily'},
+  {w:'Prefer',pos:'v.',ipa:'/prɪˈfɜːr/',def:'To like one thing more than another.',ex:'I prefer tea over coffee.',cat:'daily'},
+  {w:'Explain',pos:'v.',ipa:'/ɪkˈspleɪn/',def:'To make something clear by describing it.',ex:'Can you explain the rules?',cat:'academic'},
+  {w:'Meeting',pos:'n.',ipa:'/ˈmiːtɪŋ/',def:'A gathering of people to discuss something.',ex:'The meeting starts at 9 AM.',cat:'corporate'},
+  {w:'Problem',pos:'n.',ipa:'/ˈprɒbləm/',def:'A matter that is difficult to deal with.',ex:'We need to solve this problem.',cat:'daily'},
+  {w:'Solution',pos:'n.',ipa:'/səˈluːʃən/',def:'A means of solving a problem.',ex:'I found a solution to the issue.',cat:'daily'},
+  {w:'Agree',pos:'v.',ipa:'/əˈɡriː/',def:'To have the same opinion as someone.',ex:'I agree with your decision.',cat:'corporate'},
+  {w:'Respect',pos:'n./v.',ipa:'/rɪˈspɛkt/',def:'A feeling of deep admiration.',ex:'We should respect our elders.',cat:'family'},
+  {w:'Careful',pos:'adj.',ipa:'/ˈkɛərfʊl/',def:'Giving close attention to avoid mistakes.',ex:'Be careful on the wet floor.',cat:'daily'},
+  {w:'Nervous',pos:'adj.',ipa:'/ˈnɜːrvəs/',def:'Feeling anxiety or worry.',ex:'She felt nervous before the presentation.',cat:'emotion'},
+  {w:'Excited',pos:'adj.',ipa:'/ɪkˈsaɪtɪd/',def:'Feeling enthusiasm and eagerness.',ex:'He was excited about the trip.',cat:'emotion'},
+  {w:'Angry',pos:'adj.',ipa:'/ˈæŋɡri/',def:'Feeling strong displeasure.',ex:'She was angry about the delay.',cat:'emotion'},
+  {w:'Journey',pos:'n.',ipa:'/ˈdʒɜːrni/',def:'An act of traveling from one place to another.',ex:'The journey took five hours.',cat:'travel'},
+  {w:'Passport',pos:'n.',ipa:'/ˈpɑːspɔːrt/',def:'An official document for international travel.',ex:'Keep your passport safe when traveling.',cat:'travel'},
+  {w:'Hotel',pos:'n.',ipa:'/hoʊˈtɛl/',def:'An establishment providing paid accommodation.',ex:'We booked a hotel near the beach.',cat:'travel'},
+  {w:'Deadline',pos:'n.',ipa:'/ˈdɛdlaɪn/',def:'A time by which something must be done.',ex:'Submit your report before the deadline.',cat:'corporate'},
+  {w:'Budget',pos:'n.',ipa:'/ˈbʌdʒɪt/',def:'An estimate of income and expenditure.',ex:'We need to stay within the budget.',cat:'corporate'},
+  {w:'Achieve',pos:'v.',ipa:'/əˈtʃiːv/',def:'To successfully reach a goal.',ex:'You can achieve anything you set your mind to.',cat:'daily'},
+  {w:'Healthy',pos:'adj.',ipa:'/ˈhɛlθi/',def:'In good physical and mental condition.',ex:'Eat healthy to stay strong.',cat:'daily'},
+  {w:'Advice',pos:'n.',ipa:'/ədˈvaɪs/',def:'Guidance or recommendations offered.',ex:'Can I ask for your advice?',cat:'daily'},
+  {w:'Neighbor',pos:'n.',ipa:'/ˈneɪbər/',def:'A person living near you.',ex:'Our neighbors are very friendly.',cat:'family'},
+  {w:'Routine',pos:'n.',ipa:'/ruːˈtiːn/',def:'A regular sequence of actions.',ex:'Morning routine sets the tone for the day.',cat:'daily'},
+  {w:'Manage',pos:'v.',ipa:'/ˈmænɪdʒ/',def:'To be in charge of; to succeed in doing.',ex:'She manages the whole team.',cat:'corporate'},
+  {w:'Report',pos:'n./v.',ipa:'/rɪˈpɔːrt/',def:'A formal account of a situation or event.',ex:'Please send me the report by Friday.',cat:'corporate'},
+  {w:'Travel',pos:'v./n.',ipa:'/ˈtrævəl/',def:'To make a journey.',ex:'I love to travel in summer.',cat:'travel'},
+  {w:'Husband',pos:'n.',ipa:'/ˈhʌzbənd/',def:'A married man.',ex:'Her husband works abroad.',cat:'family'},
+  {w:'Wife',pos:'n.',ipa:'/waɪf/',def:'A married woman.',ex:'My wife is a teacher.',cat:'family'},
+  {w:'Children',pos:'n.',ipa:'/ˈtʃɪldrən/',def:'Young people; sons and daughters.',ex:'The children played in the park.',cat:'family'},
+],
+B1:[
+  {w:'Perseverance',pos:'n.',ipa:'/ˌpɜːrsɪˈvɪərəns/',def:'Continued effort despite difficulty.',ex:'Success requires perseverance.',cat:'academic'},
+  {w:'Influence',pos:'n./v.',ipa:'/ˈɪnfluəns/',def:'The capacity to have an effect on someone.',ex:'Music influences our emotions.',cat:'daily'},
+  {w:'Establish',pos:'v.',ipa:'/ɪˈstæblɪʃ/',def:'To set up on a permanent basis.',ex:'They established a new company.',cat:'corporate'},
+  {w:'Consequence',pos:'n.',ipa:'/ˈkɒnsɪkwəns/',def:'A result or effect of an action.',ex:'Every choice has a consequence.',cat:'academic'},
+  {w:'Discipline',pos:'n.',ipa:'/ˈdɪsɪplɪn/',def:'Controlled behavior through training.',ex:'Discipline separates winners from the rest.',cat:'daily'},
+  {w:'Negotiate',pos:'v.',ipa:'/nɪˈɡoʊʃieɪt/',def:'To discuss terms to reach an agreement.',ex:'We need to negotiate a better deal.',cat:'corporate'},
+  {w:'Collaborate',pos:'v.',ipa:'/kəˈlæbəreɪt/',def:'To work jointly with others.',ex:'Let us collaborate on this project.',cat:'corporate'},
+  {w:'Efficient',pos:'adj.',ipa:'/ɪˈfɪʃənt/',def:'Achieving maximum results with minimum waste.',ex:'She is an efficient project manager.',cat:'corporate'},
+  {w:'Priority',pos:'n.',ipa:'/praɪˈɒrɪti/',def:'Something regarded as more important.',ex:'Family is my top priority.',cat:'family'},
+  {w:'Commitment',pos:'n.',ipa:'/kəˈmɪtmənt/',def:'The state of being dedicated to something.',ex:'Success requires full commitment.',cat:'daily'},
+  {w:'Grateful',pos:'adj.',ipa:'/ˈɡreɪtfʊl/',def:'Feeling or showing thankfulness.',ex:'I am grateful for everything I have.',cat:'emotion'},
+  {w:'Overwhelmed',pos:'adj.',ipa:'/ˌoʊvərˈwɛlmd/',def:'Completely overcome by stress or emotion.',ex:'She felt overwhelmed at work.',cat:'emotion'},
+  {w:'Confident',pos:'adj.',ipa:'/ˈkɒnfɪdənt/',def:'Feeling sure about one\'s abilities.',ex:'He walked in confident and prepared.',cat:'emotion'},
+  {w:'Itinerary',pos:'n.',ipa:'/aɪˈtɪnəreri/',def:'A planned route or journey.',ex:'Our travel itinerary covers five cities.',cat:'travel'},
+  {w:'Accommodation',pos:'n.',ipa:'/əˌkɒməˈdeɪʃən/',def:'A place where travelers can stay.',ex:'We need to book accommodation in advance.',cat:'travel'},
+  {w:'Culture',pos:'n.',ipa:'/ˈkʌltʃər/',def:'The ideas and customs of a society.',ex:'Understanding local culture enriches travel.',cat:'travel'},
+  {w:'Objective',pos:'n.',ipa:'/əbˈdʒɛktɪv/',def:'A goal or aim to be achieved.',ex:'What is your main objective this quarter?',cat:'corporate'},
+  {w:'Strategy',pos:'n.',ipa:'/ˈstræteɡi/',def:'A plan of action to achieve a goal.',ex:'We need a clear strategy going forward.',cat:'corporate'},
+  {w:'Feedback',pos:'n.',ipa:'/ˈfiːdbæk/',def:'Information about reactions to a product or task.',ex:'Please give me honest feedback.',cat:'corporate'},
+  {w:'Milestone',pos:'n.',ipa:'/ˈmaɪlstoʊn/',def:'A significant stage in development.',ex:'Finishing the project is a major milestone.',cat:'corporate'},
+  {w:'Sibling',pos:'n.',ipa:'/ˈsɪblɪŋ/',def:'A brother or sister.',ex:'My siblings and I are very close.',cat:'family'},
+  {w:'Upbringing',pos:'n.',ipa:'/ˈʌpbrɪŋɪŋ/',def:'The way a child is raised.',ex:'His upbringing shaped who he became.',cat:'family'},
+  {w:'Break the ice',pos:'idiom',ipa:'',def:'To do something to relieve tension in a social situation.',ex:'He told a joke to break the ice.',cat:'idiom'},
+  {w:'Hit the nail on the head',pos:'idiom',ipa:'',def:'To describe something exactly right.',ex:'You hit the nail on the head with that analysis.',cat:'idiom'},
+  {w:'Once in a blue moon',pos:'idiom',ipa:'',def:'Something that happens very rarely.',ex:'He visits us once in a blue moon.',cat:'idiom'},
+  {w:'Under the weather',pos:'idiom',ipa:'',def:'Feeling slightly ill or sad.',ex:'I am feeling under the weather today.',cat:'idiom'},
+  {w:'Piece of cake',pos:'idiom',ipa:'',def:'Something very easy to do.',ex:'The test was a piece of cake.',cat:'idiom'},
+  {w:'Beat around the bush',pos:'idiom',ipa:'',def:'To avoid the main point; to be indirect.',ex:'Stop beating around the bush and tell me.',cat:'idiom'},
+  {w:'Cost an arm and a leg',pos:'idiom',ipa:'',def:'Very expensive.',ex:'That car costs an arm and a leg.',cat:'idiom'},
+  {w:'Hit the ground running',pos:'idiom',ipa:'',def:'Start something energetically and effectively.',ex:'She hit the ground running on her first day.',cat:'idiom'},
+],
+B2:[
+  {w:'Ambiguous',pos:'adj.',ipa:'/æmˈbɪɡjuəs/',def:'Open to more than one interpretation.',ex:'His answer was deliberately ambiguous.',cat:'academic'},
+  {w:'Profound',pos:'adj.',ipa:'/prəˈfaʊnd/',def:'Very great; showing deep insight.',ex:'The book had a profound impact on me.',cat:'academic'},
+  {w:'Resilience',pos:'n.',ipa:'/rɪˈzɪliəns/',def:'The capacity to recover quickly from difficulties.',ex:'Resilience is built through hardship.',cat:'daily'},
+  {w:'Integrity',pos:'n.',ipa:'/ɪnˈtɛɡrɪti/',def:'The quality of being honest and having moral principles.',ex:'Integrity is doing the right thing when no one is watching.',cat:'corporate'},
+  {w:'Stakeholder',pos:'n.',ipa:'/ˈsteɪkhoʊldər/',def:'A person with an interest in a company\'s decisions.',ex:'We must consider all stakeholders.',cat:'corporate'},
+  {w:'Leverage',pos:'n./v.',ipa:'/ˈlɛvərɪdʒ/',def:'Use something to maximum advantage.',ex:'Let us leverage our team\'s strengths.',cat:'corporate'},
+  {w:'Synergy',pos:'n.',ipa:'/ˈsɪnɜːrdʒi/',def:'Combined effect greater than the sum of parts.',ex:'Their synergy drove exceptional results.',cat:'corporate'},
+  {w:'Proactive',pos:'adj.',ipa:'/proʊˈæktɪv/',def:'Taking action rather than waiting.',ex:'Be proactive, not reactive.',cat:'corporate'},
+  {w:'Benchmark',pos:'n.',ipa:'/ˈbɛntʃmɑːrk/',def:'A standard used as a point of reference.',ex:'Use industry benchmarks to measure progress.',cat:'corporate'},
+  {w:'Exhausted',pos:'adj.',ipa:'/ɪɡˈzɔːstɪd/',def:'Completely drained of energy.',ex:'She was exhausted after the long shift.',cat:'emotion'},
+  {w:'Nostalgia',pos:'n.',ipa:'/nɒˈstælʤɪə/',def:'A sentimental longing for the past.',ex:'Old photos filled him with nostalgia.',cat:'emotion'},
+  {w:'Empathy',pos:'n.',ipa:'/ˈɛmpəθi/',def:'The ability to understand another\'s feelings.',ex:'Good leaders show empathy to their team.',cat:'emotion'},
+  {w:'Anxiety',pos:'n.',ipa:'/æŋˈzaɪəti/',def:'A feeling of worry and nervousness.',ex:'She managed her anxiety through exercise.',cat:'emotion'},
+  {w:'Logistics',pos:'n.',ipa:'/ləˈdʒɪstɪks/',def:'The coordination of complex operations.',ex:'Travel logistics can be stressful to manage.',cat:'travel'},
+  {w:'Layover',pos:'n.',ipa:'/ˈleɪoʊvər/',def:'A stop in a journey, especially a flight.',ex:'We had a three-hour layover in Dubai.',cat:'travel'},
+  {w:'Accountability',pos:'n.',ipa:'/əˌkaʊntəˈbɪlɪti/',def:'Being responsible for your actions.',ex:'Accountability builds trust in teams.',cat:'corporate'},
+  {w:'Transparent',pos:'adj.',ipa:'/trænsˈpærənt/',def:'Open and honest; not secretive.',ex:'Be transparent about your intentions.',cat:'corporate'},
+  {w:'Bandwidth',pos:'n.',ipa:'/ˈbændwɪdθ/',def:'Capacity or time available to complete a task.',ex:'I do not have the bandwidth for that right now.',cat:'corporate'},
+  {w:'Nurture',pos:'v./n.',ipa:'/ˈnɜːrtʃər/',def:'To care for and encourage growth.',ex:'Parents nurture their children with love.',cat:'family'},
+  {w:'Mentor',pos:'n./v.',ipa:'/ˈmɛntɔːr/',def:'An experienced person who guides another.',ex:'Find a mentor in your field.',cat:'corporate'},
+  {w:'Burn the midnight oil',pos:'idiom',ipa:'',def:'To work late into the night.',ex:'She burned the midnight oil to finish the report.',cat:'idiom'},
+  {w:'Get the ball rolling',pos:'idiom',ipa:'',def:'To start a process or activity.',ex:'Let\'s get the ball rolling on this project.',cat:'idiom'},
+  {w:'On the same page',pos:'idiom',ipa:'',def:'Everyone in agreement and understanding.',ex:'Let\'s make sure we are all on the same page.',cat:'idiom'},
+  {w:'Think outside the box',pos:'idiom',ipa:'',def:'To think creatively and unconventionally.',ex:'We need to think outside the box.',cat:'idiom'},
+  {w:'Cut corners',pos:'idiom',ipa:'',def:'To do something quickly by ignoring proper procedures.',ex:'Do not cut corners when it comes to safety.',cat:'idiom'},
+  {w:'Cost-effective',pos:'adj.',ipa:'/ˌkɒst ɪˈfɛktɪv/',def:'Good value for money.',ex:'We need a cost-effective solution.',cat:'corporate'},
+  {w:'Turnover',pos:'n.',ipa:'/ˈtɜːrnoʊvər/',def:'Revenue or rate of staff changes.',ex:'Staff turnover has been high this year.',cat:'corporate'},
+  {w:'Estranged',pos:'adj.',ipa:'/ɪˈstreɪndʒd/',def:'No longer close or in contact.',ex:'He was estranged from his family for years.',cat:'family'},
+  {w:'Paradox',pos:'n.',ipa:'/ˈpærədɒks/',def:'A seemingly contradictory statement that is true.',ex:'Accepting failure is a paradox of success.',cat:'academic'},
+  {w:'Dedicate',pos:'v.',ipa:'/ˈdɛdɪkeɪt/',def:'To commit time or effort to something.',ex:'She dedicates two hours daily to learning.',cat:'daily'},
+],
+C1:[
+  {w:'Meticulous',pos:'adj.',ipa:'/mɪˈtɪkjʊləs/',def:'Showing great attention to detail.',ex:'She was meticulous in her preparation.',cat:'corporate'},
+  {w:'Tenacious',pos:'adj.',ipa:'/tɪˈneɪʃəs/',def:'Holding firmly to a purpose.',ex:'A tenacious mindset leads to victory.',cat:'daily'},
+  {w:'Pragmatic',pos:'adj.',ipa:'/præɡˈmætɪk/',def:'Dealing with things in a practical way.',ex:'Take a pragmatic approach to problems.',cat:'corporate'},
+  {w:'Paradigm shift',pos:'n.',ipa:'/ˈpærədaɪm ʃɪft/',def:'A fundamental change in approach or assumption.',ex:'Remote work was a paradigm shift for businesses.',cat:'corporate'},
+  {w:'Nuanced',pos:'adj.',ipa:'/ˈnjuːɑːnst/',def:'Characterized by subtle shades of meaning.',ex:'Her nuanced answer impressed everyone.',cat:'academic'},
+  {w:'Discrepancy',pos:'n.',ipa:'/dɪˈskrɛpənsi/',def:'A lack of compatibility between facts.',ex:'There was a discrepancy in the report.',cat:'corporate'},
+  {w:'Ambivalent',pos:'adj.',ipa:'/æmˈbɪvələnt/',def:'Having mixed or contradictory feelings.',ex:'She felt ambivalent about leaving her job.',cat:'emotion'},
+  {w:'Melancholy',pos:'n./adj.',ipa:'/ˈmɛlənkɒli/',def:'A deep, pensive sadness.',ex:'He felt a deep melancholy in autumn.',cat:'emotion'},
+  {w:'Exhilarated',pos:'adj.',ipa:'/ɪɡˈzɪləreɪtɪd/',def:'Feeling very happy and excited.',ex:'She was exhilarated after reaching the summit.',cat:'emotion'},
+  {w:'Expatriate',pos:'n.',ipa:'/ɛksˈpætriət/',def:'A person living outside their native country.',ex:'Many expatriates adapt to local customs quickly.',cat:'travel'},
+  {w:'Nomadic',pos:'adj.',ipa:'/noʊˈmædɪk/',def:'Living a wandering life without a settled home.',ex:'She embraced a nomadic lifestyle.',cat:'travel'},
+  {w:'Scalable',pos:'adj.',ipa:'/ˈskeɪləbəl/',def:'Able to grow and expand without losing quality.',ex:'Build a scalable business from day one.',cat:'corporate'},
+  {w:'Disruptive',pos:'adj.',ipa:'/dɪsˈrʌptɪv/',def:'Causing radical change in a traditional industry.',ex:'Uber was a disruptive force in transportation.',cat:'corporate'},
+  {w:'Agile',pos:'adj.',ipa:'/ˈædʒaɪl/',def:'Able to move quickly; adaptable in business.',ex:'Agile teams deliver results faster.',cat:'corporate'},
+  {w:'Micromanage',pos:'v.',ipa:'/ˌmaɪkrəʊˈmænɪdʒ/',def:'To control every detail of a team\'s work.',ex:'Avoid micromanaging — trust your team.',cat:'corporate'},
+  {w:'Reconcile',pos:'v.',ipa:'/ˈrɛkənsaɪl/',def:'To restore friendly relations after disagreement.',ex:'They reconciled after years of conflict.',cat:'family'},
+  {w:'Go the extra mile',pos:'idiom',ipa:'',def:'To put in more effort than expected.',ex:'She always goes the extra mile for her clients.',cat:'idiom'},
+  {w:'Touch base',pos:'idiom',ipa:'',def:'To make brief contact with someone.',ex:'Let\'s touch base on Monday morning.',cat:'idiom'},
+  {w:'Move the needle',pos:'idiom',ipa:'',def:'To make meaningful, measurable progress.',ex:'This campaign really moved the needle.',cat:'idiom'},
+  {w:'Throw under the bus',pos:'idiom',ipa:'',def:'To blame someone else to protect yourself.',ex:'Don\'t throw your colleague under the bus.',cat:'idiom'},
+  {w:'Bite the bullet',pos:'idiom',ipa:'',def:'To endure something painful or difficult.',ex:'Just bite the bullet and have the conversation.',cat:'idiom'},
+  {w:'Deep dive',pos:'idiom',ipa:'',def:'A thorough investigation of a topic.',ex:'Let\'s do a deep dive into the data.',cat:'corporate'},
+  {w:'Low-hanging fruit',pos:'idiom',ipa:'',def:'The easiest goals to achieve first.',ex:'Start with the low-hanging fruit.',cat:'corporate'},
+  {w:'Skin in the game',pos:'idiom',ipa:'',def:'Having a personal stake in an outcome.',ex:'Every partner has skin in the game.',cat:'corporate'},
+  {w:'Relinquish',pos:'v.',ipa:'/rɪˈlɪŋkwɪʃ/',def:'To voluntarily give up or cease to hold.',ex:'He relinquished control of the project.',cat:'academic'},
+  {w:'Ephemeral',pos:'adj.',ipa:'/ɪˈfɛmərəl/',def:'Lasting for a very short time.',ex:'Social media fame is ephemeral.',cat:'academic'},
+  {w:'Esteem',pos:'n.',ipa:'/ɪˈstiːm/',def:'Respect and admiration.',ex:'She held her grandmother in high esteem.',cat:'family'},
+  {w:'Burnout',pos:'n.',ipa:'/ˈbɜːrnaʊt/',def:'Physical or mental collapse from overwork.',ex:'He suffered from burnout after years of long hours.',cat:'emotion'},
+  {w:'Autonomy',pos:'n.',ipa:'/ɔːˈtɒnəmi/',def:'The right to self-governance; independence.',ex:'Employees need autonomy to thrive.',cat:'corporate'},
+  {w:'Momentum',pos:'n.',ipa:'/məˈmɛntəm/',def:'The force gained by a moving object; progress.',ex:'We need to keep the momentum going.',cat:'daily'},
+],
+C2:[
+  {w:'Sanguine',pos:'adj.',ipa:'/ˈsæŋɡwɪn/',def:'Optimistic, especially in difficult situations.',ex:'He remained sanguine despite setbacks.',cat:'academic'},
+  {w:'Equanimity',pos:'n.',ipa:'/ˌiːkwəˈnɪmɪti/',def:'Mental calmness in difficult situations.',ex:'She faced the crisis with equanimity.',cat:'emotion'},
+  {w:'Perspicacious',pos:'adj.',ipa:'/ˌpɜːspɪˈkeɪʃəs/',def:'Having ready insight; shrewdly perceptive.',ex:'A perspicacious thinker spots hidden patterns.',cat:'academic'},
+  {w:'Inexorable',pos:'adj.',ipa:'/ɪnˈɛksərəbəl/',def:'Impossible to stop or prevent.',ex:'The inexorable march of time continues.',cat:'academic'},
+  {w:'Lucid',pos:'adj.',ipa:'/ˈluːsɪd/',def:'Expressed clearly; easy to understand.',ex:'Her lucid explanation resolved the debate.',cat:'academic'},
+  {w:'Obfuscate',pos:'v.',ipa:'/ˈɒbfʌskeɪt/',def:'To make something unclear deliberately.',ex:'The report obfuscated the real issues.',cat:'corporate'},
+  {w:'Magnanimous',pos:'adj.',ipa:'/mæɡˈnænɪməs/',def:'Very generous or forgiving.',ex:'He was magnanimous in victory.',cat:'emotion'},
+  {w:'Loquacious',pos:'adj.',ipa:'/ləˈkweɪʃəs/',def:'Tending to talk a great deal.',ex:'She was loquacious at social events.',cat:'daily'},
+  {w:'Recalcitrant',pos:'adj.',ipa:'/rɪˈkælsɪtrənt/',def:'Having an obstinately uncooperative attitude.',ex:'The recalcitrant employee resisted all changes.',cat:'corporate'},
+  {w:'Impervious',pos:'adj.',ipa:'/ɪmˈpɜːrviəs/',def:'Unable to be affected by something.',ex:'She seemed impervious to criticism.',cat:'emotion'},
+  {w:'Propitious',pos:'adj.',ipa:'/prəˈpɪʃəs/',def:'Giving a good chance of success.',ex:'The timing was propitious for investment.',cat:'corporate'},
+  {w:'Ostensibly',pos:'adv.',ipa:'/ɒˈstɛnsɪbli/',def:'Apparently, but perhaps not actually.',ex:'He was ostensibly calm but clearly worried.',cat:'academic'},
+  {w:'Vicarious',pos:'adj.',ipa:'/vɪˈkɛəriəs/',def:'Experienced through another person.',ex:'She took vicarious pleasure in his success.',cat:'emotion'},
+  {w:'Bellwether',pos:'n.',ipa:'/ˈbɛlwɛðər/',def:'A leader or indicator of trends.',ex:'Silicon Valley is a bellwether for tech.',cat:'corporate'},
+  {w:'Circumspect',pos:'adj.',ipa:'/ˈsɜːrkəmspɛkt/',def:'Wary and unwilling to take risks.',ex:'Be circumspect about sharing personal data.',cat:'daily'},
+  {w:'Contrite',pos:'adj.',ipa:'/kənˈtraɪt/',def:'Feeling or expressing genuine regret.',ex:'He was genuinely contrite for his mistake.',cat:'emotion'},
+  {w:'Diaspora',pos:'n.',ipa:'/daɪˈæspərə/',def:'People spread across the world from their homeland.',ex:'The diaspora maintained strong cultural ties.',cat:'travel'},
+  {w:'Polyglot',pos:'n./adj.',ipa:'/ˈpɒliɡlɒt/',def:'A person who speaks several languages.',ex:'Being a polyglot opens many doors globally.',cat:'travel'},
+  {w:'Throw in the towel',pos:'idiom',ipa:'',def:'To give up; admit defeat.',ex:'He refused to throw in the towel.',cat:'idiom'},
+  {w:'Spill the beans',pos:'idiom',ipa:'',def:'To reveal secret information.',ex:'She accidentally spilled the beans.',cat:'idiom'},
+  {w:'Read between the lines',pos:'idiom',ipa:'',def:'To understand a hidden meaning.',ex:'You have to read between the lines.',cat:'idiom'},
+  {w:'Kill two birds with one stone',pos:'idiom',ipa:'',def:'To achieve two goals with one action.',ex:'The meeting killed two birds with one stone.',cat:'idiom'},
+  {w:'Bite off more than you can chew',pos:'idiom',ipa:'',def:'To take on more than one can handle.',ex:'Don\'t bite off more than you can chew.',cat:'idiom'},
+  {w:'Put all eggs in one basket',pos:'idiom',ipa:'',def:'To risk everything on a single outcome.',ex:'Never put all eggs in one basket.',cat:'idiom'},
+  {w:'Acrimonious',pos:'adj.',ipa:'/ˌækrɪˈmoʊniəs/',def:'Bitter and sharp in manner or speech.',ex:'The divorce was acrimonious.',cat:'family'},
+  {w:'Inimitable',pos:'adj.',ipa:'/ɪˈnɪmɪtəbəl/',def:'So unique as to be impossible to copy.',ex:'She had an inimitable style.',cat:'academic'},
+  {w:'Anodyne',pos:'adj.',ipa:'/ˈænədaɪn/',def:'Not likely to cause offense; inoffensively dull.',ex:'The politician gave an anodyne response.',cat:'academic'},
+  {w:'Verisimilitude',pos:'n.',ipa:'/ˌvɛrɪsɪˈmɪlɪtjuːd/',def:'The appearance of being true or real.',ex:'The novel\'s verisimilitude was remarkable.',cat:'academic'},
+  {w:'Exigent',pos:'adj.',ipa:'/ˈɛksɪdʒənt/',def:'Pressing; demanding immediate attention.',ex:'The situation was exigent and required swift action.',cat:'corporate'},
+  {w:'Paradigmatic',pos:'adj.',ipa:'/ˌpærədɪɡˈmætɪk/',def:'Serving as a typical example.',ex:'Her career is paradigmatic of modern success.',cat:'academic'},
+],
+};
+
+const PHRASES={
+  greetings:[
+    {en:'How are you doing?',use:'Casual greeting between friends and colleagues.'},
+    {en:'Nice to meet you.',use:'First meeting — formal or informal.'},
+    {en:'Long time no see!',use:'Meeting someone after a long absence.'},
+    {en:'What have you been up to?',use:'Asking about someone\'s recent activities.'},
+    {en:'How\'s everything going?',use:'A friendly check-in.'},
+    {en:'It\'s great to see you again.',use:'Warm greeting after time apart.'},
+    {en:'Hope you\'re having a great day.',use:'Polite start to a message or email.'},
+    {en:'Give my regards to your family.',use:'Asking someone to convey greetings.'},
+    {en:'Take care of yourself.',use:'Warm farewell.'},
+    {en:'Drop by anytime.',use:'Open invitation to visit.'},
+    {en:'It\'s been ages!',use:'Expressing surprise at a long gap.'},
+    {en:'How\'s the family?',use:'Showing interest in someone\'s personal life.'},
+  ],
+  work:[
+    {en:'Let me circle back to you on that.',use:'Deferring an answer; will respond later.'},
+    {en:'Let\'s take this offline.',use:'Suggesting a private conversation outside the meeting.'},
+    {en:'I\'ll keep you in the loop.',use:'Promising to update someone regularly.'},
+    {en:'We need to align on this.',use:'Ensuring everyone agrees before moving forward.'},
+    {en:'Can you take ownership of this task?',use:'Delegating responsibility clearly.'},
+    {en:'What\'s the bandwidth on your team?',use:'Asking about team capacity.'},
+    {en:'Can you run me through the numbers?',use:'Asking for a data summary.'},
+    {en:'We need a quick sync.',use:'Requesting a short alignment meeting.'},
+    {en:'Please action this by EOD.',use:'Asking for task completion by End of Day.'},
+    {en:'Let\'s put a pin in that.',use:'Pausing a topic to return to later.'},
+    {en:'This is a blocker.',use:'Identifying an obstacle preventing progress.'},
+    {en:'What\'s the deliverable here?',use:'Clarifying the expected output.'},
+    {en:'We need to fast-track this.',use:'Prioritizing something for quicker completion.'},
+    {en:'How can I add value here?',use:'Asking how to contribute meaningfully.'},
+    {en:'I\'ll escalate this if needed.',use:'Informing that senior management may be involved.'},
+    {en:'Can we get a status update?',use:'Requesting progress information.'},
+    {en:'Let\'s not boil the ocean.',use:'Avoid overcomplicating — focus on what matters.'},
+    {en:'We\'re over-indexing on this.',use:'Spending too much effort on one area.'},
+  ],
+  family:[
+    {en:'I\'m proud of you.',use:'Expressing pride in a family member.'},
+    {en:'I\'m here for you no matter what.',use:'Offering unconditional support.'},
+    {en:'Let\'s spend quality time together.',use:'Suggesting meaningful family time.'},
+    {en:'You can always come to me.',use:'Reassuring a child or family member.'},
+    {en:'Family comes first.',use:'Expressing family as a top priority.'},
+    {en:'You mean the world to me.',use:'Deep expression of love.'},
+    {en:'I appreciate everything you do.',use:'Thanking a family member for their efforts.'},
+    {en:'We\'re in this together.',use:'Expressing unity in challenges.'},
+    {en:'Let\'s not go to bed angry.',use:'Resolving conflicts before rest.'},
+    {en:'Talk to me — what\'s going on?',use:'Opening space for a loved one to share.'},
+    {en:'I miss our time together.',use:'Expressing longing for family connection.'},
+    {en:'You\'ve grown so much.',use:'Acknowledging development in a child or family member.'},
+  ],
+  travel:[
+    {en:'Where is the nearest train station?',use:'Asking for directions.'},
+    {en:'How long does it take to get there?',use:'Asking about travel duration.'},
+    {en:'Do you have any rooms available?',use:'Asking for hotel availability.'},
+    {en:'I\'d like to check in, please.',use:'Arriving at a hotel or airport.'},
+    {en:'Could you recommend a good restaurant?',use:'Asking a local for food suggestions.'},
+    {en:'I\'ve lost my luggage.',use:'Reporting lost baggage.'},
+    {en:'Can I exchange currency here?',use:'Asking about money exchange.'},
+    {en:'I\'d like a window seat, please.',use:'Seat preference on flights.'},
+    {en:'Is there free Wi-Fi here?',use:'Common question in hotels and cafes.'},
+    {en:'What are the customs rules here?',use:'Understanding local regulations.'},
+    {en:'The view from here is breathtaking.',use:'Complimenting a location.'},
+    {en:'Is this the right bus for the city centre?',use:'Confirming public transport route.'},
+  ],
+  emotions:[
+    {en:'I need some time to process this.',use:'Asking for space after difficult news.'},
+    {en:'I feel heard — thank you.',use:'Acknowledging someone who listened well.'},
+    {en:'I\'m not in a good headspace right now.',use:'Expressing mental fatigue or stress.'},
+    {en:'That really hit close to home.',use:'Something deeply resonated emotionally.'},
+    {en:'I just need someone to listen.',use:'Asking for support without advice.'},
+    {en:'It\'s okay not to be okay.',use:'Normalizing emotional struggles.'},
+    {en:'I didn\'t mean to hurt you.',use:'Apologizing sincerely.'},
+    {en:'Thank you for checking in on me.',use:'Acknowledging someone\'s concern.'},
+    {en:'I\'m learning to set boundaries.',use:'Discussing personal growth.'},
+    {en:'You\'ve been incredibly supportive.',use:'Expressing gratitude for emotional support.'},
+    {en:'I feel overwhelmed — can we talk later?',use:'Asking to postpone a difficult conversation.'},
+    {en:'I\'m really proud of how far I\'ve come.',use:'Self-affirmation of personal growth.'},
+  ],
+  idioms_common:[
+    {en:'Bite the bullet',use:'Endure a painful experience that is inevitable.'},
+    {en:'Hit the sack',use:'Go to bed. "I\'m tired — I\'m going to hit the sack."'},
+    {en:'Spill the beans',use:'Reveal secret information accidentally or intentionally.'},
+    {en:'Under the weather',use:'Feeling slightly ill or sad.'},
+    {en:'Once in a blue moon',use:'Something that happens very rarely.'},
+    {en:'Break the ice',use:'Start a conversation in a tense situation.'},
+    {en:'Piece of cake',use:'Something very easy to do.'},
+    {en:'Beat around the bush',use:'Avoid the main point; be indirect.'},
+    {en:'Hit the nail on the head',use:'Describe something exactly right.'},
+    {en:'Let the cat out of the bag',use:'Accidentally reveal a secret.'},
+    {en:'Cost an arm and a leg',use:'Very expensive.'},
+    {en:'Read between the lines',use:'Understand a hidden meaning.'},
+    {en:'Take it with a grain of salt',use:'Be skeptical about something.'},
+    {en:'Throw in the towel',use:'Give up; admit defeat.'},
+    {en:'A blessing in disguise',use:'Something that seems bad but turns out good.'},
+    {en:'Better late than never',use:'It is better to do something late than not at all.'},
+    {en:'Barking up the wrong tree',use:'Pursuing a misguided course of action.'},
+    {en:'Add fuel to the fire',use:'Make a problem worse.'},
+  ],
+  idioms_business:[
+    {en:'Move the needle',use:'Make meaningful, measurable progress.'},
+    {en:'Touch base',use:'Make brief contact with someone.'},
+    {en:'Low-hanging fruit',use:'Easiest, most accessible goals or tasks.'},
+    {en:'Think outside the box',use:'Think creatively and unconventionally.'},
+    {en:'On the same page',use:'Everyone in agreement and alignment.'},
+    {en:'Get the ball rolling',use:'Start a project or process.'},
+    {en:'Raise the bar',use:'Set a higher standard.'},
+    {en:'Peel the onion',use:'Gradually uncover layers of a problem.'},
+    {en:'Heavy lifting',use:'The most difficult part of a task.'},
+    {en:'Sharpen the pencil',use:'Reduce costs; work on more accurate numbers.'},
+    {en:'Skin in the game',use:'Having a personal stake in an outcome.'},
+    {en:'Pick the brains of someone',use:'Extract knowledge or ideas from an expert.'},
+    {en:'Ping me',use:'Send a quick message or reminder.'},
+    {en:'Burning platform',use:'Urgent situation requiring immediate action.'},
+    {en:'Drink from a fire hose',use:'Receive too much information at once.'},
+    {en:'Boil the ocean',use:'Take on an impossibly large task.'},
+  ],
+  academic:[
+    {en:'In light of the evidence…',use:'Introducing a conclusion based on proof.'},
+    {en:'It could be argued that…',use:'Presenting a debatable perspective.'},
+    {en:'This suggests that…',use:'Drawing an inference from data.'},
+    {en:'Conversely, one might argue…',use:'Introducing a counterargument.'},
+    {en:'To substantiate this claim…',use:'Providing supporting evidence.'},
+    {en:'The implications of this are significant.',use:'Noting wider consequences.'},
+    {en:'There is a correlation between X and Y.',use:'Showing a statistical relationship.'},
+    {en:'This warrants further investigation.',use:'Recommending more research.'},
+    {en:'Upon reflection…',use:'Introducing a considered viewpoint.'},
+    {en:'It is worth noting that…',use:'Drawing attention to an important point.'},
+    {en:'This calls into question…',use:'Challenging a previous assumption.'},
+    {en:'Notwithstanding the above…',use:'Acknowledging a point while still proceeding.'},
+  ],
+  conflict:[
+    {en:'I understand where you\'re coming from.',use:'Acknowledging someone\'s perspective.'},
+    {en:'Let\'s agree to disagree.',use:'Accepting irreconcilable differences politely.'},
+    {en:'I\'m not trying to attack you — I want to find a solution.',use:'Clarifying intent during conflict.'},
+    {en:'Can we take a step back?',use:'Asking to slow down and reassess.'},
+    {en:'I feel unheard in this conversation.',use:'Expressing that your views are being ignored.'},
+    {en:'I take responsibility for my part in this.',use:'Owning your role in a conflict.'},
+    {en:'What would a fair outcome look like to you?',use:'Inviting the other party\'s ideal resolution.'},
+    {en:'We\'re on the same team.',use:'Reminding someone of shared goals.'},
+    {en:'Can we revisit this when we\'ve both calmed down?',use:'Suggesting a pause to de-escalate.'},
+    {en:'That comment came across as dismissive.',use:'Addressing disrespectful communication.'},
+  ],
+  compliments:[
+    {en:'You handled that brilliantly.',use:'Praising someone\'s performance.'},
+    {en:'I\'m impressed by your dedication.',use:'Acknowledging hard work.'},
+    {en:'You have a real talent for this.',use:'Recognizing a natural ability.'},
+    {en:'Your insight was spot-on.',use:'Praising accuracy of judgment.'},
+    {en:'I really admire your resilience.',use:'Complimenting strength under pressure.'},
+    {en:'You make this look effortless.',use:'Acknowledging skill and grace.'},
+    {en:'I always learn something from you.',use:'Expressing admiration and respect.'},
+    {en:'You brought a completely fresh perspective.',use:'Valuing original thinking.'},
+    {en:'Thank you — you made this so much easier.',use:'Expressing gratitude with a compliment.'},
+    {en:'You consistently deliver beyond expectations.',use:'Praising consistent high performance.'},
+  ],
+};
+
+const GRAMMAR={
+  A1:[
+    {tip:'Use <strong>is</strong> (singular) and <strong>are</strong> (plural).',ex:'She is tall. They are happy.'},
+    {tip:'Use <strong>a</strong> before consonant sounds, <strong>an</strong> before vowel sounds.',ex:'A book. An apple. An hour.'},
+    {tip:'<strong>Do/Does</strong> are used in questions and negatives in simple present.',ex:'Do you like coffee? She does not work here.'},
+    {tip:'<strong>There is / There are</strong> describes existence.',ex:'There is a problem. There are many solutions.'},
+  ],
+  A2:[
+    {tip:'Simple Past: add <strong>-ed</strong> to regular verbs.',ex:'I walked. She played. We finished.'},
+    {tip:'<strong>can / can\'t</strong> express ability.',ex:'I can swim. He can\'t drive yet.'},
+    {tip:'<strong>going to</strong> expresses a future plan.',ex:'I am going to start exercising tomorrow.'},
+    {tip:'<strong>would like</strong> is used to make polite requests.',ex:'I would like a coffee, please.'},
+  ],
+  B1:[
+    {tip:'Present Perfect: <strong>have/has + past participle</strong> — past with present impact.',ex:'I have finished my workout. She has never been to London.'},
+    {tip:'<strong>used to</strong> describes past habits that no longer happen.',ex:'I used to wake up late. He used to smoke.'},
+    {tip:'Passive voice: <strong>be + past participle</strong>.',ex:'The report was submitted on time.'},
+    {tip:'<strong>although / even though</strong> introduce contrast.',ex:'Although he was tired, he finished the project.'},
+  ],
+  B2:[
+    {tip:'Second Conditional: <strong>If + past simple, would + base</strong> — hypothetical.',ex:'If I woke up earlier, I would exercise more.'},
+    {tip:'<strong>Reported speech</strong> shifts tense back one step.',ex:'"I am tired" → He said he was tired.'},
+    {tip:'<strong>Wish + past simple</strong> — regret about the present.',ex:'I wish I spoke better English.'},
+    {tip:'<strong>Modal verbs in the past:</strong> could have, should have, would have.',ex:'I should have prepared more.'},
+  ],
+  C1:[
+    {tip:'<strong>Inversion</strong> after negative adverbials for emphasis.',ex:'Never have I seen such discipline. Rarely does he complain.'},
+    {tip:'<strong>Cleft sentences</strong> highlight specific information.',ex:'It was hard work that made him successful.'},
+    {tip:'<strong>Mixed conditionals</strong> combine different time frames.',ex:'If I had studied harder, I would be a doctor now.'},
+    {tip:'<strong>Fronting</strong> moves an element to the start for emphasis.',ex:'Remarkable she was. That I cannot deny.'},
+  ],
+  C2:[
+    {tip:'<strong>Subjunctive mood</strong> in formal or hypothetical clauses.',ex:'It is essential that he be present. I wish I were stronger.'},
+    {tip:'<strong>Nominalization</strong> makes language denser and more academic.',ex:'"He decided" → "His decision". "They failed" → "Their failure".'},
+    {tip:'<strong>Ellipsis and substitution</strong> avoid repetition.',ex:'"Did you finish?" "I did." (instead of "I did finish.")'},
+    {tip:'<strong>Hedging language</strong> softens claims in academic writing.',ex:'It could be argued that… / There is evidence to suggest…'},
+  ],
+};
+
+const PROMPTS={
+  A1:['Describe your bedroom.','Write about your daily routine.','What is your favourite food?','Describe your best friend.','What do you do on weekends?'],
+  A2:['Describe your last weekend.','Write about someone you admire.','Describe a place you love.','Talk about your morning routine.','What do you do after work?'],
+  B1:['What is your opinion on social media?','Describe a challenge you overcame.','What habit has changed your life?','Should people work from home? Why?','What is the most important quality in a friend?'],
+  B2:['Discuss the advantages of learning a second language.','Write about a decision that changed your life.','Analyse the impact of technology on daily relationships.','How do you handle stress?','Is hard work more important than talent?'],
+  C1:['Critically evaluate the role of discipline in achieving goals.','Argue for or against remote working.','Discuss the relationship between comfort and growth.','How does language shape identity?','Evaluate the ethics of social media companies.'],
+  C2:['Analyse the ethical implications of artificial intelligence.','Discuss how globalisation affects cultural identity.','Critically assess: "Success is a choice."','How does childhood shape adult behaviour?','Is the concept of work-life balance outdated?'],
+};
+
+const WRITING_TIPS={
+  A1:['Start with simple sentences: Subject + Verb + Object.','Use connecting words: and, but, because, so.','Check your spelling carefully before saving.'],
+  A2:['Use time expressions: yesterday, last week, soon, already.','Vary your sentence beginnings.','Add adjectives to make descriptions richer.'],
+  B1:['Use a range of tenses to show when things happen.','Use discourse markers: However, Moreover, Therefore.','Include specific examples to support your ideas.'],
+  B2:['Structure your writing: introduction, body, conclusion.','Use passive voice to sound more formal.','Show both sides of an argument before giving your view.'],
+  C1:['Use advanced linking phrases: Notwithstanding, Albeit, Whilst.','Nominalise verbs for academic tone.','Begin with an engaging hook that draws the reader in.'],
+  C2:['Demonstrate precision with word choice.','Use inversion for emphasis and variety.','Leave the reader with something thought-provoking.'],
+};
+
+// ═══════════════════════════════════════════
+// ENGLISH LOGIC
+// ═══════════════════════════════════════════
+let _cat='all', _fcIdx=0, _qSc=0, _qSt=0, _qTo=0, _promptText='';
+
+function getFW(){const ws=WORDS[S.engLevel]||WORDS.B1;return _cat==='all'?ws:ws.filter(w=>w.cat===_cat);}
+
+function renderEnglish(){
+  document.getElementById('lvStrip').innerHTML=LEVELS.map(l=>`<div class="chip${S.engLevel===l?' on':''}" onclick="setLv('${l}')">${l}</div>`).join('');
+  eMode(S.engMode||'word', true);
+  setCat(S.engCat||'all', true);
+}
+
+function eMode(m, silent){
+  S.engMode=m; if(!silent) save();
+  ['word','flash','quiz','phrases','write','vocab'].forEach(x=>{
+    const el=document.getElementById('e-'+x); if(el) el.style.display=x===m?'':'none';
+    const btn=document.getElementById('m-'+x);
+    if(btn) btn.className=x===m?'btn btn-g btn-sm':'btn btn-gh btn-sm';
+  });
+  document.getElementById('catStrip').style.display=['word','flash','quiz'].includes(m)?'flex':'none';
+  if(m==='word'){loadWord();loadGram();}
+  else if(m==='flash'){_fcIdx=S.wordIdx||0;renderFC();}
+  else if(m==='quiz'){startQuiz();}
+  else if(m==='phrases'){renderPhrases();}
+  else if(m==='write'){newPrompt();renderWLog();renderWTips();}
+  else if(m==='vocab'){renderVocab();}
+}
+
+function setCat(c, silent){
+  _cat=c; S.engCat=c; if(!silent) save();
+  document.querySelectorAll('.cat-chip').forEach(p=>p.classList.toggle('on',p.dataset.cat===c));
+  const m=S.engMode||'word';
+  if(m==='word'){S.wordIdx=0;loadWord();}
+  else if(m==='flash'){_fcIdx=0;renderFC();}
+  else if(m==='quiz'){startQuiz();}
+}
+
+function setLv(l){
+  S.engLevel=l; S.wordIdx=0; S.grammarIdx=0; save();
+  document.querySelectorAll('#lvStrip .chip').forEach(c=>c.classList.toggle('on',c.textContent===l));
+  const m=S.engMode||'word';
+  if(m==='word'){loadWord();loadGram();}
+  else if(m==='flash'){_fcIdx=0;renderFC();}
+  else if(m==='quiz'){startQuiz();}
+  else if(m==='write'){renderWTips();}
+  toast(`Level: ${l}`);
+}
+
+function catLbl(c){return{daily:'🌅 Daily',corporate:'💼 Corporate',family:'👨‍👩‍👧 Family',idiom:'🎭 Idiom',emotion:'❤️ Emotion',travel:'✈️ Travel',academic:'🎓 Academic'}[c]||c;}
+
+function loadWord(){
+  const ws=getFW(); if(!ws.length){document.getElementById('wW').textContent='—';document.getElementById('wDef').textContent='No words for this filter.';document.getElementById('wCnt').textContent='';document.getElementById('wTags').innerHTML='';return;}
+  const w=ws[S.wordIdx%ws.length];
+  document.getElementById('wW').textContent=w.w;
+  document.getElementById('wPos').textContent=w.pos||'';
+  document.getElementById('wIpa').textContent=w.ipa||'';
+  document.getElementById('wDef').textContent=w.def;
+  document.getElementById('wEx').textContent='"'+w.ex+'"';
+  document.getElementById('wTags').innerHTML=`<span class="wtag ${w.cat}">${catLbl(w.cat)}</span><span class="wtag">${S.engLevel}</span>`;
+  document.getElementById('wCnt').textContent=`Word ${(S.wordIdx%ws.length)+1} of ${ws.length}`;
+}
+function nWord(){S.wordIdx++;save();loadWord();}
+function lWord(){
+  const ws=getFW(); if(!ws.length)return;
+  const w=ws[S.wordIdx%ws.length];
+  if(!S.learnedWords.find(x=>x.w===w.w&&x.level===S.engLevel)){
+    S.learnedWords.push({w:w.w,def:w.def,level:S.engLevel,cat:w.cat,date:TKEY});
+    save(); toast(`✓ "${w.w}" added to vocabulary!`);
+  } else toast('Already in your vocabulary.');
+  nWord();
+}
+
+function renderFC(){
+  const ws=getFW(); if(!ws.length){document.getElementById('fcW').textContent='No words';return;}
+  const w=ws[_fcIdx%ws.length];
+  document.getElementById('fcW').textContent=w.w;
+  document.getElementById('fcD').textContent=w.def;
+  document.getElementById('fcE').textContent='"'+w.ex+'"';
+  document.getElementById('fc').classList.remove('flip');
+  document.getElementById('fcCnt').textContent=`Card ${(_fcIdx%ws.length)+1} / ${ws.length}`;
+}
+function flipFC(){document.getElementById('fc').classList.toggle('flip');}
+function fcNext(){_fcIdx++;renderFC();}
+function fcPrev(){if(_fcIdx>0)_fcIdx--;renderFC();}
+
+function startQuiz(){_qSc=0;_qSt=0;_qTo=0;document.getElementById('qSc').textContent=0;document.getElementById('qSt').textContent=0;document.getElementById('qTo').textContent=0;nQuiz();}
+function nQuiz(){
+  const ws=getFW();
+  if(ws.length<4){document.getElementById('qQ').textContent='Need at least 4 words in this category for quiz.';document.getElementById('qOpts').innerHTML='';return;}
+  const idx=Math.floor(Math.random()*ws.length), cor=ws[idx];
+  const others=[...ws].filter((_,i)=>i!==idx).sort(()=>Math.random()-.5).slice(0,3);
+  const opts=[cor,...others].sort(()=>Math.random()-.5);
+  const qT=Math.random()>.5;
+  document.getElementById('qFb').textContent='';
+  document.getElementById('qQ').textContent=qT?`What word means: "${cor.def}"?`:`Which word fits this example: "${cor.ex.replace(cor.w,'______')}"?`;
+  document.getElementById('qOpts').innerHTML=opts.map(o=>`<button class="qo" onclick="ansQ(this,'${o.w.replace(/'/g,"\\'")}','${cor.w.replace(/'/g,"\\'")}','${cor.def.replace(/'/g,"\\'")}')">${o.w}</button>`).join('');
+}
+function ansQ(btn,chosen,cor,corDef){
+  document.querySelectorAll('.qo').forEach(b=>b.disabled=true);
+  _qTo++;
+  if(chosen===cor){
+    btn.classList.add('cor');_qSc++;_qSt++;
+    document.getElementById('qFb').innerHTML=`<span style="color:var(--gr)">✓ Correct! ${cor} — ${corDef}</span>`;
+    setTimeout(()=>{document.getElementById('qSc').textContent=_qSc;document.getElementById('qSt').textContent=_qSt;document.getElementById('qTo').textContent=_qTo;nQuiz();},1100);
+  }else{
+    btn.classList.add('wro');_qSt=0;
+    document.querySelectorAll('.qo').forEach(b=>{if(b.textContent.trim()===cor)b.classList.add('cor');});
+    document.getElementById('qFb').innerHTML=`<span style="color:var(--rd)">✗ Answer: ${cor} — ${corDef}</span>`;
+    setTimeout(()=>{document.getElementById('qSc').textContent=_qSc;document.getElementById('qSt').textContent=_qSt;document.getElementById('qTo').textContent=_qTo;nQuiz();},1700);
+  }
+}
+
+function renderPhrases(){
+  const cat=document.getElementById('phCat').value;
+  const list=PHRASES[cat]||[];
+  document.getElementById('phList').innerHTML=list.map(p=>`<div class="pc"><div class="pen">"${p.en}"</div><div class="pus">${p.use}</div></div>`).join('');
+}
+
+function newPrompt(){const ps=PROMPTS[S.engLevel]||PROMPTS.B1;_promptText=ps[Math.floor(Math.random()*ps.length)];document.getElementById('wPrompt').textContent='📝 '+_promptText;}
+function renderWTips(){const tips=WRITING_TIPS[S.engLevel]||WRITING_TIPS.B1;document.getElementById('wTips').innerHTML=tips.map(t=>`<div style="padding:8px 11px;background:var(--sf);border-left:2px solid var(--gold);border-radius:0 7px 7px 0;margin-bottom:7px">${t}</div>`).join('');}
+function saveWriting(){const t=document.getElementById('wInput').value.trim();if(!t)return;S.writingLog.unshift({prompt:_promptText,text:t,date:TKEY,level:S.engLevel});document.getElementById('wInput').value='';save();renderWLog();toast('Writing saved.');}
+function renderWLog(){document.getElementById('wLog').innerHTML=S.writingLog.slice(0,5).map((e,i)=>`<div style="padding:8px 11px;background:rgba(255,255,255,.025);border-radius:7px;border-left:2px solid var(--pu);display:flex;gap:7px"><div style="flex:1"><div style="font-size:9px;color:var(--tx3);margin-bottom:2px">${e.level}·${e.date}</div><div style="font-size:11px;color:var(--tx2)">${e.text.slice(0,80)}${e.text.length>80?'…':''}</div></div><button class="dbtn" onclick="delW(${i})">✕</button></div>`).join('');}
+function delW(i){S.writingLog.splice(i,1);save();renderWLog();toast('Entry removed.');}
+
+function renderVocab(){
+  const lw=S.learnedWords.filter(x=>x.level===S.engLevel);
+  document.getElementById('vStats').innerHTML=`<div style="display:flex;gap:14px;flex-wrap:wrap"><span style="font-size:11px;color:var(--tx3)">This level: <strong style="color:var(--gh)">${lw.length}</strong></span><span style="font-size:11px;color:var(--tx3)">All levels: <strong style="color:var(--gh)">${S.learnedWords.length}</strong></span></div>`;
+  document.getElementById('vChips').innerHTML=lw.length
+    ?lw.map((x,i)=>`<span style="display:inline-flex;align-items:center;gap:5px;font-size:11px;padding:4px 9px;background:var(--sf);border:1px solid var(--bd);border-radius:20px;color:var(--tx2);margin:2px">${x.w}<button class="dbtn" onclick="delVW(${i})" style="width:14px;height:14px;border-radius:3px;font-size:9px">✕</button></span>`).join('')
+    :'<span style="font-size:11px;color:var(--tx3)">No words learned for this level yet.</span>';
+}
+function delVW(i){const lw=S.learnedWords.filter(x=>x.level===S.engLevel);const w=lw[i];if(!w)return;S.learnedWords=S.learnedWords.filter(x=>!(x.w===w.w&&x.level===w.level));save();renderVocab();toast(`Removed "${w.w}"`);}
+
+function loadGram(){const tips=GRAMMAR[S.engLevel]||GRAMMAR.B1;const t=tips[S.grammarIdx%tips.length];document.getElementById('gTip').innerHTML=t.tip;document.getElementById('gEx').textContent=t.ex;}
+function nGram(){S.grammarIdx++;save();loadGram();}
+
+// ═══════════════════════════════════════════
+// LEARNING
+// ═══════════════════════════════════════════
+function renderLearn(){
+  const g=document.getElementById('lGrid');
+  if(!S.subjects.length){g.innerHTML='<div style="padding:24px;font-size:13px;color:var(--tx3)">No subjects yet.</div>';return;}
+  g.innerHTML=S.subjects.map(s=>`
+    <div class="glass lcard">
+      <div class="lhd">
+        <div class="ldot" style="background:${s.color}"></div>
+        <div class="ltitle">${s.name}</div>
+        <span style="font-size:10px;color:var(--tx3)">${s.entries.length}</span>
+        <button class="dbtn" onclick="delSubj(${s.id})">✕</button>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px;max-height:160px;overflow-y:auto;margin-bottom:10px">
+        ${s.entries.slice().reverse().slice(0,8).map((e,ri)=>{const ai=s.entries.length-1-ri;return `<div class="lent" style="border-color:${s.color}40"><div class="lent-t">${e.text}</div><span class="lent-d">${e.date}</span><button class="dbtn" onclick="delLE(${s.id},${ai})">✕</button></div>`;}).join('')||'<div style="font-size:11px;color:var(--tx3)">No entries yet.</div>'}
+      </div>
+      <div class="lform">
+        <input class="inp" id="li${s.id}" placeholder="What did you learn today?" maxlength="200" style="font-size:11px;padding:7px 10px">
+        <button class="btn btn-g btn-sm" style="flex-shrink:0" onclick="addLE(${s.id})">+</button>
+      </div>
+    </div>`).join('');
+}
+function addLE(id){const inp=document.getElementById('li'+id);const t=inp?inp.value.trim():'';if(!t)return;const s=S.subjects.find(x=>x.id===id);if(!s)return;s.entries.push({text:t,date:TKEY});inp.value='';save();renderLearn();renderOv();toast(`✓ Saved to ${s.name}`);}
+function delLE(sid,idx){const s=S.subjects.find(x=>x.id===sid);if(!s)return;s.entries.splice(idx,1);save();renderLearn();toast('Entry removed.');}
+function addSubject(){const n=document.getElementById('lName').value.trim(),c=document.getElementById('lColor').value;if(!n)return;S.subjects.push({id:Date.now(),name:n,color:c,entries:[]});document.getElementById('lName').value='';save();renderLearn();toast(`Subject added: ${n}`);}
+async function delSubj(id){const s=S.subjects.find(x=>x.id===id);if(!s)return;const ok=await confirm2('Delete subject?',`"${s.name}" and all entries will be removed.`);if(!ok)return;S.subjects=S.subjects.filter(x=>x.id!==id);save();renderLearn();toast('Subject deleted.');}
+document.getElementById('lName').addEventListener('keydown',e=>{if(e.key==='Enter')addSubject();});
+
+// ═══════════════════════════════════════════
+// JOURNAL
+// ═══════════════════════════════════════════
+let _mood='';
+function pickMood(el){document.querySelectorAll('.mb').forEach(b=>b.classList.remove('on'));el.classList.add('on');_mood=el.dataset.m;}
+function saveJournal(){const t=document.getElementById('jInp').value.trim();if(!t)return;S.journalEntries.unshift({text:t,mood:_mood,date:TKEY,ts:new Date().toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'})});document.getElementById('jInp').value='';_mood='';document.querySelectorAll('.mb').forEach(b=>b.classList.remove('on'));save();renderJournal();renderOv();toast('📓 Entry saved.');}
+async function delJE(i){const ok=await confirm2('Delete entry?','This journal entry will be permanently removed.');if(!ok)return;S.journalEntries.splice(i,1);save();renderJournal();renderOv();toast('Entry deleted.');}
+function renderJournal(){
+  const c=document.getElementById('jList');
+  if(!S.journalEntries.length){c.innerHTML='<div style="padding:28px;text-align:center;font-size:13px;color:var(--tx3)">No entries yet. Write your first one above.</div>';return;}
+  c.innerHTML=S.journalEntries.map((e,i)=>`
+    <div class="gsm jent">
+      <div class="jeh"><span class="jem">${e.mood||'📓'}</span><span class="jed">${e.date}${e.ts?' · '+e.ts:''}</span><button class="dbtn" onclick="delJE(${i})" style="margin-left:auto">✕</button></div>
+      <div class="jet">${e.text}</div>
+    </div>`).join('');
+}
+
+// ═══════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════
+function init(){
+  const d=TODAY.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric',year:'numeric'});
+  document.getElementById('sbDt').textContent=d;
+  document.getElementById('tbDate').textContent=d;
+  document.getElementById('jDt').textContent=TODAY.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'});
+  if(S.sidebarCollapsed){document.getElementById('sb').classList.add('col');document.getElementById('main').classList.add('col');}
+  else{document.getElementById('sb').classList.remove('col');document.getElementById('main').classList.remove('col');}
+  renderOv();renderHabits();renderCh();renderEnglish();renderLearn();renderJournal();
+  // Auto-save every 60 seconds as backup
+  setInterval(()=>save(), 60000);
+}
+
+// ═══════════════════════════════════════════
+// BOOT
+// ═══════════════════════════════════════════
+window.addEventListener('load', () => tryAutoLogin());
+</script>
+</body>
+</html>
