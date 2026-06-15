@@ -84,7 +84,8 @@ button,input,select,textarea{font-family:inherit}
 .ni{display:flex;align-items:center;gap:12px;padding:10px 11px;border-radius:var(--rsm);cursor:pointer;transition:all .18s;color:var(--tx2);font-size:13px;font-weight:500;white-space:nowrap;margin-bottom:2px;border:1px solid transparent;user-select:none;position:relative}
 .ni:hover{background:var(--sf2);color:var(--tx);border-color:var(--bd)}
 .ni.on{background:var(--glo);color:var(--gh);border-color:rgba(201,168,76,.22)}
-.ni-ic{font-size:17px;flex-shrink:0;width:20px;text-align:center}
+.ni-ic{font-size:17px;flex-shrink:0;width:20px;text-align:center;display:flex;align-items:center;justify-content:center}
+.ni-ic svg{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
 .ni-lb{transition:opacity .2s,width .2s;overflow:hidden;white-space:nowrap}
 #sb.col .ni-lb{opacity:0;width:0}
 .nb{margin-left:auto;font-size:9px;font-weight:700;padding:2px 6px;border-radius:20px;background:var(--glo);color:var(--gh);flex-shrink:0;transition:opacity .2s}
@@ -398,6 +399,14 @@ select.inp{cursor:pointer}
 #toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(60px);background:var(--sf2);border:1px solid var(--bd2);backdrop-filter:blur(20px);color:var(--tx);font-size:12px;font-weight:500;padding:10px 20px;border-radius:40px;transition:transform .3s cubic-bezier(.175,.885,.32,1.275);z-index:9999;pointer-events:none;white-space:nowrap;box-shadow:var(--card-shadow)}
 #toast.show{transform:translateX(-50%) translateY(0)}
 
+/* ═══ SVG ICON SYSTEM ═══ */
+.ph h1 svg{opacity:.85;transition:opacity .2s}
+.ph h1:hover svg{opacity:1}
+.ni.on .ni-ic svg{stroke:var(--gh)}
+.ni .ni-ic svg{transition:stroke .18s}
+.ni:hover .ni-ic svg{stroke:var(--tx)}
+.btn svg{flex-shrink:0;vertical-align:-1px}
+
 /* ═══ CONFIRM ═══ */
 #conf-ov{position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(5px);z-index:8000;display:none;align-items:center;justify-content:center}
 #conf-ov.show{display:flex}
@@ -450,19 +459,19 @@ footer{text-align:center;padding:24px 0 40px;font-size:10px;color:var(--tx3);let
 <aside id="sb">
   <div class="sb-top">
     <div class="sb-lw"><div class="sb-logo">DİN</div><div class="sb-sub">Do it now</div></div>
-    <button class="sb-tog" id="sbTog">☰</button>
+    <button class="sb-tog" id="sbTog"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
   </div>
   <nav class="sb-nav">
-    <div class="ni on" data-p="overview"><span class="ni-ic">⚡</span><span class="ni-lb">Overview</span></div>
-    <div class="ni" data-p="habits"><span class="ni-ic">🔥</span><span class="ni-lb">Habits</span><span class="nb" id="nb-h">0</span></div>
-    <div class="ni" data-p="challenges"><span class="ni-ic">⚔️</span><span class="ni-lb">Challenges</span><span class="nb" id="nb-c">0</span></div>
-    <div class="ni" data-p="focus"><span class="ni-ic">⏱️</span><span class="ni-lb">Focus Timer</span></div>
-    <div class="ni" data-p="goals"><span class="ni-ic">🎯</span><span class="ni-lb">Goals</span></div>
-    <div class="ni" data-p="water"><span class="ni-ic">💧</span><span class="ni-lb">Water Tracker</span></div>
-    <div class="ni" data-p="gratitude"><span class="ni-ic">🙏</span><span class="ni-lb">Gratitude</span></div>
-    <div class="ni" data-p="english"><span class="ni-ic">🇬🇧</span><span class="ni-lb">English</span></div>
-    <div class="ni" data-p="learning"><span class="ni-ic">🧠</span><span class="ni-lb">Learning</span></div>
-    <div class="ni" data-p="journal"><span class="ni-ic">📓</span><span class="ni-lb">Journal</span><span class="nb" id="nb-j">0</span></div>
+    <div class="ni on" data-p="overview"><span class="ni-ic"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></span><span class="ni-lb">Overview</span></div>
+    <div class="ni" data-p="habits"><span class="ni-ic"><svg viewBox="0 0 24 24"><path d="M12 2a5 5 0 0 1 5 5c0 3.5-5 9-5 9S7 10.5 7 7a5 5 0 0 1 5-5z"/><circle cx="12" cy="7" r="1.5" fill="currentColor" stroke="none"/></svg></span><span class="ni-lb">Habits</span><span class="nb" id="nb-h">0</span></div>
+    <div class="ni" data-p="challenges"><span class="ni-ic"><svg viewBox="0 0 24 24"><polygon points="12,2 15.5,8.5 23,9.5 17.5,14.5 19,22 12,18.5 5,22 6.5,14.5 1,9.5 8.5,8.5"/></svg></span><span class="ni-lb">Challenges</span><span class="nb" id="nb-c">0</span></div>
+    <div class="ni" data-p="focus"><span class="ni-ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><polyline points="12,7 12,12 15,15"/></svg></span><span class="ni-lb">Focus Timer</span></div>
+    <div class="ni" data-p="goals"><span class="ni-ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none"/></svg></span><span class="ni-lb">Goals</span></div>
+    <div class="ni" data-p="water"><span class="ni-ic"><svg viewBox="0 0 24 24"><path d="M12 3C12 3 5 11 5 15.5a7 7 0 0 0 14 0C19 11 12 3 12 3z"/></svg></span><span class="ni-lb">Water Tracker</span></div>
+    <div class="ni" data-p="gratitude"><span class="ni-ic"><svg viewBox="0 0 24 24"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg></span><span class="ni-lb">Gratitude</span></div>
+    <div class="ni" data-p="english"><span class="ni-ic"><svg viewBox="0 0 24 24"><path d="M4 19V5a2 2 0 0 1 2-2h13a1 1 0 0 1 1 1v13"/><path d="M4 19a2 2 0 0 0 2 2h13"/><path d="M8 10h8M8 14h5"/></svg></span><span class="ni-lb">English</span></div>
+    <div class="ni" data-p="learning"><span class="ni-ic"><svg viewBox="0 0 24 24"><path d="M2 10l10-6 10 6-10 6-10-6z"/><path d="M6 12v5c0 1.7 2.7 3 6 3s6-1.3 6-3v-5"/></svg></span><span class="ni-lb">Learning</span></div>
+    <div class="ni" data-p="journal"><span class="ni-ic"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="13" y2="17"/></svg></span><span class="ni-lb">Journal</span><span class="nb" id="nb-j">0</span></div>
   </nav>
   <div class="sb-bot">
     <div class="sb-user">
@@ -473,7 +482,7 @@ footer{text-align:center;padding:24px 0 40px;font-size:10px;color:var(--tx3);let
       </button>
     </div>
     <div class="theme-row">
-      <span class="theme-lbl" id="theme-lbl">🌙 Dark</span>
+      <span class="theme-lbl" id="theme-lbl">Dark mode</span>
       <button class="theme-tog" id="theme-tog" onclick="toggleTheme()"></button>
     </div>
     <div class="sb-dt" id="sbDt"></div>
@@ -484,7 +493,7 @@ footer{text-align:center;padding:24px 0 40px;font-size:10px;color:var(--tx3);let
   </div>
 </aside>
 
-<button id="mob-tog" onclick="mobNav()">☰</button>
+<button id="mob-tog" onclick="mobNav()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
 <div id="sb-ov" onclick="mobNav()"></div>
 
 <!-- MAIN -->
@@ -499,9 +508,9 @@ footer{text-align:center;padding:24px 0 40px;font-size:10px;color:var(--tx3);let
     <div class="hero glass"><div class="hero-din">DİN</div><div class="hero-sl">Do It Now</div></div>
     <div class="stats" id="statsGrid"></div>
     <div class="slbl">
-      <button class="cal-nav-btn" id="cal-prev" onclick="calPrev()">←</button>
+      <button class="cal-nav-btn" id="cal-prev" onclick="calPrev()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
       <span style="font-size:11px;color:var(--tx3);letter-spacing:2px;text-transform:uppercase" id="mlbl"></span>
-      <button class="cal-nav-btn" id="cal-next" onclick="calNext()">→</button>
+      <button class="cal-nav-btn" id="cal-next" onclick="calNext()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>
     </div>
     <div class="glass" style="padding:18px;margin-bottom:24px">
       <div class="wd-labels" id="wdLabels"></div>
@@ -523,7 +532,7 @@ footer{text-align:center;padding:24px 0 40px;font-size:10px;color:var(--tx3);let
 
   <!-- HABITS -->
   <div class="page" id="page-habits">
-    <div class="ph"><h1>🔥 Habits</h1><p>Track, rate, and reflect on every habit.</p></div>
+    <div class="ph"><h1><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-4px;margin-right:8px"><path d="M12 2a5 5 0 0 1 5 5c0 3.5-5 9-5 9S7 10.5 7 7a5 5 0 0 1 5-5z"/><circle cx="12" cy="7" r="1.5" fill="currentColor" stroke="none"/></svg>Habits</h1><p>Track, rate, and reflect on every habit.</p></div>
     <div class="slbl">7-Day View</div>
     <div id="hList" style="margin-bottom:20px"></div>
     <div class="slbl">Add New Habit</div>
@@ -558,7 +567,7 @@ footer{text-align:center;padding:24px 0 40px;font-size:10px;color:var(--tx3);let
 
   <!-- CHALLENGES -->
   <div class="page" id="page-challenges">
-    <div class="ph"><h1>⚔️ Challenges</h1><p>Conquer them all. No mercy.</p></div>
+    <div class="ph"><h1><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-4px;margin-right:8px"><polygon points="12,2 15.5,8.5 23,9.5 17.5,14.5 19,22 12,18.5 5,22 6.5,14.5 1,9.5 8.5,8.5"/></svg>Challenges</h1><p>Conquer them all. No mercy.</p></div>
     <div class="ch-grid" id="chGrid"></div>
     <div class="slbl">Create Challenge</div>
     <div class="gsm" style="padding:16px">
@@ -568,14 +577,14 @@ footer{text-align:center;padding:24px 0 40px;font-size:10px;color:var(--tx3);let
         </select>
         <input id="chName" class="inp" placeholder="Challenge name…" maxlength="42">
         <input id="chDays" class="inp" type="number" placeholder="Days" min="1" max="999" style="max-width:90px">
-        <button class="btn btn-g" onclick="addCh()">⚔️ Create</button>
+        <button class="btn btn-g" onclick="addCh()">+ Create</button>
       </div>
     </div>
   </div>
 
   <!-- FOCUS TIMER -->
   <div class="page" id="page-focus">
-    <div class="ph"><h1>⏱️ Focus Timer</h1><p>Pomodoro & deep work sessions.</p></div>
+    <div class="ph"><h1><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-4px;margin-right:8px"><circle cx="12" cy="12" r="9"/><polyline points="12,7 12,12 15,15"/></svg>Focus Timer</h1><p>Pomodoro &amp; deep work sessions.</p></div>
     <div class="glass" style="padding:28px;text-align:center;margin-bottom:16px">
       <div style="font-size:11px;color:var(--tx3);letter-spacing:2px;text-transform:uppercase;margin-bottom:20px" id="timer-session-lbl">FOCUS SESSION</div>
       <div class="timer-circle" id="timerCircle">
@@ -608,7 +617,7 @@ footer{text-align:center;padding:24px 0 40px;font-size:10px;color:var(--tx3);let
 
   <!-- GOALS -->
   <div class="page" id="page-goals">
-    <div class="ph"><h1>🎯 Goals</h1><p>Set big goals. Break them into steps.</p></div>
+    <div class="ph"><h1><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-4px;margin-right:8px"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none"/></svg>Goals</h1><p>Set big goals. Break them into steps.</p></div>
     <div id="goalList" style="margin-bottom:20px"></div>
     <div class="slbl">Add Goal</div>
     <div class="gsm" style="padding:16px">
@@ -617,13 +626,13 @@ footer{text-align:center;padding:24px 0 40px;font-size:10px;color:var(--tx3);let
         <input id="goalDeadline" class="inp" type="date" style="max-width:160px">
       </div>
       <input id="goalSteps" class="inp" placeholder="Steps (comma separated): e.g. Read book, Practice daily, Take test" style="margin-bottom:10px">
-      <button class="btn btn-g" onclick="addGoal()">🎯 Add Goal</button>
+      <button class="btn btn-g" onclick="addGoal()">+ Add Goal</button>
     </div>
   </div>
 
   <!-- WATER TRACKER -->
   <div class="page" id="page-water">
-    <div class="ph"><h1>💧 Water Tracker</h1><p>Stay hydrated. 8 glasses a day.</p></div>
+    <div class="ph"><h1><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-4px;margin-right:8px"><path d="M12 3C12 3 5 11 5 15.5a7 7 0 0 0 14 0C19 11 12 3 12 3z"/></svg>Water Tracker</h1><p>Stay hydrated. 8 glasses a day.</p></div>
     <div class="glass" style="padding:24px;margin-bottom:16px;text-align:center">
       <div style="font-size:48px;font-weight:800;color:var(--bl);margin-bottom:4px" id="waterCount">0</div>
       <div style="font-size:12px;color:var(--tx3);margin-bottom:20px">of <span id="waterGoal">8</span> glasses today</div>
@@ -646,7 +655,7 @@ footer{text-align:center;padding:24px 0 40px;font-size:10px;color:var(--tx3);let
 
   <!-- GRATITUDE -->
   <div class="page" id="page-gratitude">
-    <div class="ph"><h1>🙏 Gratitude</h1><p>Three things you're grateful for today.</p></div>
+    <div class="ph"><h1><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-4px;margin-right:8px"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg>Gratitude</h1><p>Three things you're grateful for today.</p></div>
     <div class="glass" style="padding:24px;margin-bottom:16px">
       <div class="ecl">Today's Gratitude</div>
       <div id="gratToday" style="margin-bottom:16px"></div>
@@ -661,45 +670,45 @@ footer{text-align:center;padding:24px 0 40px;font-size:10px;color:var(--tx3);let
 
   <!-- ENGLISH -->
   <div class="page" id="page-english">
-    <div class="ph"><h1>🇬🇧 English</h1><p>5000+ words · All levels · Flashcards · Quiz · Phrases</p></div>
+    <div class="ph"><h1><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-4px;margin-right:8px"><path d="M4 19V5a2 2 0 0 1 2-2h13a1 1 0 0 1 1 1v13"/><path d="M4 19a2 2 0 0 0 2 2h13"/><path d="M8 10h8M8 14h5"/></svg>English</h1><p>5000+ words · All levels · Flashcards · Quiz · Phrases</p></div>
     <div class="lv-strip" id="lvStrip"></div>
     <div class="mode-tabs">
-      <button class="btn btn-g btn-sm" id="m-word" onclick="eMode('word')">📖 Word</button>
-      <button class="btn btn-gh btn-sm" id="m-flash" onclick="eMode('flash')">🃏 Cards</button>
-      <button class="btn btn-gh btn-sm" id="m-quiz" onclick="eMode('quiz')">🎯 Quiz</button>
-      <button class="btn btn-gh btn-sm" id="m-phrases" onclick="eMode('phrases')">💬 Phrases</button>
-      <button class="btn btn-gh btn-sm" id="m-write" onclick="eMode('write')">✍️ Writing</button>
-      <button class="btn btn-gh btn-sm" id="m-vocab" onclick="eMode('vocab')">📊 Vocab</button>
+      <button class="btn btn-g btn-sm" id="m-word" onclick="eMode('word')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V5a2 2 0 0 1 2-2h13a1 1 0 0 1 1 1v13"/><path d="M4 19a2 2 0 0 0 2 2h13"/><path d="M8 10h8M8 14h5"/></svg> Word</button>
+      <button class="btn btn-gh btn-sm" id="m-flash" onclick="eMode('flash')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M9 10l2 2 4-4"/></svg> Cards</button>
+      <button class="btn btn-gh btn-sm" id="m-quiz" onclick="eMode('quiz')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r="1" fill="currentColor" stroke="none"/></svg> Quiz</button>
+      <button class="btn btn-gh btn-sm" id="m-phrases" onclick="eMode('phrases')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> Phrases</button>
+      <button class="btn btn-gh btn-sm" id="m-write" onclick="eMode('write')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.1 2.1 0 0 1 3 3L12 15l-4 1 1-4z"/></svg> Writing</button>
+      <button class="btn btn-gh btn-sm" id="m-vocab" onclick="eMode('vocab')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg> Vocab</button>
     </div>
     <div class="cat-strip" id="catStrip"></div>
     <div id="e-word"><div class="eng-grid">
       <div class="glass ecard">
-        <div class="ecl">📖 Word of the Day</div>
+        <div class="ecl">Word of the Day</div>
         <div style="display:flex;align-items:baseline;gap:9px;flex-wrap:wrap;margin-bottom:3px"><div class="wb" id="wW">—</div><div style="font-size:11px;color:var(--tx3)" id="wPos"></div></div>
         <div class="wipa" id="wIpa"></div><div class="wdef" id="wDef"></div><div class="wex" id="wEx"></div><div class="wtags" id="wTags"></div>
         <div style="display:flex;gap:7px;margin-top:12px;flex-wrap:wrap">
-          <button class="btn btn-gh btn-sm" onclick="nWord()">→ Next</button>
+          <button class="btn btn-gh btn-sm" onclick="nWord()">Next <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px"><polyline points="9 18 15 12 9 6"/></svg></button>
           <button class="btn btn-g btn-sm" onclick="lWord()">✓ Learned</button>
         </div>
         <div style="margin-top:8px;font-size:10px;color:var(--tx3)" id="wCnt"></div>
       </div>
       <div class="glass ecard">
-        <div class="ecl">🎓 Grammar Tip</div>
+        <div class="ecl">Grammar Tip</div>
         <div id="gTip" style="font-size:13px;color:var(--tx2);line-height:1.7;margin-bottom:9px"></div>
         <div id="gEx" style="padding:9px 11px;background:var(--sf2);border-radius:7px;font-size:12px;color:var(--tx3);font-style:italic;line-height:1.5"></div>
-        <button class="btn btn-gh btn-sm" style="margin-top:10px;width:100%" onclick="nGram()">Next Tip →</button>
+        <button class="btn btn-gh btn-sm" style="margin-top:10px;width:100%" onclick="nGram()">Next Tip <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px"><polyline points="9 18 15 12 9 6"/></svg></button>
       </div>
     </div></div>
-    <div id="e-flash" style="display:none"><div class="glass ecard"><div class="ecl">🃏 Flashcards — tap to flip</div><div class="fc-wrap"><div class="fc" id="fc" onclick="flipFC()"><div class="fc-f"><div class="fc-fw" id="fcW">—</div><div class="fc-hint">tap to reveal</div></div><div class="fc-b"><div class="fc-def" id="fcD"></div><div class="fc-ex" id="fcE"></div></div></div></div><div style="display:flex;gap:7px;margin-bottom:7px"><button class="btn btn-gh btn-sm" style="flex:1" onclick="fcPrev()">← Prev</button><button class="btn btn-gh btn-sm" style="flex:1" onclick="fcNext()">Next →</button><button class="btn btn-g btn-sm" style="flex:1" onclick="lWord()">✓ Learned</button></div><div style="text-align:center;font-size:10px;color:var(--tx3)" id="fcCnt"></div></div></div>
-    <div id="e-quiz" style="display:none"><div class="glass ecard"><div class="ecl">🎯 Quiz</div><div class="qscore"><span>Score: <strong id="qSc">0</strong></span><span>Streak: <strong id="qSt">0</strong></span><span>Total: <strong id="qTo">0</strong></span></div><div class="qq" id="qQ">Loading…</div><div class="quiz-opts" id="qOpts"></div><div id="qFb" style="font-size:12px;margin-bottom:10px;min-height:18px"></div><button class="btn btn-gh btn-sm" onclick="nQuiz()">Skip →</button></div></div>
-    <div id="e-phrases" style="display:none"><div class="glass ecard"><div class="ecl">💬 Phrases</div><select class="inp" id="phCat" onchange="renderPhrases()" style="max-width:220px;margin-bottom:14px"><option value="greetings">Greetings</option><option value="work">Workplace</option><option value="family">Family</option><option value="travel">Travel</option><option value="emotions">Emotions</option><option value="idioms_common">Common Idioms</option><option value="idioms_business">Business Idioms</option><option value="academic">Academic</option><option value="conflict">Conflict</option><option value="compliments">Compliments</option></select><div id="phList"></div></div></div>
-    <div id="e-write" style="display:none"><div class="eng-grid"><div class="glass ecard"><div class="ecl">✍️ Writing</div><div id="wPrompt" style="font-size:12px;color:var(--tx3);margin-bottom:9px;font-style:italic;line-height:1.5"></div><textarea id="wInput" class="inp" rows="5" placeholder="Write your response…" style="margin-bottom:9px"></textarea><div style="display:flex;gap:7px;flex-wrap:wrap"><button class="btn btn-gh btn-sm" onclick="newPrompt()" style="flex:1">New Prompt</button><button class="btn btn-g btn-sm" onclick="saveWriting()" style="flex:1">Save</button></div><div id="wLog" style="margin-top:12px;display:flex;flex-direction:column;gap:6px;max-height:180px;overflow-y:auto"></div></div><div class="glass ecard"><div class="ecl">💡 Tips</div><div id="wTips"></div></div></div></div>
-    <div id="e-vocab" style="display:none"><div class="glass ecard"><div class="ecl">📊 My Vocabulary</div><div id="vStats" style="margin-bottom:14px"></div><div id="vChips" style="display:flex;flex-wrap:wrap;max-height:220px;overflow-y:auto;gap:4px"></div></div></div>
+    <div id="e-flash" style="display:none"><div class="glass ecard"><div class="ecl">Flashcards — tap to flip</div><div class="fc-wrap"><div class="fc" id="fc" onclick="flipFC()"><div class="fc-f"><div class="fc-fw" id="fcW">—</div><div class="fc-hint">tap to reveal</div></div><div class="fc-b"><div class="fc-def" id="fcD"></div><div class="fc-ex" id="fcE"></div></div></div></div><div style="display:flex;gap:7px;margin-bottom:7px"><button class="btn btn-gh btn-sm" style="flex:1" onclick="fcPrev()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg> Prev</button><button class="btn btn-gh btn-sm" style="flex:1" onclick="fcNext()">Next <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button><button class="btn btn-g btn-sm" style="flex:1" onclick="lWord()">✓ Learned</button></div><div style="text-align:center;font-size:10px;color:var(--tx3)" id="fcCnt"></div></div></div>
+    <div id="e-quiz" style="display:none"><div class="glass ecard"><div class="ecl">Quiz</div><div class="qscore"><span>Score: <strong id="qSc">0</strong></span><span>Streak: <strong id="qSt">0</strong></span><span>Total: <strong id="qTo">0</strong></span></div><div class="qq" id="qQ">Loading…</div><div class="quiz-opts" id="qOpts"></div><div id="qFb" style="font-size:12px;margin-bottom:10px;min-height:18px"></div><button class="btn btn-gh btn-sm" onclick="nQuiz()">Skip →</button></div></div>
+    <div id="e-phrases" style="display:none"><div class="glass ecard"><div class="ecl">Phrases</div><select class="inp" id="phCat" onchange="renderPhrases()" style="max-width:220px;margin-bottom:14px"><option value="greetings">Greetings</option><option value="work">Workplace</option><option value="family">Family</option><option value="travel">Travel</option><option value="emotions">Emotions</option><option value="idioms_common">Common Idioms</option><option value="idioms_business">Business Idioms</option><option value="academic">Academic</option><option value="conflict">Conflict</option><option value="compliments">Compliments</option></select><div id="phList"></div></div></div>
+    <div id="e-write" style="display:none"><div class="eng-grid"><div class="glass ecard"><div class="ecl">Writing</div><div id="wPrompt" style="font-size:12px;color:var(--tx3);margin-bottom:9px;font-style:italic;line-height:1.5"></div><textarea id="wInput" class="inp" rows="5" placeholder="Write your response…" style="margin-bottom:9px"></textarea><div style="display:flex;gap:7px;flex-wrap:wrap"><button class="btn btn-gh btn-sm" onclick="newPrompt()" style="flex:1">New Prompt</button><button class="btn btn-g btn-sm" onclick="saveWriting()" style="flex:1">Save</button></div><div id="wLog" style="margin-top:12px;display:flex;flex-direction:column;gap:6px;max-height:180px;overflow-y:auto"></div></div><div class="glass ecard"><div class="ecl">💡 Tips</div><div id="wTips"></div></div></div></div>
+    <div id="e-vocab" style="display:none"><div class="glass ecard"><div class="ecl">My Vocabulary</div><div id="vStats" style="margin-bottom:14px"></div><div id="vChips" style="display:flex;flex-wrap:wrap;max-height:220px;overflow-y:auto;gap:4px"></div></div></div>
   </div>
 
   <!-- LEARNING -->
   <div class="page" id="page-learning">
-    <div class="ph"><h1>🧠 Learning</h1><p>Track every insight, every day.</p></div>
+    <div class="ph"><h1><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-4px;margin-right:8px"><path d="M2 10l10-6 10 6-10 6-10-6z"/><path d="M6 12v5c0 1.7 2.7 3 6 3s6-1.3 6-3v-5"/></svg>Learning</h1><p>Track every insight, every day.</p></div>
     <div class="learn-grid" id="lGrid"></div>
     <div class="slbl">Add Subject</div>
     <div class="gsm" style="padding:16px"><div class="add-row"><input id="lName" class="inp" placeholder="Subject name…" maxlength="32"><input id="lColor" type="color" value="#c9a84c" style="width:42px;height:42px;border-radius:8px;border:1px solid var(--bd);background:var(--sf2);cursor:pointer;padding:3px;flex-shrink:0"><button class="btn btn-g" onclick="addSubject()">+ Add</button></div></div>
@@ -707,19 +716,19 @@ footer{text-align:center;padding:24px 0 40px;font-size:10px;color:var(--tx3);let
 
   <!-- JOURNAL -->
   <div class="page" id="page-journal">
-    <div class="ph"><h1>📓 Journal</h1><p>Your private space. Write freely.</p></div>
+    <div class="ph"><h1><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-4px;margin-right:8px"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="13" y2="17"/></svg>Journal</h1><p>Your private space. Write freely.</p></div>
     <div class="slbl">New Entry</div>
     <div class="glass jcomp">
       <div class="jtb">
         <span class="jdt" id="jDt"></span>
         <div class="mood-row">
-          <button class="mb" data-m="😊" onclick="pickMood(this)">😊</button>
-          <button class="mb" data-m="🔥" onclick="pickMood(this)">🔥</button>
-          <button class="mb" data-m="😤" onclick="pickMood(this)">😤</button>
-          <button class="mb" data-m="😔" onclick="pickMood(this)">😔</button>
-          <button class="mb" data-m="🧘" onclick="pickMood(this)">🧘</button>
-          <button class="mb" data-m="😴" onclick="pickMood(this)">😴</button>
-          <button class="mb" data-m="⚡" onclick="pickMood(this)">⚡</button>
+          <button class="mb" data-m="😊" onclick="pickMood(this)" title="Happy">😊</button>
+          <button class="mb" data-m="🔥" onclick="pickMood(this)" title="Motivated">🔥</button>
+          <button class="mb" data-m="😤" onclick="pickMood(this)" title="Frustrated">😤</button>
+          <button class="mb" data-m="😔" onclick="pickMood(this)" title="Sad">😔</button>
+          <button class="mb" data-m="🧘" onclick="pickMood(this)" title="Calm">🧘</button>
+          <button class="mb" data-m="😴" onclick="pickMood(this)" title="Tired">😴</button>
+          <button class="mb" data-m="⚡" onclick="pickMood(this)" title="Energized">⚡</button>
         </div>
         <div class="ja">
           <button class="btn btn-gh btn-sm" onclick="document.getElementById('jInp').value=''">Clear</button>
@@ -827,7 +836,7 @@ function applyTheme(t) {
   const tog=document.getElementById('theme-tog'), lbl=document.getElementById('theme-lbl');
   if(!tog) return;
   tog.className='theme-tog'+(t==='light'?' light':'');
-  lbl.textContent=t==='light'?'☀️ Light':'🌙 Dark';
+  lbl.textContent=t==='light'?'Light mode':'Dark mode';
 }
 function toggleTheme() {
   const t=document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark';
@@ -1027,7 +1036,7 @@ function renderOv(){
   document.getElementById('ovCh').innerHTML=ach.length?`<div style="display:flex;flex-wrap:wrap;gap:8px">${ach.map(c=>{const pp=Math.round(c.curr/c.totalDays*100);return`<div style="padding:12px 16px;background:var(--sf);border:1px solid var(--bd);border-radius:var(--rsm);display:flex;align-items:center;gap:10px;min-width:190px;box-shadow:var(--card-shadow)"><span style="font-size:22px">${c.emoji}</span><div><div style="font-size:12px;font-weight:700;margin-bottom:3px">${c.name}</div><div style="font-size:10px;color:var(--tx3)">Day ${c.curr}/${c.totalDays}</div><div style="margin-top:5px;height:2px;width:100px;background:var(--bd);border-radius:1px;overflow:hidden"><div style="height:100%;width:${pp}%;background:var(--gr);border-radius:1px"></div></div></div></div>`;}).join('')}</div>`:'<p style="font-size:12px;color:var(--tx3)">No active challenges yet.</p>';
   document.getElementById('ovH').innerHTML=S.habits.length?`<div style="display:flex;flex-wrap:wrap;gap:6px">${S.habits.map(h=>{const s=h.log&&h.log[TKEY];const ic=s==='done'?'✅':s==='skip'?'⏭️':s==='fail'?'❌':'⭕';return`<div style="display:flex;align-items:center;gap:7px;padding:7px 12px;background:var(--sf);border:1px solid var(--bd);border-radius:var(--rsm);box-shadow:var(--card-shadow)"><span>${h.emojis?h.emojis[0]:h.emoji||'🎯'}</span><span style="font-size:12px;color:var(--tx2)">${h.name}</span><span style="font-size:14px">${ic}</span></div>`;}).join('')}</div>`:'<p style="font-size:12px;color:var(--tx3)">No habits yet.</p>';
   const wc=S.waterLog&&S.waterLog[TKEY]||0, wg=S.waterGoal||8;
-  document.getElementById('ovWater').innerHTML=`<div style="display:flex;align-items:center;gap:10px;padding:12px 16px;background:var(--sf);border:1px solid var(--bd);border-radius:var(--rsm);box-shadow:var(--card-shadow)"><span style="font-size:24px">💧</span><div><div style="font-size:13px;font-weight:700;margin-bottom:3px">${wc}/${wg} glasses</div><div style="height:3px;width:120px;background:var(--bd);border-radius:2px;overflow:hidden"><div style="height:100%;width:${Math.min(100,wc/wg*100)}%;background:var(--bl);border-radius:2px"></div></div></div></div>`;
+  document.getElementById('ovWater').innerHTML=`<div style="display:flex;align-items:center;gap:10px;padding:12px 16px;background:var(--sf);border:1px solid var(--bd);border-radius:var(--rsm);box-shadow:var(--card-shadow)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--bl)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3C12 3 5 11 5 15.5a7 7 0 0 0 14 0C19 11 12 3 12 3z"/></svg><div><div style="font-size:13px;font-weight:700;margin-bottom:3px">${wc}/${wg} glasses</div><div style="height:3px;width:120px;background:var(--bd);border-radius:2px;overflow:hidden"><div style="height:100%;width:${Math.min(100,wc/wg*100)}%;background:var(--bl);border-radius:2px"></div></div></div></div>`;
   document.getElementById('nb-h').textContent=S.habits.length;
   document.getElementById('nb-c').textContent=S.challenges.filter(c=>c.start&&!c.failed&&!c.done).length;
   document.getElementById('nb-j').textContent=S.journalEntries.length;
@@ -1199,7 +1208,7 @@ function renderFocus(){
   const todayLog=S.focusLog.filter(e=>e.date===TKEY);
   const total=todayLog.reduce((a,b)=>a+b.mins,0);
   document.getElementById('focusTotal').textContent=total+' min';
-  document.getElementById('focusLog').innerHTML=todayLog.slice(0,8).map(e=>`<div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--sf2);border:1px solid var(--bd);border-radius:var(--rsm)"><span style="font-size:18px">⏱️</span><div><div style="font-size:12px;font-weight:600">${e.label} — ${e.mins} min</div><div style="font-size:10px;color:var(--tx3)">${e.ts}</div></div></div>`).join('')||'<div style="font-size:12px;color:var(--tx3)">No sessions today. Start your first focus session!</div>';
+  document.getElementById('focusLog').innerHTML=todayLog.slice(0,8).map(e=>`<div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--sf2);border:1px solid var(--bd);border-radius:var(--rsm)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="12,7 12,12 15,15"/></svg><div><div style="font-size:12px;font-weight:600">${e.label} — ${e.mins} min</div><div style="font-size:10px;color:var(--tx3)">${e.ts}</div></div></div>`).join('')||'<div style="font-size:12px;color:var(--tx3)">No sessions today. Start your first focus session!</div>';
 }
 
 // ═══════════════════════════════════════
