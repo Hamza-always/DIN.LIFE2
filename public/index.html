@@ -766,6 +766,38 @@ footer{text-align:center;padding:24px 0 40px;font-size:10px;color:var(--tx3);let
   </div>
 </div>
 
+<!-- EDIT LEARNING ENTRY MODAL -->
+<div class="cal-popup gone" id="editLearnModal">
+  <div class="cal-popup-box">
+    <button class="cal-popup-close" onclick="closeEditLE()">✕</button>
+    <div class="cal-popup-date">✏️ Edit Learning Entry</div>
+    <input type="hidden" id="elSid"><input type="hidden" id="elIdx">
+    <textarea id="elText" class="ainp" rows="5" placeholder="What did you learn?" style="width:100%;resize:vertical;line-height:1.7;margin-bottom:12px;font-family:inherit"></textarea>
+    <div style="display:flex;gap:8px"><button class="btn btn-gh btn-sm" style="flex:1" onclick="closeEditLE()">Cancel</button><button class="btn btn-g btn-sm" style="flex:1" onclick="saveEditLE()">Save</button></div>
+  </div>
+</div>
+
+<!-- EDIT CHALLENGE MODAL -->
+<div class="cal-popup gone" id="editChModal">
+  <div class="cal-popup-box">
+    <button class="cal-popup-close" onclick="closeEditCh()">✕</button>
+    <div class="cal-popup-date">✏️ Edit Challenge</div>
+    <input type="hidden" id="echId">
+    <div class="afield" style="margin-bottom:10px"><label style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--tx3);display:block;margin-bottom:5px">Name</label><input id="echName" class="ainp" placeholder="Challenge name…" maxlength="42"></div>
+    <div class="afield" style="margin-bottom:14px"><label style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--tx3);display:block;margin-bottom:5px">Total Days</label><input id="echDays" class="ainp" type="number" min="1" max="999" placeholder="Days"></div>
+    <div style="display:flex;gap:8px"><button class="btn btn-gh btn-sm" style="flex:1" onclick="closeEditCh()">Cancel</button><button class="btn btn-g btn-sm" style="flex:1" onclick="saveEditCh()">Save</button></div>
+  </div>
+</div>
+
+<!-- CHALLENGE LOG MODAL -->
+<div class="cal-popup gone" id="chLogModal">
+  <div class="cal-popup-box">
+    <button class="cal-popup-close" onclick="closeChLog()">✕</button>
+    <div class="cal-popup-date" id="chLogTitle"></div>
+    <div id="chLogContent" style="max-height:55vh;overflow-y:auto"></div>
+  </div>
+</div>
+
 <!-- CALENDAR POPUP -->
 <div class="cal-popup gone" id="calPopup">
   <div class="cal-popup-box">
@@ -1148,9 +1180,9 @@ function renderCh(){
     const pct=c.totalDays?Math.round(c.curr/c.totalDays*100):0;
     const col=c.failed?'var(--rd)':c.done?'var(--gold)':'var(--gr)';
     const badge=c.failed?'<span class="badge bf">Failed</span>':c.done?'<span class="badge bd2c">✓ Done</span>':c.start?'<span class="badge ba">Active</span>':'<span class="badge bi">Not started</span>';
-    return`<div class="glass ch-card"><div class="ch-top"><span class="ch-em">${c.emoji}</span><div class="ch-inf"><div class="ch-tt">${c.name}</div><div class="ch-mt">Day ${c.curr}/${c.totalDays} · ${pct}%</div></div><div class="ch-at">${badge}<button class="dbtn" onclick="delCh(${c.id})">✕</button></div></div>
+    return`<div class="glass ch-card"><div class="ch-top"><span class="ch-em">${c.emoji}</span><div class="ch-inf"><div class="ch-tt">${c.name}</div><div class="ch-mt">Day ${c.curr}/${c.totalDays} · ${pct}%</div></div><div class="ch-at">${badge}<button class="dbtn" onclick="openEditCh(${c.id})" title="Edit">✏️</button><button class="dbtn" onclick="delCh(${c.id})">✕</button></div></div>
     <div class="ch-bar-wrap"><div class="ch-bar"><div class="ch-fill" style="width:${pct}%;background:${col}"></div></div><span style="font-size:10px;color:var(--tx3);min-width:28px;text-align:right">${pct}%</span></div>
-    <div style="margin-bottom:10px"><span class="ch-big">${c.curr}</span><span class="ch-u"> days · ${c.totalDays-c.curr} left</span></div>
+    <div style="margin-bottom:10px;cursor:pointer" onclick="openChLog(${c.id})"><span class="ch-big">${c.curr}</span><span class="ch-u"> days · ${c.totalDays-c.curr} left</span><span style="font-size:10px;color:var(--gh);margin-left:6px">tap to see log</span></div>
     ${!c.done&&!c.failed?`<div class="ch-btns"><button class="ck-btn" onclick="chTick(${c.id})">✓ Done</button><button class="nx-btn" onclick="chFail(${c.id})">✗ Failed</button><button class="rs-btn" onclick="chReset(${c.id})">↺</button></div>`:`<div class="ch-btns"><button class="rs-btn" style="flex:1" onclick="chReset(${c.id})">↺ Restart</button></div>`}
     </div>`;
   }).join('');
@@ -1159,6 +1191,11 @@ function chTick(id){const c=S.challenges.find(x=>x.id===id);if(!c||c.done||c.fai
 function chFail(id){const c=S.challenges.find(x=>x.id===id);if(!c)return;c.failed=true;save();renderCh();renderOv();toast('Challenge paused.');}
 function chReset(id){const c=S.challenges.find(x=>x.id===id);if(!c)return;c.curr=0;c.start=null;c.failed=false;c.done=false;c.log={};save();renderCh();renderOv();toast(`↺ ${c.name} restarted.`);}
 async function delCh(id){const c=S.challenges.find(x=>x.id===id);if(!c)return;const ok=await confirm2('Delete challenge?',`"${c.name}" will be removed.`);if(!ok)return;S.challenges=S.challenges.filter(x=>x.id!==id);save();renderCh();renderOv();toast('Deleted.');}
+function openEditCh(id){const c=S.challenges.find(x=>x.id===id);if(!c)return;document.getElementById('echId').value=id;document.getElementById('echName').value=c.name;document.getElementById('echDays').value=c.totalDays;document.getElementById('editChModal').classList.remove('gone');}
+function closeEditCh(){document.getElementById('editChModal').classList.add('gone');}
+function saveEditCh(){const id=parseInt(document.getElementById('echId').value);const c=S.challenges.find(x=>x.id===id);if(!c)return;const n=document.getElementById('echName').value.trim(),d=parseInt(document.getElementById('echDays').value);if(!n||!d)return;c.name=n;c.totalDays=d;save();renderCh();closeEditCh();toast('✓ Challenge updated.');}
+function openChLog(id){const c=S.challenges.find(x=>x.id===id);if(!c)return;const log=c.log||{};const days=Object.keys(log).sort((a,b)=>b.localeCompare(a));const html=days.length?days.map(k=>`<div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--sf2);border:1px solid var(--bd);border-radius:var(--rsm);margin-bottom:5px"><span style="font-size:16px">${log[k]==='done'?'✅':'❌'}</span><div style="font-size:12px;color:var(--tx2)">${new Date(k+'T12:00:00').toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'})}</div><span style="font-size:10px;color:var(--tx3);margin-left:auto">${log[k]}</span></div>`).join(''):'<div style="font-size:12px;color:var(--tx3)">No logs yet.</div>';document.getElementById('chLogTitle').textContent=c.emoji+' '+c.name;document.getElementById('chLogContent').innerHTML=html;document.getElementById('chLogModal').classList.remove('gone');}
+function closeChLog(){document.getElementById('chLogModal').classList.add('gone');}
 function addCh(){const n=document.getElementById('chName').value.trim(),days=parseInt(document.getElementById('chDays').value),e=document.getElementById('chEmoji').value;if(!n||!days)return;S.challenges.push({id:Date.now(),name:n,emoji:e,totalDays:days,curr:0,start:null,failed:false,done:false,log:{}});document.getElementById('chName').value='';document.getElementById('chDays').value='';save();renderCh();renderOv();toast(`⚔️ ${n} created!`);}
 document.getElementById('chName').addEventListener('keydown',e=>{if(e.key==='Enter')addCh();});
 
@@ -1506,13 +1543,16 @@ function renderLearn(){
     <div class="glass lcard">
       <div class="lhd"><div class="ldot" style="background:${s.color}"></div><div class="ltitle">${s.name}</div><span style="font-size:10px;color:var(--tx3)">${s.entries.length}</span><button class="dbtn" onclick="delSubj(${s.id})">✕</button></div>
       <div style="display:flex;flex-direction:column;gap:5px;max-height:160px;overflow-y:auto;margin-bottom:10px">
-        ${s.entries.slice().reverse().slice(0,8).map((e,ri)=>{const ai=s.entries.length-1-ri;return`<div class="lent" style="border-color:${s.color}50"><div class="lent-t">${e.text}</div><span class="lent-d">${e.date}</span><button class="dbtn" onclick="delLE(${s.id},${ai})">✕</button></div>`;}).join('')||'<div style="font-size:11px;color:var(--tx3)">No entries yet.</div>'}
+        ${s.entries.slice().reverse().slice(0,8).map((e,ri)=>{const ai=s.entries.length-1-ri;return`<div class="lent" style="border-color:${s.color}50"><div class="lent-t">${e.text}</div><span class="lent-d">${e.date}</span><button class="dbtn" onclick="openEditLE(${s.id},${ai})" title="Edit">✏️</button><button class="dbtn" onclick="delLE(${s.id},${ai})">✕</button></div>`;}).join('')||'<div style="font-size:11px;color:var(--tx3)">No entries yet.</div>'}
       </div>
       <div class="lform"><input class="inp" id="li${s.id}" placeholder="What did you learn?" maxlength="200" style="font-size:11px;padding:7px 10px"><button class="btn btn-g btn-sm" style="flex-shrink:0" onclick="addLE(${s.id})">+</button></div>
     </div>`).join('');
 }
 function addLE(id){const inp=document.getElementById('li'+id);const t=inp?inp.value.trim():'';if(!t)return;const s=S.subjects.find(x=>x.id===id);if(!s)return;s.entries.push({text:t,date:TKEY});inp.value='';save();renderLearn();renderOv();toast(`✓ Saved to ${s.name}`);}
 function delLE(sid,idx){const s=S.subjects.find(x=>x.id===sid);if(!s)return;s.entries.splice(idx,1);save();renderLearn();}
+function openEditLE(sid,idx){const s=S.subjects.find(x=>x.id===sid);if(!s)return;const e=s.entries[idx];if(!e)return;document.getElementById('elSid').value=sid;document.getElementById('elIdx').value=idx;document.getElementById('elText').value=e.text;document.getElementById('editLearnModal').classList.remove('gone');}
+function closeEditLE(){document.getElementById('editLearnModal').classList.add('gone');}
+function saveEditLE(){const sid=parseInt(document.getElementById('elSid').value),idx=parseInt(document.getElementById('elIdx').value);const s=S.subjects.find(x=>x.id===sid);if(!s)return;const t=document.getElementById('elText').value.trim();if(!t)return;s.entries[idx].text=t;save();renderLearn();closeEditLE();toast('✓ Entry updated.');}
 function addSubject(){const n=document.getElementById('lName').value.trim(),c=document.getElementById('lColor').value;if(!n)return;if(!S.subjects)S.subjects=[];S.subjects.push({id:Date.now(),name:n,color:c,entries:[]});document.getElementById('lName').value='';save();renderLearn();toast(`Subject added: ${n}`);}
 async function delSubj(id){const s=S.subjects.find(x=>x.id===id);if(!s)return;const ok=await confirm2('Delete subject?',`"${s.name}" and all entries will be removed.`);if(!ok)return;S.subjects=S.subjects.filter(x=>x.id!==id);save();renderLearn();toast('Deleted.');}
 document.getElementById('lName').addEventListener('keydown',e=>{if(e.key==='Enter')addSubject();});
