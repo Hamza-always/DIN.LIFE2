@@ -616,6 +616,10 @@ footer{text-align:center;padding:24px 0 40px;font-size:10px;color:var(--tx3);let
       <div id="focusLog" style="display:flex;flex-direction:column;gap:6px"></div>
       <div style="margin-top:12px;font-size:11px;color:var(--tx3)">Total today: <strong id="focusTotal" style="color:var(--gh)">0 min</strong></div>
     </div>
+    <div class="glass" style="padding:20px">
+      <div class="ecl">Focus History</div>
+      <div id="focusHistory" style="display:flex;flex-direction:column;gap:6px"></div>
+    </div>
   </div>
 
   <!-- GOALS -->
@@ -931,12 +935,16 @@ async function apiFetch(path, opts={}) {
 function save() {
   setSyncStatus('saving');
   clearTimeout(_saveTimer);
-  _saveTimer = setTimeout(async()=>{
-    if(!TOKEN) return;
-    const {ok} = await apiFetch('/api/data',{method:'POST',body:JSON.stringify({state:S})});
-    setSyncStatus(ok?'saved':'err');
-  }, 1500);
+  _saveTimer = setTimeout(()=>flushSave(false), 1500);
 }
+async function flushSave(useKeepalive) {
+  clearTimeout(_saveTimer);
+  if(!TOKEN) return;
+  const {ok} = await apiFetch('/api/data',{method:'POST',body:JSON.stringify({state:S}),keepalive:!!useKeepalive});
+  setSyncStatus(ok?'saved':'err');
+}
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')flushSave(true);});
+window.addEventListener('pagehide',()=>flushSave(true));
 
 function setSyncStatus(s) {
   const dot=document.getElementById('sync-dot'), txt=document.getElementById('sync-txt');
@@ -1342,12 +1350,26 @@ function updateTimerDisplay(){
   document.getElementById('timerArc').style.strokeDashoffset=circ*(1-pct);
 }
 
+let _focusShowAll=false;
+function toggleFocusHistory(){_focusShowAll=!_focusShowAll;renderFocus();}
 function renderFocus(){
   if(!S.focusLog)S.focusLog=[];
   const todayLog=S.focusLog.filter(e=>e.date===TKEY);
   const total=todayLog.reduce((a,b)=>a+b.mins,0);
   document.getElementById('focusTotal').textContent=total+' min';
   document.getElementById('focusLog').innerHTML=todayLog.slice(0,8).map(e=>`<div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--sf2);border:1px solid var(--bd);border-radius:var(--rsm)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="12,7 12,12 15,15"/></svg><div><div style="font-size:12px;font-weight:600">${e.label} — ${e.mins} min</div><div style="font-size:10px;color:var(--tx3)">${e.ts}</div></div></div>`).join('')||'<div style="font-size:12px;color:var(--tx3)">No sessions today. Start your first focus session!</div>';
+  const byDay={};
+  S.focusLog.filter(e=>e.date!==TKEY).forEach(e=>{(byDay[e.date]=byDay[e.date]||[]).push(e);});
+  const days=Object.keys(byDay).sort((a,b)=>b.localeCompare(a));
+  const shown=_focusShowAll?days:days.slice(0,7);
+  const histEl=document.getElementById('focusHistory');
+  if(!days.length){histEl.innerHTML='<div style="font-size:12px;color:var(--tx3)">No past sessions yet.</div>';return;}
+  let html=shown.map(d=>{
+    const list=byDay[d]; const dTotal=list.reduce((a,b)=>a+b.mins,0);
+    return`<div style="margin-bottom:10px"><div style="font-size:10px;color:var(--tx3);margin-bottom:6px">${new Date(d+'T12:00:00').toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'})} · ${dTotal} min total</div>${list.map(e=>`<div style="display:flex;align-items:center;gap:10px;padding:7px 12px;background:var(--sf);border:1px solid var(--bd);border-radius:var(--rsm);margin-bottom:4px"><span style="font-size:12px;color:var(--tx2);flex:1">${e.label} — ${e.mins} min</span><span style="font-size:10px;color:var(--tx3)">${e.ts}</span></div>`).join('')}</div>`;
+  }).join('');
+  if(days.length>7) html+=`<button class="btn btn-gh btn-sm" style="width:100%" onclick="toggleFocusHistory()">${_focusShowAll?'Show recent only':'View all '+days.length+' days'}</button>`;
+  histEl.innerHTML=html;
 }
 
 // ═══════════════════════════════════════
@@ -1415,6 +1437,8 @@ function updateWaterGoal(){S.waterGoal=parseInt(document.getElementById('waterGo
 // ═══════════════════════════════════════
 // GRATITUDE
 // ═══════════════════════════════════════
+let _gratShowAll=false;
+function toggleGratHistory(){_gratShowAll=!_gratShowAll;renderGratitude();}
 function renderGratitude(){
   if(!S.gratitude)S.gratitude={};
   const todayList=S.gratitude[TKEY]||[];
@@ -1423,8 +1447,12 @@ function renderGratitude(){
     todayEl.innerHTML=todayList.map((t,i)=>`<div class="grat-item"><div class="grat-num">${i+1}</div><div class="grat-text">${t}</div><button class="dbtn" onclick="delGrat(${i})"><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg></span></button></div>`).join('');
   }else{todayEl.innerHTML='<div style="font-size:12px;color:var(--tx3);margin-bottom:8px">No entries yet today. What are you grateful for?</div>';}
   const hist=document.getElementById('gratHistory');
-  const past=Object.entries(S.gratitude).filter(([k])=>k!==TKEY).sort((a,b)=>b[0].localeCompare(a[0])).slice(0,7);
-  hist.innerHTML=past.map(([k,list])=>`<div style="margin-bottom:10px"><div style="font-size:10px;color:var(--tx3);margin-bottom:6px">${new Date(k+'T12:00:00').toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'})}</div>${list.map((t,i)=>`<div style="display:flex;align-items:center;gap:8px;padding:7px 12px;background:var(--sf);border:1px solid var(--bd);border-radius:var(--rsm);margin-bottom:4px;font-size:12px;color:var(--tx2)"><span style="color:var(--gh);font-weight:700">${i+1}</span>${t}</div>`).join('')}</div>`).join('')||'<p style="font-size:12px;color:var(--tx3)">Start building your gratitude history!</p>';
+  const allPast=Object.entries(S.gratitude).filter(([k])=>k!==TKEY&&S.gratitude[k]&&S.gratitude[k].length).sort((a,b)=>b[0].localeCompare(a[0]));
+  if(!allPast.length){hist.innerHTML='<p style="font-size:12px;color:var(--tx3)">Start building your gratitude history!</p>';return;}
+  const past=_gratShowAll?allPast:allPast.slice(0,7);
+  let html=past.map(([k,list])=>`<div style="margin-bottom:10px"><div style="font-size:10px;color:var(--tx3);margin-bottom:6px">${new Date(k+'T12:00:00').toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'})}</div>${list.map((t,i)=>`<div style="display:flex;align-items:center;gap:8px;padding:7px 12px;background:var(--sf);border:1px solid var(--bd);border-radius:var(--rsm);margin-bottom:4px;font-size:12px;color:var(--tx2)"><span style="color:var(--gh);font-weight:700">${i+1}</span>${t}</div>`).join('')}</div>`).join('');
+  if(allPast.length>7) html+=`<button class="btn btn-gh btn-sm" style="width:100%" onclick="toggleGratHistory()">${_gratShowAll?'Show recent only':'View all '+allPast.length+' days'}</button>`;
+  hist.innerHTML=html;
 }
 function addGrat(){
   const t=document.getElementById('gratInput').value.trim(); if(!t)return;
