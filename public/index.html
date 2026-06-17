@@ -407,6 +407,9 @@ select.inp{cursor:pointer}
 .ni .ni-ic svg{transition:stroke .18s}
 .ni:hover .ni-ic svg{stroke:var(--tx)}
 .btn svg{flex-shrink:0;vertical-align:-1px}
+.icn{display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;vertical-align:-2px}
+.icn svg{width:1em;height:1em;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;display:block}
+.ch-icon-pick{display:flex;gap:4px;flex-wrap:wrap;max-width:120px}
 
 /* ═══ CONFIRM ═══ */
 #conf-ov{position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(5px);z-index:8000;display:none;align-items:center;justify-content:center}
@@ -444,13 +447,13 @@ footer{text-align:center;padding:24px 0 40px;font-size:10px;color:var(--tx3);let
     <div id="f-login">
       <div class="afield"><label>Username</label><input class="ainp" id="l-user" type="text" placeholder="your username" autocomplete="username" autocapitalize="none" autocorrect="off"></div>
       <div class="afield"><label>Password</label><input class="ainp" id="l-pass" type="password" placeholder="••••••••" autocomplete="current-password"></div>
-      <button class="abtn" id="l-btn" onclick="doLogin()"><span class="bt">Sign In →</span><div class="sp"></div></button>
+      <button class="abtn" id="l-btn" onclick="doLogin()"><span class="bt">Sign In <span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="12" x2="18" y2="12"/><polyline points="13,6 19,12 13,18"/></svg></span></span><div class="sp"></div></button>
     </div>
     <div id="f-signup" style="display:none">
       <div class="afield"><label>Username</label><input class="ainp" id="s-user" type="text" placeholder="choose a username" autocomplete="username" autocapitalize="none" autocorrect="off" maxlength="24"></div>
       <div class="afield"><label>Password</label><input class="ainp" id="s-pass" type="password" placeholder="min 6 characters" autocomplete="new-password"></div>
       <div class="afield"><label>Confirm Password</label><input class="ainp" id="s-pass2" type="password" placeholder="repeat password"></div>
-      <button class="abtn" id="s-btn" onclick="doSignup()"><span class="bt">Create Account →</span><div class="sp"></div></button>
+      <button class="abtn" id="s-btn" onclick="doSignup()"><span class="bt">Create Account <span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="12" x2="18" y2="12"/><polyline points="13,6 19,12 13,18"/></svg></span></span><div class="sp"></div></button>
     </div>
     <p class="anote">Stored securely in the cloud. Works on any device.</p>
   </div>
@@ -560,7 +563,7 @@ footer{text-align:center;padding:24px 0 40px;font-size:10px;color:var(--tx3);let
         <input id="hUnit" class="inp" placeholder="e.g. pages, km, glasses…" maxlength="20" style="max-width:200px">
       </div>
       <div style="display:flex;gap:8px;flex-wrap:wrap">
-        <button class="btn btn-g btn-sm" onclick="addHabit()">✓ Add Habit</button>
+        <button class="btn btn-g btn-sm" onclick="addHabit()"><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4,12 9,17 20,6"/></svg></span> Add Habit</button>
         <button class="btn btn-gh btn-sm" onclick="hideAddHabit()">Cancel</button>
       </div>
     </div>
@@ -573,9 +576,8 @@ footer{text-align:center;padding:24px 0 40px;font-size:10px;color:var(--tx3);let
     <div class="slbl">Create Challenge</div>
     <div class="gsm" style="padding:16px">
       <div class="add-row">
-        <select id="chEmoji" class="inp" style="max-width:58px;padding:9px 5px">
-          <option>🚫</option><option>⚔️</option><option>🏆</option><option>🧊</option><option>💪</option><option>🎯</option><option>🔒</option><option>🦁</option><option>🌙</option><option>⚡</option><option>🔥</option><option>🧘</option><option>📵</option><option>🏃</option><option>💧</option><option>🌿</option>
-        </select>
+        <div class="ch-icon-pick" id="chIconPicker"></div>
+        <input type="hidden" id="chEmoji" value="ban">
         <input id="chName" class="inp" placeholder="Challenge name…" maxlength="42">
         <input id="chDays" class="inp" type="number" placeholder="Days" min="1" max="999" style="max-width:90px">
         <button class="btn btn-g" onclick="addCh()">+ Create</button>
@@ -605,8 +607,8 @@ footer{text-align:center;padding:24px 0 40px;font-size:10px;color:var(--tx3);let
         <button class="preset-btn" onclick="setPreset(15,'Long Break')" id="p15">15 min</button>
       </div>
       <div class="timer-btns">
-        <button class="btn btn-g" id="timerStartBtn" onclick="timerToggle()">▶ Start</button>
-        <button class="btn btn-gh" onclick="timerReset()">↺ Reset</button>
+        <button class="btn btn-g" id="timerStartBtn" onclick="timerToggle()"><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="6,4 20,12 6,20"/></svg></span> Start</button>
+        <button class="btn btn-gh" onclick="timerReset()"><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11a9 9 0 1 0 2.6-6.4"/><polyline points="3,3 3,7 7,7"/></svg></span> Reset</button>
       </div>
     </div>
     <div class="glass" style="padding:20px">
@@ -689,7 +691,7 @@ footer{text-align:center;padding:24px 0 40px;font-size:10px;color:var(--tx3);let
         <div class="wipa" id="wIpa"></div><div class="wdef" id="wDef"></div><div class="wex" id="wEx"></div><div class="wtags" id="wTags"></div>
         <div style="display:flex;gap:7px;margin-top:12px;flex-wrap:wrap">
           <button class="btn btn-gh btn-sm" onclick="nWord()">Next <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px"><polyline points="9 18 15 12 9 6"/></svg></button>
-          <button class="btn btn-g btn-sm" onclick="lWord()">✓ Learned</button>
+          <button class="btn btn-g btn-sm" onclick="lWord()"><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4,12 9,17 20,6"/></svg></span> Learned</button>
         </div>
         <div style="margin-top:8px;font-size:10px;color:var(--tx3)" id="wCnt"></div>
       </div>
@@ -700,10 +702,10 @@ footer{text-align:center;padding:24px 0 40px;font-size:10px;color:var(--tx3);let
         <button class="btn btn-gh btn-sm" style="margin-top:10px;width:100%" onclick="nGram()">Next Tip <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px"><polyline points="9 18 15 12 9 6"/></svg></button>
       </div>
     </div></div>
-    <div id="e-flash" style="display:none"><div class="glass ecard"><div class="ecl">Flashcards — tap to flip</div><div class="fc-wrap"><div class="fc" id="fc" onclick="flipFC()"><div class="fc-f"><div class="fc-fw" id="fcW">—</div><div class="fc-hint">tap to reveal</div></div><div class="fc-b"><div class="fc-def" id="fcD"></div><div class="fc-ex" id="fcE"></div></div></div></div><div style="display:flex;gap:7px;margin-bottom:7px"><button class="btn btn-gh btn-sm" style="flex:1" onclick="fcPrev()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg> Prev</button><button class="btn btn-gh btn-sm" style="flex:1" onclick="fcNext()">Next <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button><button class="btn btn-g btn-sm" style="flex:1" onclick="lWord()">✓ Learned</button></div><div style="text-align:center;font-size:10px;color:var(--tx3)" id="fcCnt"></div></div></div>
-    <div id="e-quiz" style="display:none"><div class="glass ecard"><div class="ecl">Quiz</div><div class="qscore"><span>Score: <strong id="qSc">0</strong></span><span>Streak: <strong id="qSt">0</strong></span><span>Total: <strong id="qTo">0</strong></span></div><div class="qq" id="qQ">Loading…</div><div class="quiz-opts" id="qOpts"></div><div id="qFb" style="font-size:12px;margin-bottom:10px;min-height:18px"></div><button class="btn btn-gh btn-sm" onclick="nQuiz()">Skip →</button></div></div>
+    <div id="e-flash" style="display:none"><div class="glass ecard"><div class="ecl">Flashcards — tap to flip</div><div class="fc-wrap"><div class="fc" id="fc" onclick="flipFC()"><div class="fc-f"><div class="fc-fw" id="fcW">—</div><div class="fc-hint">tap to reveal</div></div><div class="fc-b"><div class="fc-def" id="fcD"></div><div class="fc-ex" id="fcE"></div></div></div></div><div style="display:flex;gap:7px;margin-bottom:7px"><button class="btn btn-gh btn-sm" style="flex:1" onclick="fcPrev()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg> Prev</button><button class="btn btn-gh btn-sm" style="flex:1" onclick="fcNext()">Next <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button><button class="btn btn-g btn-sm" style="flex:1" onclick="lWord()"><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4,12 9,17 20,6"/></svg></span> Learned</button></div><div style="text-align:center;font-size:10px;color:var(--tx3)" id="fcCnt"></div></div></div>
+    <div id="e-quiz" style="display:none"><div class="glass ecard"><div class="ecl">Quiz</div><div class="qscore"><span>Score: <strong id="qSc">0</strong></span><span>Streak: <strong id="qSt">0</strong></span><span>Total: <strong id="qTo">0</strong></span></div><div class="qq" id="qQ">Loading…</div><div class="quiz-opts" id="qOpts"></div><div id="qFb" style="font-size:12px;margin-bottom:10px;min-height:18px"></div><button class="btn btn-gh btn-sm" onclick="nQuiz()">Skip <span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="12" x2="18" y2="12"/><polyline points="13,6 19,12 13,18"/></svg></span></button></div></div>
     <div id="e-phrases" style="display:none"><div class="glass ecard"><div class="ecl">Phrases</div><select class="inp" id="phCat" onchange="renderPhrases()" style="max-width:220px;margin-bottom:14px"><option value="greetings">Greetings</option><option value="work">Workplace</option><option value="family">Family</option><option value="travel">Travel</option><option value="emotions">Emotions</option><option value="idioms_common">Common Idioms</option><option value="idioms_business">Business Idioms</option><option value="academic">Academic</option><option value="conflict">Conflict</option><option value="compliments">Compliments</option></select><div id="phList"></div></div></div>
-    <div id="e-write" style="display:none"><div class="eng-grid"><div class="glass ecard"><div class="ecl">Writing</div><div id="wPrompt" style="font-size:12px;color:var(--tx3);margin-bottom:9px;font-style:italic;line-height:1.5"></div><textarea id="wInput" class="inp" rows="5" placeholder="Write your response…" style="margin-bottom:9px"></textarea><div style="display:flex;gap:7px;flex-wrap:wrap"><button class="btn btn-gh btn-sm" onclick="newPrompt()" style="flex:1">New Prompt</button><button class="btn btn-g btn-sm" onclick="saveWriting()" style="flex:1">Save</button></div><div id="wLog" style="margin-top:12px;display:flex;flex-direction:column;gap:6px;max-height:180px;overflow-y:auto"></div></div><div class="glass ecard"><div class="ecl">💡 Tips</div><div id="wTips"></div></div></div></div>
+    <div id="e-write" style="display:none"><div class="eng-grid"><div class="glass ecard"><div class="ecl">Writing</div><div id="wPrompt" style="font-size:12px;color:var(--tx3);margin-bottom:9px;font-style:italic;line-height:1.5"></div><textarea id="wInput" class="inp" rows="5" placeholder="Write your response…" style="margin-bottom:9px"></textarea><div style="display:flex;gap:7px;flex-wrap:wrap"><button class="btn btn-gh btn-sm" onclick="newPrompt()" style="flex:1">New Prompt</button><button class="btn btn-g btn-sm" onclick="saveWriting()" style="flex:1">Save</button></div><div id="wLog" style="margin-top:12px;display:flex;flex-direction:column;gap:6px;max-height:180px;overflow-y:auto"></div></div><div class="glass ecard"><div class="ecl"><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6"/><path d="M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.5.4.8 1 .8 1.6V16h5.4v-.5c0-.6.3-1.2.8-1.6A6 6 0 0 0 12 3z"/></svg></span> Tips</div><div id="wTips"></div></div></div></div>
     <div id="e-vocab" style="display:none"><div class="glass ecard"><div class="ecl">My Vocabulary</div><div id="vStats" style="margin-bottom:14px"></div><div id="vChips" style="display:flex;flex-wrap:wrap;max-height:220px;overflow-y:auto;gap:4px"></div></div></div>
   </div>
 
@@ -723,13 +725,13 @@ footer{text-align:center;padding:24px 0 40px;font-size:10px;color:var(--tx3);let
       <div class="jtb">
         <span class="jdt" id="jDt"></span>
         <div class="mood-row">
-          <button class="mb" data-m="😊" onclick="pickMood(this)" title="Happy">😊</button>
-          <button class="mb" data-m="🔥" onclick="pickMood(this)" title="Motivated">🔥</button>
-          <button class="mb" data-m="😤" onclick="pickMood(this)" title="Frustrated">😤</button>
-          <button class="mb" data-m="😔" onclick="pickMood(this)" title="Sad">😔</button>
-          <button class="mb" data-m="🧘" onclick="pickMood(this)" title="Calm">🧘</button>
-          <button class="mb" data-m="😴" onclick="pickMood(this)" title="Tired">😴</button>
-          <button class="mb" data-m="⚡" onclick="pickMood(this)" title="Energized">⚡</button>
+          <button class="mb" data-m="happy" onclick="pickMood(this)" title="Happy"><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="9" cy="10" r="1" fill="currentColor" stroke="none"/><circle cx="15" cy="10" r="1" fill="currentColor" stroke="none"/><path d="M8 14c1.2 1.6 2.8 2.4 4 2.4s2.8-.8 4-2.4"/></svg></span></button>
+          <button class="mb" data-m="flame" onclick="pickMood(this)" title="Motivated"><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2c2 3-1 4-1 7a3 3 0 1 0 6 0c0-1-.5-2-.5-2 1.5 1 3 3.5 3 6a7 7 0 1 1-14 0c0-4 3-7 6.5-11z"/></svg></span></button>
+          <button class="mb" data-m="frustrated" onclick="pickMood(this)" title="Frustrated"><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><line x1="7.5" y1="9.5" x2="10" y2="10.3"/><line x1="16.5" y1="9.5" x2="14" y2="10.3"/><path d="M8.5 16c1-1 2.2-1.5 3.5-1.5s2.5.5 3.5 1.5"/></svg></span></button>
+          <button class="mb" data-m="sad" onclick="pickMood(this)" title="Sad"><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="9" cy="10" r="1" fill="currentColor" stroke="none"/><circle cx="15" cy="10" r="1" fill="currentColor" stroke="none"/><path d="M8 16c1.2-1.6 2.8-2.4 4-2.4s2.8.8 4 2.4"/></svg></span></button>
+          <button class="mb" data-m="lotus" onclick="pickMood(this)" title="Calm"><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="7.2" r="2.2"/><path d="M12 9.4v3"/><path d="M5 19c0-3 3-5 7-5s7 2 7 5"/><path d="M9 14.5l-3 3M15 14.5l3 3"/></svg></span></button>
+          <button class="mb" data-m="tired" onclick="pickMood(this)" title="Tired"><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M7.5 10h3M13.5 10h3"/><path d="M8 15.5c1.2-1 2.6-1.5 4-1.5s2.8.5 4 1.5"/></svg></span></button>
+          <button class="mb" data-m="bolt" onclick="pickMood(this)" title="Energized"><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="13,2 5,14 11,14 9,22 19,10 11,10 13,2"/></svg></span></button>
         </div>
         <div class="ja">
           <button class="btn btn-gh btn-sm" onclick="document.getElementById('jInp').value=''">Clear</button>
@@ -746,8 +748,8 @@ footer{text-align:center;padding:24px 0 40px;font-size:10px;color:var(--tx3);let
 <!-- EDIT GOAL MODAL -->
 <div class="cal-popup gone" id="editGoalModal">
   <div class="cal-popup-box">
-    <button class="cal-popup-close" onclick="closeEditGoal()">✕</button>
-    <div class="cal-popup-date">✏️ Edit Goal</div>
+    <button class="cal-popup-close" onclick="closeEditGoal()"><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg></span></button>
+    <div class="cal-popup-date"><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg></span> Edit Goal</div>
     <input type="hidden" id="egId">
     <div class="afield" style="margin-bottom:10px"><label style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--tx3);display:block;margin-bottom:5px">Title</label><input id="egTitle" class="ainp" placeholder="Goal title…" maxlength="60"></div>
     <div class="afield" style="margin-bottom:10px"><label style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--tx3);display:block;margin-bottom:5px">Deadline</label><input id="egDeadline" class="ainp" type="date"></div>
@@ -759,8 +761,8 @@ footer{text-align:center;padding:24px 0 40px;font-size:10px;color:var(--tx3);let
 <!-- EDIT JOURNAL MODAL -->
 <div class="cal-popup gone" id="editJournalModal">
   <div class="cal-popup-box">
-    <button class="cal-popup-close" onclick="closeEditJournal()">✕</button>
-    <div class="cal-popup-date">✏️ Edit Journal Entry</div>
+    <button class="cal-popup-close" onclick="closeEditJournal()"><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg></span></button>
+    <div class="cal-popup-date"><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg></span> Edit Journal Entry</div>
     <input type="hidden" id="ejIdx">
     <textarea id="ejText" class="ainp" rows="8" placeholder="Your journal entry…" style="width:100%;resize:vertical;line-height:1.7;margin-bottom:12px;font-family:inherit"></textarea>
     <div style="display:flex;gap:8px"><button class="btn btn-gh btn-sm" style="flex:1" onclick="closeEditJournal()">Cancel</button><button class="btn btn-g btn-sm" style="flex:1" onclick="saveEditJournal()">Save</button></div>
@@ -770,8 +772,8 @@ footer{text-align:center;padding:24px 0 40px;font-size:10px;color:var(--tx3);let
 <!-- EDIT HABIT MODAL -->
 <div class="cal-popup gone" id="editHabitModal">
   <div class="cal-popup-box">
-    <button class="cal-popup-close" onclick="closeEditHabit()">✕</button>
-    <div class="cal-popup-date">✏️ Edit Habit</div>
+    <button class="cal-popup-close" onclick="closeEditHabit()"><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg></span></button>
+    <div class="cal-popup-date"><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg></span> Edit Habit</div>
     <input type="hidden" id="ehId">
     <div class="afield" style="margin-bottom:10px"><label style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--tx3);display:block;margin-bottom:5px">Name</label><input id="ehName" class="ainp" placeholder="Habit name…" maxlength="42"></div>
     <div class="afield" style="margin-bottom:10px"><label style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--tx3);display:block;margin-bottom:5px">Description</label><input id="ehDesc" class="ainp" placeholder="Brief description…" maxlength="80"></div>
@@ -783,8 +785,8 @@ footer{text-align:center;padding:24px 0 40px;font-size:10px;color:var(--tx3);let
 <!-- EDIT LEARNING ENTRY MODAL -->
 <div class="cal-popup gone" id="editLearnModal">
   <div class="cal-popup-box">
-    <button class="cal-popup-close" onclick="closeEditLE()">✕</button>
-    <div class="cal-popup-date">✏️ Edit Learning Entry</div>
+    <button class="cal-popup-close" onclick="closeEditLE()"><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg></span></button>
+    <div class="cal-popup-date"><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg></span> Edit Learning Entry</div>
     <input type="hidden" id="elSid"><input type="hidden" id="elIdx">
     <textarea id="elText" class="ainp" rows="5" placeholder="What did you learn?" style="width:100%;resize:vertical;line-height:1.7;margin-bottom:12px;font-family:inherit"></textarea>
     <div style="display:flex;gap:8px"><button class="btn btn-gh btn-sm" style="flex:1" onclick="closeEditLE()">Cancel</button><button class="btn btn-g btn-sm" style="flex:1" onclick="saveEditLE()">Save</button></div>
@@ -794,8 +796,8 @@ footer{text-align:center;padding:24px 0 40px;font-size:10px;color:var(--tx3);let
 <!-- EDIT CHALLENGE MODAL -->
 <div class="cal-popup gone" id="editChModal">
   <div class="cal-popup-box">
-    <button class="cal-popup-close" onclick="closeEditCh()">✕</button>
-    <div class="cal-popup-date">✏️ Edit Challenge</div>
+    <button class="cal-popup-close" onclick="closeEditCh()"><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg></span></button>
+    <div class="cal-popup-date"><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg></span> Edit Challenge</div>
     <input type="hidden" id="echId">
     <div class="afield" style="margin-bottom:10px"><label style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--tx3);display:block;margin-bottom:5px">Name</label><input id="echName" class="ainp" placeholder="Challenge name…" maxlength="42"></div>
     <div class="afield" style="margin-bottom:14px"><label style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--tx3);display:block;margin-bottom:5px">Total Days</label><input id="echDays" class="ainp" type="number" min="1" max="999" placeholder="Days"></div>
@@ -806,7 +808,7 @@ footer{text-align:center;padding:24px 0 40px;font-size:10px;color:var(--tx3);let
 <!-- CHALLENGE LOG MODAL -->
 <div class="cal-popup gone" id="chLogModal">
   <div class="cal-popup-box">
-    <button class="cal-popup-close" onclick="closeChLog()">✕</button>
+    <button class="cal-popup-close" onclick="closeChLog()"><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg></span></button>
     <div class="cal-popup-date" id="chLogTitle"></div>
     <div id="chLogContent" style="max-height:55vh;overflow-y:auto"></div>
   </div>
@@ -815,7 +817,7 @@ footer{text-align:center;padding:24px 0 40px;font-size:10px;color:var(--tx3);let
 <!-- CALENDAR POPUP -->
 <div class="cal-popup gone" id="calPopup">
   <div class="cal-popup-box">
-    <button class="cal-popup-close" onclick="closeCalPopup()">✕</button>
+    <button class="cal-popup-close" onclick="closeCalPopup()"><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg></span></button>
     <div class="cal-popup-date" id="calPopupDate"></div>
     <div id="calPopupContent"></div>
   </div>
@@ -832,7 +834,76 @@ const API = '';
 let TOKEN=null, USER=null, S={};
 let _saveTimer=null;
 
-const EMOJI_LIST=['🎯','💪','📚','🧘','🏃','💧','🥗','😴','✍️','🎵','🧠','🌿','🧊','⚡','🌅','🚫','🏋️','🚴','🧹','💊','📖','🎨','🍎','☀️','🌙','🛌','🚶','🤸','🧘‍♂️','💻'];
+// ═══════════════════════════════════════
+// MINIMALIST SVG ICON SYSTEM
+// ═══════════════════════════════════════
+const ICONS = {
+  close:'<line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/>',
+  edit:'<path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/>',
+  check:'<polyline points="4,12 9,17 20,6"/>',
+  undo:'<path d="M3 11a9 9 0 1 0 2.6-6.4"/><polyline points="3,3 3,7 7,7"/>',
+  star:'<polygon points="12,2 15,9 22,9.5 16.5,14 18,21 12,17.3 6,21 7.5,14 2,9.5 9,9"/>',
+  play:'<polygon points="6,4 20,12 6,20"/>',
+  pause:'<rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/>',
+  doneCircle:'<circle cx="12" cy="12" r="9"/><polyline points="8,12.5 11,15.5 16,9"/>',
+  xCircle:'<circle cx="12" cy="12" r="9"/><line x1="9" y1="9" x2="15" y2="15"/><line x1="15" y1="9" x2="9" y2="15"/>',
+  circleOutline:'<circle cx="12" cy="12" r="9"/>',
+  skipFwd:'<polygon points="6,4 16,12 6,20"/><line x1="18" y1="4" x2="18" y2="20"/>',
+  arrowRight:'<line x1="4" y1="12" x2="18" y2="12"/><polyline points="13,6 19,12 13,18"/>',
+  target:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.4" fill="currentColor" stroke="none"/>',
+  droplet:'<path d="M12 3C12 3 5 11 5 15.5a7 7 0 0 0 14 0C19 11 12 3 12 3z"/>',
+  cap:'<path d="M2 10l10-6 10 6-10 6-10-6z"/><path d="M6 12v5c0 1.7 2.7 3 6 3s6-1.3 6-3v-5"/>',
+  calendar:'<rect x="3" y="5" width="18" height="16" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="8" y1="3" x2="8" y2="7"/><line x1="16" y1="3" x2="16" y2="7"/>',
+  bulb:'<path d="M9 18h6"/><path d="M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.5.4.8 1 .8 1.6V16h5.4v-.5c0-.6.3-1.2.8-1.6A6 6 0 0 0 12 3z"/>',
+  notebook:'<rect x="5" y="3" width="14" height="18" rx="2"/><line x1="9" y1="3" x2="9" y2="21"/><line x1="12" y1="8" x2="16" y2="8"/><line x1="12" y1="12" x2="16" y2="12"/>',
+  happy:'<circle cx="12" cy="12" r="9"/><circle cx="9" cy="10" r="1" fill="currentColor" stroke="none"/><circle cx="15" cy="10" r="1" fill="currentColor" stroke="none"/><path d="M8 14c1.2 1.6 2.8 2.4 4 2.4s2.8-.8 4-2.4"/>',
+  frustrated:'<circle cx="12" cy="12" r="9"/><line x1="7.5" y1="9.5" x2="10" y2="10.3"/><line x1="16.5" y1="9.5" x2="14" y2="10.3"/><path d="M8.5 16c1-1 2.2-1.5 3.5-1.5s2.5.5 3.5 1.5"/>',
+  sad:'<circle cx="12" cy="12" r="9"/><circle cx="9" cy="10" r="1" fill="currentColor" stroke="none"/><circle cx="15" cy="10" r="1" fill="currentColor" stroke="none"/><path d="M8 16c1.2-1.6 2.8-2.4 4-2.4s2.8.8 4 2.4"/>',
+  tired:'<circle cx="12" cy="12" r="9"/><path d="M7.5 10h3M13.5 10h3"/><path d="M8 15.5c1.2-1 2.6-1.5 4-1.5s2.8.5 4 1.5"/>',
+  lotus:'<circle cx="12" cy="7.2" r="2.2"/><path d="M12 9.4v3"/><path d="M5 19c0-3 3-5 7-5s7 2 7 5"/><path d="M9 14.5l-3 3M15 14.5l3 3"/>',
+  flame:'<path d="M12 2c2 3-1 4-1 7a3 3 0 1 0 6 0c0-1-.5-2-.5-2 1.5 1 3 3.5 3 6a7 7 0 1 1-14 0c0-4 3-7 6.5-11z"/>',
+  bolt:'<polyline points="13,2 5,14 11,14 9,22 19,10 11,10 13,2"/>',
+  dumbbell:'<rect x="1.5" y="8.5" width="2.2" height="7" rx="1"/><rect x="20.3" y="8.5" width="2.2" height="7" rx="1"/><rect x="4" y="10" width="2.4" height="4" rx="1"/><rect x="17.6" y="10" width="2.4" height="4" rx="1"/><line x1="6.4" y1="12" x2="17.6" y2="12"/>',
+  book:'<path d="M4 4.5A2 2 0 0 1 6 3h14v16H6a2 2 0 0 0-2 2z"/><path d="M4 4.5v16"/>',
+  openbook:'<path d="M12 6c-2-1.5-5-2-9-1.5v13c4-.5 7 0 9 1.5 2-1.5 5-2 9-1.5v-13c-4-.5-7 0-9 1.5z"/><line x1="12" y1="6" x2="12" y2="19.5"/>',
+  run:'<polyline points="4,17 9,12 13,16 20,7"/>',
+  salad:'<path d="M4 12a8 8 0 0 0 16 0z"/><line x1="3" y1="12" x2="21" y2="12"/><path d="M12 12c-1.2-3 0-6 2.2-7.3"/>',
+  walk:'<ellipse cx="9" cy="7.5" rx="2" ry="2.8"/><ellipse cx="15" cy="16.5" rx="2" ry="2.8"/>',
+  music:'<path d="M9 18V5l11-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/>',
+  brain:'<path d="M9 4a4 4 0 0 0-4 4 3 3 0 0 0-1 5.8A4 4 0 0 0 8 19h8a4 4 0 0 0 4-5.2A3 3 0 0 0 19 8a4 4 0 0 0-4-4 4 4 0 0 0-3 1.3A4 4 0 0 0 9 4z"/><path d="M12 4v15"/>',
+  leaf:'<path d="M5 19c8 0 14-6 14-14-8 0-14 6-14 14z"/><path d="M5 19c3-5 6-8 11-11"/>',
+  ice:'<rect x="5" y="5" width="14" height="14" rx="2"/><path d="M5 12h14M12 5v14"/>',
+  sunrise:'<path d="M3 18h18"/><path d="M6 18a6 6 0 0 1 12 0"/><line x1="12" y1="6" x2="12" y2="9"/><line x1="5" y1="13" x2="7" y2="13"/><line x1="17" y1="13" x2="19" y2="13"/><line x1="6.5" y1="9.5" x2="8" y2="11"/><line x1="17.5" y1="9.5" x2="16" y2="11"/>',
+  ban:'<circle cx="12" cy="12" r="9"/><line x1="6" y1="18" x2="18" y2="6"/>',
+  bike:'<circle cx="6" cy="17" r="3.2"/><circle cx="18" cy="17" r="3.2"/><path d="M6 17l4-9h4l3 9"/><path d="M10 8h3"/><path d="M9 17h9"/>',
+  broom:'<line x1="17" y1="3" x2="9" y2="13"/><path d="M9 13l-5 7 3 1 3-3 3-3z"/>',
+  pill:'<rect x="3" y="9" width="18" height="6" rx="3"/><line x1="12" y1="9" x2="12" y2="15"/>',
+  palette:'<path d="M12 3a9 9 0 1 0 0 18c1 0 1.8-.8 1.8-1.8 0-.5-.2-.9-.5-1.2-.3-.3-.5-.7-.5-1.2 0-1 .8-1.8 1.8-1.8H17a4 4 0 0 0 4-4c0-4.4-4-8-9-8z"/><circle cx="7.5" cy="10.5" r="1" fill="currentColor" stroke="none"/><circle cx="10.5" cy="7.5" r="1" fill="currentColor" stroke="none"/><circle cx="14.5" cy="7.5" r="1" fill="currentColor" stroke="none"/>',
+  apple:'<path d="M12 8c-3-3-7-1-7 3 0 5 4 8 7 8s7-3 7-8c0-4-4-6-7-3z"/><path d="M12 8V4"/><path d="M12 4c1-1.3 3-1.3 3-1.3"/>',
+  sun:'<circle cx="12" cy="12" r="4.5"/><line x1="12" y1="2" x2="12" y2="5"/><line x1="12" y1="19" x2="12" y2="22"/><line x1="2" y1="12" x2="5" y2="12"/><line x1="19" y1="12" x2="22" y2="12"/><line x1="4.5" y1="4.5" x2="6.5" y2="6.5"/><line x1="17.5" y1="17.5" x2="19.5" y2="19.5"/><line x1="4.5" y1="19.5" x2="6.5" y2="17.5"/><line x1="17.5" y1="6.5" x2="19.5" y2="4.5"/>',
+  moon:'<path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5z"/>',
+  bed:'<path d="M3 18v-6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v6"/><path d="M3 18v2M21 18v2"/><path d="M3 13V8a1 1 0 0 1 1-1h7v6"/>',
+  stretch:'<circle cx="12" cy="4.5" r="1.8"/><path d="M12 7v6"/><path d="M12 8l-5-3M12 8l5-3"/><path d="M12 13l-4 7M12 13l4 7"/>',
+  laptop:'<rect x="4" y="5" width="16" height="10" rx="1.5"/><line x1="2" y1="19" x2="22" y2="19"/>',
+  paw:'<circle cx="12" cy="15" r="3.2"/><circle cx="6.5" cy="9" r="1.8"/><circle cx="10.5" cy="6.3" r="1.8"/><circle cx="14.5" cy="6.3" r="1.8"/><circle cx="18" cy="9" r="1.8"/>',
+  lock:'<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>',
+  sword:'<line x1="4" y1="20" x2="20" y2="4"/><line x1="4" y1="4" x2="20" y2="20"/><polyline points="16,4 20,4 20,8"/><polyline points="16,20 20,20 20,16"/>',
+  trophy:'<path d="M8 4h8v4a4 4 0 0 1-8 0z"/><path d="M8 5H5a3 3 0 0 0 3 3"/><path d="M16 5h3a3 3 0 0 1-3 3"/><path d="M12 12v3"/><path d="M8 19h8"/><path d="M9 19c0-2 1-3 3-3s3 1 3 3"/>',
+  mute:'<rect x="7" y="2" width="10" height="20" rx="2"/><line x1="4" y1="4" x2="20" y2="20"/>',
+  briefcase:'<rect x="3" y="8" width="18" height="12" rx="2"/><path d="M8 8V6a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="3" y1="13" x2="21" y2="13"/>',
+  people:'<circle cx="9" cy="8" r="2.5"/><circle cx="17" cy="9" r="2"/><path d="M4 19c0-3 2-5 5-5s5 2 5 5"/><path d="M14 19c.3-2 1.5-3.3 4-3.3 1.6 0 2.7.6 3 1.8"/>',
+  mask:'<path d="M4 9c0-3 3.5-5 8-5s8 2 8 5c0 5-3 10-8 10S4 14 4 9z"/><circle cx="9" cy="9" r="1" fill="currentColor" stroke="none"/><circle cx="15" cy="9" r="1" fill="currentColor" stroke="none"/><path d="M9 13c1 1 2 1.4 3 1.4s2-.4 3-1.4"/>',
+  heart:'<path d="M12 20s-7-4.5-9.5-9A5 5 0 0 1 12 6a5 5 0 0 1 9.5 5c-2.5 4.5-9.5 9-9.5 9z"/>',
+  plane:'<path d="M2 13l9-2v-7l3 2v5l7 1v2l-7 1v5l-3 2v-7l-9-2z"/>'
+};
+function ico(name){
+  const inner = ICONS[name] || ICONS.target;
+  return `<span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${inner}</svg></span>`;
+}
+function moodIcon(m){ return ico(m && ICONS[m] ? m : 'notebook'); }
+
+const EMOJI_LIST=['target','dumbbell','book','lotus','run','droplet','salad','tired','edit','music','brain','leaf','ice','bolt','sunrise','ban','dumbbell','bike','broom','pill','openbook','palette','apple','sun','moon','bed','walk','stretch','lotus','laptop'];
+const CHALLENGE_ICONS=['ban','sword','trophy','ice','dumbbell','target','lock','paw','moon','bolt','flame','lotus','mute','run','droplet','leaf'];
 
 const DEFAULT = {
   habits:[], challenges:[],
@@ -1018,16 +1089,16 @@ function openCalDay(key) {
   else {
     S.habits.forEach(h=>{
       const status=h.log&&h.log[key];
-      const icon=status==='done'?'✅':status==='skip'?'⏭️':status==='fail'?'❌':'⭕';
+      const icon=status==='done'?ico('doneCircle'):status==='skip'?ico('skipFwd'):status==='fail'?ico('xCircle'):ico('circleOutline');
       const statusText=status==='done'?'Done':status==='skip'?'Skipped':status==='fail'?'Failed':'Not logged';
       html+=`<div class="cal-habit-item">
         <span class="cal-habit-status">${icon}</span>
-        <div style="flex:1"><div class="cal-habit-name">${h.emojis?h.emojis.join('')+' ':h.emoji||'🎯'} ${h.name}</div>
-        <div style="font-size:10px;color:var(--tx3)">${statusText}${h.ratings&&h.ratings[key]?' · '+('⭐'.repeat(h.ratings[key])):''}${h.counters&&h.counters[key]?' · '+h.counters[key]+(h.unit?' '+h.unit:''):''}</div>
+        <div style="flex:1"><div class="cal-habit-name">${(h.emojis||[h.emoji||'target']).map(ico).join('')} ${h.name}</div>
+        <div style="font-size:10px;color:var(--tx3)">${statusText}${h.ratings&&h.ratings[key]?' · '+Array(h.ratings[key]).fill(ico('star')).join(''):''}${h.counters&&h.counters[key]?' · '+h.counters[key]+(h.unit?' '+h.unit:''):''}</div>
         </div></div>`;
     });
     const j=S.journalEntries.find(e=>e.date===key);
-    if(j) html+=`<div style="margin-top:12px;padding:10px;background:var(--sf2);border-radius:var(--rsm);font-size:12px;color:var(--tx2)"><strong style="color:var(--gh)">${j.mood||'📓'} Journal</strong><br>${j.text.slice(0,100)}${j.text.length>100?'…':''}</div>`;
+    if(j) html+=`<div style="margin-top:12px;padding:10px;background:var(--sf2);border-radius:var(--rsm);font-size:12px;color:var(--tx2)"><strong style="color:var(--gh)">${moodIcon(j.mood)} Journal</strong><br>${j.text.slice(0,100)}${j.text.length>100?'…':''}</div>`;
   }
   document.getElementById('calPopupContent').innerHTML=html;
   document.getElementById('calPopup').classList.remove('gone');
@@ -1079,8 +1150,8 @@ function renderOv(){
   `;
   renderCalendar();
   const ach=S.challenges.filter(c=>c.start&&!c.failed&&!c.done);
-  document.getElementById('ovCh').innerHTML=ach.length?`<div style="display:flex;flex-wrap:wrap;gap:8px">${ach.map(c=>{const pp=Math.round(c.curr/c.totalDays*100);return`<div style="padding:12px 16px;background:var(--sf);border:1px solid var(--bd);border-radius:var(--rsm);display:flex;align-items:center;gap:10px;min-width:190px;box-shadow:var(--card-shadow)"><span style="font-size:22px">${c.emoji}</span><div><div style="font-size:12px;font-weight:700;margin-bottom:3px">${c.name}</div><div style="font-size:10px;color:var(--tx3)">Day ${c.curr}/${c.totalDays}</div><div style="margin-top:5px;height:2px;width:100px;background:var(--bd);border-radius:1px;overflow:hidden"><div style="height:100%;width:${pp}%;background:var(--gr);border-radius:1px"></div></div></div></div>`;}).join('')}</div>`:'<p style="font-size:12px;color:var(--tx3)">No active challenges yet.</p>';
-  document.getElementById('ovH').innerHTML=S.habits.length?`<div style="display:flex;flex-wrap:wrap;gap:6px">${S.habits.map(h=>{const s=h.log&&h.log[TKEY];const ic=s==='done'?'✅':s==='skip'?'⏭️':s==='fail'?'❌':'⭕';return`<div style="display:flex;align-items:center;gap:7px;padding:7px 12px;background:var(--sf);border:1px solid var(--bd);border-radius:var(--rsm);box-shadow:var(--card-shadow)"><span>${h.emojis?h.emojis[0]:h.emoji||'🎯'}</span><span style="font-size:12px;color:var(--tx2)">${h.name}</span><span style="font-size:14px">${ic}</span></div>`;}).join('')}</div>`:'<p style="font-size:12px;color:var(--tx3)">No habits yet.</p>';
+  document.getElementById('ovCh').innerHTML=ach.length?`<div style="display:flex;flex-wrap:wrap;gap:8px">${ach.map(c=>{const pp=Math.round(c.curr/c.totalDays*100);return`<div style="padding:12px 16px;background:var(--sf);border:1px solid var(--bd);border-radius:var(--rsm);display:flex;align-items:center;gap:10px;min-width:190px;box-shadow:var(--card-shadow)"><span style="font-size:22px">${ico(c.emoji)}</span><div><div style="font-size:12px;font-weight:700;margin-bottom:3px">${c.name}</div><div style="font-size:10px;color:var(--tx3)">Day ${c.curr}/${c.totalDays}</div><div style="margin-top:5px;height:2px;width:100px;background:var(--bd);border-radius:1px;overflow:hidden"><div style="height:100%;width:${pp}%;background:var(--gr);border-radius:1px"></div></div></div></div>`;}).join('')}</div>`:'<p style="font-size:12px;color:var(--tx3)">No active challenges yet.</p>';
+  document.getElementById('ovH').innerHTML=S.habits.length?`<div style="display:flex;flex-wrap:wrap;gap:6px">${S.habits.map(h=>{const s=h.log&&h.log[TKEY];const ic=s==='done'?ico('doneCircle'):s==='skip'?ico('skipFwd'):s==='fail'?ico('xCircle'):ico('circleOutline');return`<div style="display:flex;align-items:center;gap:7px;padding:7px 12px;background:var(--sf);border:1px solid var(--bd);border-radius:var(--rsm);box-shadow:var(--card-shadow)"><span>${ico(h.emojis?h.emojis[0]:h.emoji||'target')}</span><span style="font-size:12px;color:var(--tx2)">${h.name}</span><span style="font-size:14px">${ic}</span></div>`;}).join('')}</div>`:'<p style="font-size:12px;color:var(--tx3)">No habits yet.</p>';
   const wc=S.waterLog&&S.waterLog[TKEY]||0, wg=S.waterGoal||8;
   document.getElementById('ovWater').innerHTML=`<div style="display:flex;align-items:center;gap:10px;padding:12px 16px;background:var(--sf);border:1px solid var(--bd);border-radius:var(--rsm);box-shadow:var(--card-shadow)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--bl)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3C12 3 5 11 5 15.5a7 7 0 0 0 14 0C19 11 12 3 12 3z"/></svg><div><div style="font-size:13px;font-weight:700;margin-bottom:3px">${wc}/${wg} glasses</div><div style="height:3px;width:120px;background:var(--bd);border-radius:2px;overflow:hidden"><div style="height:100%;width:${Math.min(100,wc/wg*100)}%;background:var(--bl);border-radius:2px"></div></div></div></div>`;
   document.getElementById('nb-h').textContent=S.habits.length;
@@ -1092,13 +1163,13 @@ function calcStreak(){let s=0,d=new Date(TODAY);while(s<400){const k=fmtD(d);con
 // ═══════════════════════════════════════
 // HABITS V2
 // ═══════════════════════════════════════
-let selectedEmojis=['🎯'];
+let selectedEmojis=['target'];
 
 function showAddHabit(){document.getElementById('addHabitForm').style.display='block';document.getElementById('addHabitToggle').style.display='none';renderEmojiPicker();}
 function hideAddHabit(){document.getElementById('addHabitForm').style.display='none';document.getElementById('addHabitToggle').style.display='';}
 
 function renderEmojiPicker(){
-  document.getElementById('emojiPicker').innerHTML=EMOJI_LIST.map(e=>`<div class="ep-opt${selectedEmojis.includes(e)?' on':''}" onclick="toggleEmoji('${e}')">${e}</div>`).join('');
+  document.getElementById('emojiPicker').innerHTML=EMOJI_LIST.map(e=>`<div class="ep-opt${selectedEmojis.includes(e)?' on':''}" onclick="toggleEmoji('${e}')">${ico(e)}</div>`).join('');
 }
 function toggleEmoji(e){
   if(selectedEmojis.includes(e)){if(selectedEmojis.length>1)selectedEmojis=selectedEmojis.filter(x=>x!==e);}
@@ -1111,7 +1182,7 @@ function addHabit(){
   if(!n)return;
   S.habits.push({id:Date.now(),name:n,desc,emojis:[...selectedEmojis],unit,log:{},ratings:{},counters:{},notes:{}});
   document.getElementById('hInput').value=''; document.getElementById('hDesc').value=''; document.getElementById('hUnit').value='';
-  selectedEmojis=['🎯']; hideAddHabit(); save(); renderHabits(); renderOv(); toast(`Habit added: ${n}`);
+  selectedEmojis=['target']; hideAddHabit(); save(); renderHabits(); renderOv(); toast(`Habit added: ${n}`);
 }
 
 function renderHabits(){
@@ -1126,7 +1197,7 @@ function renderHabits(){
   list.innerHTML=S.habits.map(h=>`
     <div class="habit-row" id="hr${h.id}">
       <div class="habit-main">
-        <div class="habit-emojis">${(h.emojis||[h.emoji||'🎯']).join('')}</div>
+        <div class="habit-emojis">${(h.emojis||[h.emoji||'target']).map(ico).join('')}</div>
         <div class="habit-name-wrap">
           <div class="habit-name">${h.name}</div>
           ${h.desc?`<div class="habit-desc">${h.desc}</div>`:''}
@@ -1137,7 +1208,7 @@ function renderHabits(){
           <button class="h-act-btn${h.log&&h.log[TKEY]==='fail'?' fail':''}" onclick="setHabit(${h.id},'fail')" title="Failed">${SVG_FAIL}</button>
           <button class="h-act-btn" onclick="toggleExpand(${h.id})" title="Details">${SVG_DETAIL}</button>
           <button class="dbtn" onclick="openEditHabit(${h.id})" title="Edit" style="color:var(--tx3)">${SVG_EDIT}</button>
-          <button class="dbtn" onclick="delHabit(${h.id})">✕</button>
+          <button class="dbtn" onclick="delHabit(${h.id})">${ico('close')}</button>
         </div>
       </div>
       <div class="habit-week">${WEEK.map(d=>{const k=fmtD(d),isT=k===TKEY,s=h.log&&h.log[k];return`<div class="hw-day${s==='done'?' done':s==='skip'?' skip':s==='fail'?' fail':''}${isT?' td':''}" onclick="setHabit(${h.id},'done','${k}')"><div class="hw-num">${d.getDate()}</div><div>${DS[d.getDay()][0]}</div></div>`;}).join('')}</div>
@@ -1198,17 +1269,23 @@ document.getElementById('hInput').addEventListener('keydown',e=>{if(e.key==='Ent
 // ═══════════════════════════════════════
 // CHALLENGES
 // ═══════════════════════════════════════
+function renderChIconPicker(){
+  const cur=document.getElementById('chEmoji').value;
+  document.getElementById('chIconPicker').innerHTML=CHALLENGE_ICONS.map(id=>`<div class="ep-opt${cur===id?' on':''}" onclick="pickChIcon('${id}')">${ico(id)}</div>`).join('');
+}
+function pickChIcon(id){document.getElementById('chEmoji').value=id;renderChIconPicker();}
+
 function renderCh(){
   const g=document.getElementById('chGrid');
   if(!S.challenges.length){g.innerHTML='<div style="padding:24px;font-size:13px;color:var(--tx3)">No challenges yet.</div>';return;}
   g.innerHTML=S.challenges.map(c=>{
     const pct=c.totalDays?Math.round(c.curr/c.totalDays*100):0;
     const col=c.failed?'var(--rd)':c.done?'var(--gold)':'var(--gr)';
-    const badge=c.failed?'<span class="badge bf">Failed</span>':c.done?'<span class="badge bd2c">✓ Done</span>':c.start?'<span class="badge ba">Active</span>':'<span class="badge bi">Not started</span>';
-    return`<div class="glass ch-card"><div class="ch-top"><span class="ch-em">${c.emoji}</span><div class="ch-inf"><div class="ch-tt">${c.name}</div><div class="ch-mt">Day ${c.curr}/${c.totalDays} · ${pct}%</div></div><div class="ch-at">${badge}<button class="dbtn" onclick="openEditCh(${c.id})" title="Edit">✏️</button><button class="dbtn" onclick="delCh(${c.id})">✕</button></div></div>
+    const badge=c.failed?'<span class="badge bf">Failed</span>':c.done?`<span class="badge bd2c">${ico('check')} Done</span>`:c.start?'<span class="badge ba">Active</span>':'<span class="badge bi">Not started</span>';
+    return`<div class="glass ch-card"><div class="ch-top"><span class="ch-em">${ico(c.emoji)}</span><div class="ch-inf"><div class="ch-tt">${c.name}</div><div class="ch-mt">Day ${c.curr}/${c.totalDays} · ${pct}%</div></div><div class="ch-at">${badge}<button class="dbtn" onclick="openEditCh(${c.id})" title="Edit">${ico('edit')}</button><button class="dbtn" onclick="delCh(${c.id})">${ico('close')}</button></div></div>
     <div class="ch-bar-wrap"><div class="ch-bar"><div class="ch-fill" style="width:${pct}%;background:${col}"></div></div><span style="font-size:10px;color:var(--tx3);min-width:28px;text-align:right">${pct}%</span></div>
     <div style="margin-bottom:10px;cursor:pointer" onclick="openChLog(${c.id})"><span class="ch-big">${c.curr}</span><span class="ch-u"> days · ${c.totalDays-c.curr} left</span><span style="font-size:10px;color:var(--gh);margin-left:6px">tap to see log</span></div>
-    ${!c.done&&!c.failed?`<div class="ch-btns"><button class="ck-btn" onclick="chTick(${c.id})">✓ Done</button><button class="nx-btn" onclick="chFail(${c.id})">✗ Failed</button><button class="rs-btn" onclick="chReset(${c.id})">↺</button></div>`:`<div class="ch-btns"><button class="rs-btn" style="flex:1" onclick="chReset(${c.id})">↺ Restart</button></div>`}
+    ${!c.done&&!c.failed?`<div class="ch-btns"><button class="ck-btn" onclick="chTick(${c.id})">${ico('check')} Done</button><button class="nx-btn" onclick="chFail(${c.id})">${ico('close')} Failed</button><button class="rs-btn" onclick="chReset(${c.id})">${ico('undo')}</button></div>`:`<div class="ch-btns"><button class="rs-btn" style="flex:1" onclick="chReset(${c.id})">${ico('undo')} Restart</button></div>`}
     </div>`;
   }).join('');
 }
@@ -1219,7 +1296,7 @@ async function delCh(id){const c=S.challenges.find(x=>x.id===id);if(!c)return;co
 function openEditCh(id){const c=S.challenges.find(x=>x.id===id);if(!c)return;document.getElementById('echId').value=id;document.getElementById('echName').value=c.name;document.getElementById('echDays').value=c.totalDays;document.getElementById('editChModal').classList.remove('gone');}
 function closeEditCh(){document.getElementById('editChModal').classList.add('gone');}
 function saveEditCh(){const id=parseInt(document.getElementById('echId').value);const c=S.challenges.find(x=>x.id===id);if(!c)return;const n=document.getElementById('echName').value.trim(),d=parseInt(document.getElementById('echDays').value);if(!n||!d)return;c.name=n;c.totalDays=d;save();renderCh();closeEditCh();toast('✓ Challenge updated.');}
-function openChLog(id){const c=S.challenges.find(x=>x.id===id);if(!c)return;const log=c.log||{};const days=Object.keys(log).sort((a,b)=>b.localeCompare(a));const html=days.length?days.map(k=>`<div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--sf2);border:1px solid var(--bd);border-radius:var(--rsm);margin-bottom:5px"><span style="font-size:16px">${log[k]==='done'?'✅':'❌'}</span><div style="font-size:12px;color:var(--tx2)">${new Date(k+'T12:00:00').toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'})}</div><span style="font-size:10px;color:var(--tx3);margin-left:auto">${log[k]}</span></div>`).join(''):'<div style="font-size:12px;color:var(--tx3)">No logs yet.</div>';document.getElementById('chLogTitle').textContent=c.emoji+' '+c.name;document.getElementById('chLogContent').innerHTML=html;document.getElementById('chLogModal').classList.remove('gone');}
+function openChLog(id){const c=S.challenges.find(x=>x.id===id);if(!c)return;const log=c.log||{};const days=Object.keys(log).sort((a,b)=>b.localeCompare(a));const html=days.length?days.map(k=>`<div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--sf2);border:1px solid var(--bd);border-radius:var(--rsm);margin-bottom:5px"><span style="font-size:16px">${log[k]==='done'?ico('doneCircle'):ico('xCircle')}</span><div style="font-size:12px;color:var(--tx2)">${new Date(k+'T12:00:00').toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'})}</div><span style="font-size:10px;color:var(--tx3);margin-left:auto">${log[k]}</span></div>`).join(''):'<div style="font-size:12px;color:var(--tx3)">No logs yet.</div>';document.getElementById('chLogTitle').innerHTML=ico(c.emoji)+' '+c.name;document.getElementById('chLogContent').innerHTML=html;document.getElementById('chLogModal').classList.remove('gone');}
 function closeChLog(){document.getElementById('chLogModal').classList.add('gone');}
 function addCh(){const n=document.getElementById('chName').value.trim(),days=parseInt(document.getElementById('chDays').value),e=document.getElementById('chEmoji').value;if(!n||!days)return;S.challenges.push({id:Date.now(),name:n,emoji:e,totalDays:days,curr:0,start:null,failed:false,done:false,log:{}});document.getElementById('chName').value='';document.getElementById('chDays').value='';save();renderCh();renderOv();toast(`⚔️ ${n} created!`);}
 document.getElementById('chName').addEventListener('keydown',e=>{if(e.key==='Enter')addCh();});
@@ -1238,13 +1315,13 @@ function setPreset(mins, lbl){
 }
 
 function timerToggle(){
-  if(timerRunning){clearInterval(timerInterval);timerRunning=false;document.getElementById('timerStartBtn').textContent='▶ Start';}
-  else{timerRunning=true;document.getElementById('timerStartBtn').textContent='⏸ Pause';timerInterval=setInterval(timerTick,1000);}
+  if(timerRunning){clearInterval(timerInterval);timerRunning=false;document.getElementById('timerStartBtn').innerHTML=ico('play')+' Start';}
+  else{timerRunning=true;document.getElementById('timerStartBtn').innerHTML=ico('pause')+' Pause';timerInterval=setInterval(timerTick,1000);}
 }
 
 function timerTick(){
   timerSecs--;
-  if(timerSecs<=0){clearInterval(timerInterval);timerRunning=false;document.getElementById('timerStartBtn').textContent='▶ Start';timerComplete();}
+  if(timerSecs<=0){clearInterval(timerInterval);timerRunning=false;document.getElementById('timerStartBtn').innerHTML=ico('play')+' Start';timerComplete();}
   updateTimerDisplay();
 }
 
@@ -1256,7 +1333,7 @@ function timerComplete(){
   timerSecs=timerTotal; updateTimerDisplay();
 }
 
-function timerReset(){clearInterval(timerInterval);timerRunning=false;timerSecs=timerTotal;document.getElementById('timerStartBtn').textContent='▶ Start';updateTimerDisplay();}
+function timerReset(){clearInterval(timerInterval);timerRunning=false;timerSecs=timerTotal;document.getElementById('timerStartBtn').innerHTML=ico('play')+' Start';updateTimerDisplay();}
 
 function updateTimerDisplay(){
   const m=Math.floor(timerSecs/60), s=timerSecs%60;
@@ -1283,10 +1360,10 @@ function renderGoals(){
   list.innerHTML=S.goals.map(g=>{
     const done=g.steps.filter(s=>s.done).length, tot=g.steps.length, pct=tot?Math.round(done/tot*100):0;
     const dl=g.deadline?new Date(g.deadline).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}):'No deadline';
-    return`<div class="glass goal-card"><div class="goal-top"><div style="flex:1"><div class="goal-title">${g.title}</div><div class="goal-deadline">📅 ${dl} · ${done}/${tot} steps</div></div><button class="dbtn" onclick="openEditGoal(${g.id})" title="Edit" style="margin-right:2px">✏️</button><button class="dbtn" onclick="delGoal(${g.id})">✕</button></div>
+    return`<div class="glass goal-card"><div class="goal-top"><div style="flex:1"><div class="goal-title">${g.title}</div><div class="goal-deadline">${ico('calendar')} ${dl} · ${done}/${tot} steps</div></div><button class="dbtn" onclick="openEditGoal(${g.id})" title="Edit" style="margin-right:2px">${ico('edit')}</button><button class="dbtn" onclick="delGoal(${g.id})">${ico('close')}</button></div>
     <div class="goal-bar"><div class="goal-fill" style="width:${pct}%"></div></div>
     <div class="goal-pct">${pct}% complete</div>
-    <div class="goal-steps">${g.steps.map((s,i)=>`<div class="goal-step"><div class="goal-step-ck${s.done?' on':''}" onclick="toggleStep(${g.id},${i})">${s.done?'✓':''}</div><span style="${s.done?'text-decoration:line-through;opacity:.5':''}">${s.text}</span></div>`).join('')}</div>
+    <div class="goal-steps">${g.steps.map((s,i)=>`<div class="goal-step"><div class="goal-step-ck${s.done?' on':''}" onclick="toggleStep(${g.id},${i})">${s.done?ico('check'):''}</div><span style="${s.done?'text-decoration:line-through;opacity:.5':''}">${s.text}</span></div>`).join('')}</div>
     </div>`;
   }).join('');
 }
@@ -1343,7 +1420,7 @@ function renderGratitude(){
   const todayList=S.gratitude[TKEY]||[];
   const todayEl=document.getElementById('gratToday');
   if(todayList.length){
-    todayEl.innerHTML=todayList.map((t,i)=>`<div class="grat-item"><div class="grat-num">${i+1}</div><div class="grat-text">${t}</div><button class="dbtn" onclick="delGrat(${i})">✕</button></div>`).join('');
+    todayEl.innerHTML=todayList.map((t,i)=>`<div class="grat-item"><div class="grat-num">${i+1}</div><div class="grat-text">${t}</div><button class="dbtn" onclick="delGrat(${i})"><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg></span></button></div>`).join('');
   }else{todayEl.innerHTML='<div style="font-size:12px;color:var(--tx3);margin-bottom:8px">No entries yet today. What are you grateful for?</div>';}
   const hist=document.getElementById('gratHistory');
   const past=Object.entries(S.gratitude).filter(([k])=>k!==TKEY).sort((a,b)=>b[0].localeCompare(a[0])).slice(0,7);
@@ -1496,14 +1573,15 @@ const WTIPS={A1:['Start with simple sentences: Subject + Verb + Object.','Use co
 // ═══════════════════════════════════════
 // ENGLISH LOGIC
 // ═══════════════════════════════════════
-const CAT_LABELS={daily:'🌅 Daily',corporate:'💼 Corporate',family:'👨‍👩‍👧 Family',idiom:'🎭 Idiom',emotion:'❤️ Emotion',travel:'✈️ Travel',academic:'🎓 Academic'};
+const CAT_LABELS={daily:{ic:'sunrise',t:'Daily'},corporate:{ic:'briefcase',t:'Corporate'},family:{ic:'people',t:'Family'},idiom:{ic:'mask',t:'Idiom'},emotion:{ic:'heart',t:'Emotion'},travel:{ic:'plane',t:'Travel'},academic:{ic:'cap',t:'Academic'}};
+function catLabel(c){const o=CAT_LABELS[c];return o?ico(o.ic)+' '+o.t:(c||'');}
 let _cat='all', _fcIdx=0, _qSc=0, _qSt=0, _qTo=0, _promptText='';
 
 function getFW(){const ws=WORDS[S.engLevel]||WORDS.B1;return _cat==='all'?ws:ws.filter(w=>w.cat===_cat);}
 
 function renderEnglish(){
   document.getElementById('lvStrip').innerHTML=LEVELS.map(l=>`<div class="chip${S.engLevel===l?' on':''}" onclick="setLv('${l}')">${l}</div>`).join('');
-  document.getElementById('catStrip').innerHTML=`<div class="chip cat-chip${_cat==='all'?' on':''}" data-cat="all" onclick="setCat('all')">All</div>`+Object.keys(CAT_LABELS).map(c=>`<div class="chip cat-chip${_cat===c?' on':''}" data-cat="${c}" onclick="setCat('${c}')">${CAT_LABELS[c]}</div>`).join('');
+  document.getElementById('catStrip').innerHTML=`<div class="chip cat-chip${_cat==='all'?' on':''}" data-cat="all" onclick="setCat('all')">All</div>`+Object.keys(CAT_LABELS).map(c=>`<div class="chip cat-chip${_cat===c?' on':''}" data-cat="${c}" onclick="setCat('${c}')">${catLabel(c)}</div>`).join('');
   eMode(S.engMode||'word',true);
 }
 
@@ -1535,7 +1613,7 @@ function loadWord(){
   const w=ws[S.wordIdx%ws.length];
   document.getElementById('wW').textContent=w.w; document.getElementById('wPos').textContent=w.pos||''; document.getElementById('wIpa').textContent=w.ipa||'';
   document.getElementById('wDef').textContent=w.def; document.getElementById('wEx').textContent='"'+w.ex+'"';
-  document.getElementById('wTags').innerHTML=`<span class="wtag ${w.cat}">${CAT_LABELS[w.cat]||w.cat}</span><span class="wtag">${S.engLevel}</span>`;
+  document.getElementById('wTags').innerHTML=`<span class="wtag ${w.cat}">${catLabel(w.cat)||w.cat}</span><span class="wtag">${S.engLevel}</span>`;
   document.getElementById('wCnt').textContent=`Word ${(S.wordIdx%ws.length)+1} of ${ws.length}`;
 }
 function nWord(){S.wordIdx++;save();loadWord();}
@@ -1546,14 +1624,14 @@ function fcNext(){_fcIdx++;renderFC();}
 function fcPrev(){if(_fcIdx>0)_fcIdx--;renderFC();}
 function startQuiz(){_qSc=0;_qSt=0;_qTo=0;['qSc','qSt','qTo'].forEach(id=>document.getElementById(id).textContent=0);nQuiz();}
 function nQuiz(){const ws=getFW();if(ws.length<4){document.getElementById('qQ').textContent='Need at least 4 words in this category.';document.getElementById('qOpts').innerHTML='';return;}const idx=Math.floor(Math.random()*ws.length),cor=ws[idx];const opts=[cor,...[...ws].filter((_,i)=>i!==idx).sort(()=>Math.random()-.5).slice(0,3)].sort(()=>Math.random()-.5);document.getElementById('qFb').textContent='';document.getElementById('qQ').textContent=`What word means: "${cor.def}"?`;document.getElementById('qOpts').innerHTML=opts.map(o=>`<button class="qo" onclick="ansQ(this,'${o.w.replace(/'/g,"\\'")}','${cor.w.replace(/'/g,"\\'")}','${cor.def.replace(/'/g,"\\'")}')">${o.w}</button>`).join('');}
-function ansQ(btn,chosen,cor,corDef){document.querySelectorAll('.qo').forEach(b=>b.disabled=true);_qTo++;if(chosen===cor){btn.classList.add('cor');_qSc++;_qSt++;document.getElementById('qFb').innerHTML=`<span style="color:var(--gr)">✓ Correct!</span>`;setTimeout(()=>{['qSc','qSt','qTo'].forEach(id=>document.getElementById(id).textContent=eval('_q'+id.slice(1)));nQuiz();},1100);}else{btn.classList.add('wro');_qSt=0;document.querySelectorAll('.qo').forEach(b=>{if(b.textContent.trim()===cor)b.classList.add('cor');});document.getElementById('qFb').innerHTML=`<span style="color:var(--rd)">✗ Answer: ${cor}</span>`;setTimeout(()=>{['qSc','qSt','qTo'].forEach(id=>document.getElementById(id).textContent=eval('_q'+id.slice(1)));nQuiz();},1700);}}
+function ansQ(btn,chosen,cor,corDef){document.querySelectorAll('.qo').forEach(b=>b.disabled=true);_qTo++;if(chosen===cor){btn.classList.add('cor');_qSc++;_qSt++;document.getElementById('qFb').innerHTML=`<span style="color:var(--gr)">${ico('check')} Correct!</span>`;setTimeout(()=>{['qSc','qSt','qTo'].forEach(id=>document.getElementById(id).textContent=eval('_q'+id.slice(1)));nQuiz();},1100);}else{btn.classList.add('wro');_qSt=0;document.querySelectorAll('.qo').forEach(b=>{if(b.textContent.trim()===cor)b.classList.add('cor');});document.getElementById('qFb').innerHTML=`<span style="color:var(--rd)">${ico('close')} Answer: ${cor}</span>`;setTimeout(()=>{['qSc','qSt','qTo'].forEach(id=>document.getElementById(id).textContent=eval('_q'+id.slice(1)));nQuiz();},1700);}}
 function renderPhrases(){const cat=document.getElementById('phCat').value;document.getElementById('phList').innerHTML=(PHRASES[cat]||[]).map(p=>`<div class="pc"><div class="pen">"${p.en}"</div><div class="pus">${p.use}</div></div>`).join('');}
-function newPrompt(){const ps=PROMPTS[S.engLevel]||PROMPTS.B1;_promptText=ps[Math.floor(Math.random()*ps.length)];document.getElementById('wPrompt').textContent='📝 '+_promptText;}
+function newPrompt(){const ps=PROMPTS[S.engLevel]||PROMPTS.B1;_promptText=ps[Math.floor(Math.random()*ps.length)];document.getElementById('wPrompt').innerHTML=ico('edit')+' '+_promptText;}
 function renderWTips(){document.getElementById('wTips').innerHTML=(WTIPS[S.engLevel]||WTIPS.B1).map(t=>`<div style="padding:8px 11px;background:var(--sf2);border-left:2px solid var(--gold);border-radius:0 7px 7px 0;margin-bottom:7px;font-size:12px">${t}</div>`).join('');}
 function saveWriting(){const t=document.getElementById('wInput').value.trim();if(!t)return;if(!S.writingLog)S.writingLog=[];S.writingLog.unshift({prompt:_promptText,text:t,date:TKEY,level:S.engLevel});document.getElementById('wInput').value='';save();renderWLog();toast('Writing saved.');}
-function renderWLog(){if(!S.writingLog)S.writingLog=[];document.getElementById('wLog').innerHTML=S.writingLog.slice(0,5).map((e,i)=>`<div style="padding:7px 10px;background:var(--sf2);border-radius:7px;border-left:2px solid var(--pu);display:flex;gap:7px"><div style="flex:1"><div style="font-size:9px;color:var(--tx3)">${e.level}·${e.date}</div><div style="font-size:11px;color:var(--tx2)">${e.text.slice(0,70)}${e.text.length>70?'…':''}</div></div><button class="dbtn" onclick="delW(${i})">✕</button></div>`).join('');}
+function renderWLog(){if(!S.writingLog)S.writingLog=[];document.getElementById('wLog').innerHTML=S.writingLog.slice(0,5).map((e,i)=>`<div style="padding:7px 10px;background:var(--sf2);border-radius:7px;border-left:2px solid var(--pu);display:flex;gap:7px"><div style="flex:1"><div style="font-size:9px;color:var(--tx3)">${e.level}·${e.date}</div><div style="font-size:11px;color:var(--tx2)">${e.text.slice(0,70)}${e.text.length>70?'…':''}</div></div><button class="dbtn" onclick="delW(${i})"><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg></span></button></div>`).join('');}
 function delW(i){S.writingLog.splice(i,1);save();renderWLog();}
-function renderVocab(){const lw=S.learnedWords.filter(x=>x.level===S.engLevel);document.getElementById('vStats').innerHTML=`<span style="font-size:11px;color:var(--tx3)">This level: <strong style="color:var(--gh)">${lw.length}</strong> &nbsp; All levels: <strong style="color:var(--gh)">${S.learnedWords.length}</strong></span>`;document.getElementById('vChips').innerHTML=lw.length?lw.map((x,i)=>`<span style="display:inline-flex;align-items:center;gap:4px;font-size:11px;padding:3px 8px;background:var(--sf2);border:1px solid var(--bd);border-radius:20px;color:var(--tx2);margin:2px">${x.w}<button class="dbtn" onclick="delVW(${i})" style="width:12px;height:12px;font-size:9px;border-radius:3px">✕</button></span>`).join(''):'<span style="font-size:11px;color:var(--tx3)">No words learned yet.</span>';}
+function renderVocab(){const lw=S.learnedWords.filter(x=>x.level===S.engLevel);document.getElementById('vStats').innerHTML=`<span style="font-size:11px;color:var(--tx3)">This level: <strong style="color:var(--gh)">${lw.length}</strong> &nbsp; All levels: <strong style="color:var(--gh)">${S.learnedWords.length}</strong></span>`;document.getElementById('vChips').innerHTML=lw.length?lw.map((x,i)=>`<span style="display:inline-flex;align-items:center;gap:4px;font-size:11px;padding:3px 8px;background:var(--sf2);border:1px solid var(--bd);border-radius:20px;color:var(--tx2);margin:2px">${x.w}<button class="dbtn" onclick="delVW(${i})" style="width:12px;height:12px;font-size:9px;border-radius:3px"><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg></span></button></span>`).join(''):'<span style="font-size:11px;color:var(--tx3)">No words learned yet.</span>';}
 function delVW(i){const lw=S.learnedWords.filter(x=>x.level===S.engLevel);const w=lw[i];if(!w)return;S.learnedWords=S.learnedWords.filter(x=>!(x.w===w.w&&x.level===w.level));save();renderVocab();}
 function loadGram(){const tips=GRAMMAR[S.engLevel]||GRAMMAR.B1;const t=tips[S.grammarIdx%tips.length];document.getElementById('gTip').innerHTML=t.tip;document.getElementById('gEx').textContent=t.ex;}
 function nGram(){S.grammarIdx++;save();loadGram();}
@@ -1566,9 +1644,9 @@ function renderLearn(){
   if(!S.subjects||!S.subjects.length){g.innerHTML='<div style="padding:24px;font-size:13px;color:var(--tx3)">No subjects yet.</div>';return;}
   g.innerHTML=S.subjects.map(s=>`
     <div class="glass lcard">
-      <div class="lhd"><div class="ldot" style="background:${s.color}"></div><div class="ltitle">${s.name}</div><span style="font-size:10px;color:var(--tx3)">${s.entries.length}</span><button class="dbtn" onclick="delSubj(${s.id})">✕</button></div>
+      <div class="lhd"><div class="ldot" style="background:${s.color}"></div><div class="ltitle">${s.name}</div><span style="font-size:10px;color:var(--tx3)">${s.entries.length}</span><button class="dbtn" onclick="delSubj(${s.id})"><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg></span></button></div>
       <div style="display:flex;flex-direction:column;gap:5px;max-height:160px;overflow-y:auto;margin-bottom:10px">
-        ${s.entries.slice().reverse().slice(0,8).map((e,ri)=>{const ai=s.entries.length-1-ri;return`<div class="lent" style="border-color:${s.color}50"><div class="lent-t">${e.text}</div><span class="lent-d">${e.date}</span><button class="dbtn" onclick="openEditLE(${s.id},${ai})" title="Edit">✏️</button><button class="dbtn" onclick="delLE(${s.id},${ai})">✕</button></div>`;}).join('')||'<div style="font-size:11px;color:var(--tx3)">No entries yet.</div>'}
+        ${s.entries.slice().reverse().slice(0,8).map((e,ri)=>{const ai=s.entries.length-1-ri;return`<div class="lent" style="border-color:${s.color}50"><div class="lent-t">${e.text}</div><span class="lent-d">${e.date}</span><button class="dbtn" onclick="openEditLE(${s.id},${ai})" title="Edit"><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg></span></button><button class="dbtn" onclick="delLE(${s.id},${ai})"><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg></span></button></div>`;}).join('')||'<div style="font-size:11px;color:var(--tx3)">No entries yet.</div>'}
       </div>
       <div class="lform"><input class="inp" id="li${s.id}" placeholder="What did you learn?" maxlength="200" style="font-size:11px;padding:7px 10px"><button class="btn btn-g btn-sm" style="flex-shrink:0" onclick="addLE(${s.id})">+</button></div>
     </div>`).join('');
@@ -1597,7 +1675,7 @@ function renderJournal(){
   if(!S.journalEntries||!S.journalEntries.length){c.innerHTML='<div style="padding:28px;text-align:center;font-size:13px;color:var(--tx3)">No entries yet.</div>';return;}
   c.innerHTML=S.journalEntries.map((e,i)=>`
     <div class="gsm jent" id="jent${i}">
-      <div class="jeh"><span class="jem">${e.mood||'📓'}</span><span class="jed">${e.date}${e.ts?' · '+e.ts:''}</span><button class="dbtn" onclick="openEditJournal(${i})" title="Edit" style="margin-right:2px">✏️</button><button class="dbtn" onclick="delJE(${i})" style="margin-left:0">✕</button></div>
+      <div class="jeh"><span class="jem">${moodIcon(e.mood)}</span><span class="jed">${e.date}${e.ts?' · '+e.ts:''}</span><button class="dbtn" onclick="openEditJournal(${i})" title="Edit" style="margin-right:2px">${ico('edit')}</button><button class="dbtn" onclick="delJE(${i})" style="margin-left:0">${ico('close')}</button></div>
       <div class="jet j-preview" id="jtxt${i}" onclick="toggleJEntry(${i})" style="cursor:pointer">${e.text.length>180?e.text.slice(0,180)+'<span class="j-more"> … <span style=\'color:var(--gh);font-size:11px\'>tap to read more</span></span>':e.text}</div>
       <div class="jet j-full" id="jfull${i}" style="display:none;cursor:pointer" onclick="toggleJEntry(${i})">${e.text}<div style="font-size:11px;color:var(--tx3);margin-top:6px">tap to collapse</div></div>
     </div>`).join('');
@@ -1620,7 +1698,7 @@ function init(){
   applyTheme(S.theme||'dark');
   if(S.sidebarCollapsed){document.getElementById('sb').classList.add('col');document.getElementById('main').classList.add('col');}
   renderOv(); renderHabits(); renderCh(); renderEnglish(); renderLearn(); renderJournal();
-  renderFocus(); renderGoals(); renderWater(); renderGratitude();
+  renderFocus(); renderGoals(); renderWater(); renderGratitude(); renderChIconPicker();
   updateTimerDisplay();
   setInterval(()=>save(),60000);
 }
