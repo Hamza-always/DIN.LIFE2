@@ -115,16 +115,15 @@ button,input,select,textarea{font-family:inherit}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
 
 /* ═══ MOBILE ═══ */
-#mob-tog{display:none;width:36px;height:36px;border-radius:10px;background:var(--sf2);border:1px solid var(--bd2);color:var(--tx);font-size:17px;cursor:pointer;align-items:center;justify-content:center;flex-shrink:0}
+#mob-tog{display:none;position:fixed;top:12px;left:12px;z-index:300;width:38px;height:38px;border-radius:10px;background:var(--sf);border:1px solid var(--bd2);color:var(--tx);font-size:17px;cursor:pointer;align-items:center;justify-content:center;backdrop-filter:blur(12px);box-shadow:var(--card-shadow)}
 #sb-ov{display:none;position:fixed;inset:0;z-index:199;background:rgba(0,0,0,.5)}
 @media(max-width:900px){
   #mob-tog{display:flex}
-  .sb-tog{display:none}
   #sb{transform:translateX(-100%);transition:transform .3s cubic-bezier(.4,0,.2,1);width:var(--nw)!important}
   #sb.mob-open{transform:translateX(0)}
   #sb-ov.show{display:block}
   #main{margin-left:0!important}
-  #topbar{padding:0 14px;gap:12px}
+  #topbar{padding:0 14px 0 58px}
   .page{padding:20px 14px 80px}
   .eng-grid,.stats,.ch-grid,.learn-grid{grid-template-columns:1fr!important}
   .habit-row,.habit-head{grid-template-columns:1fr auto!important}
@@ -302,6 +301,21 @@ select.inp{cursor:pointer}
 .wtags{display:flex;flex-wrap:wrap;gap:4px;margin-top:8px}
 .wtag{font-size:9px;padding:2px 7px;border-radius:20px;background:var(--sf2);border:1px solid var(--bd);color:var(--tx3)}
 .wtag.daily{border-color:rgba(62,207,142,.3);color:var(--gr)}.wtag.corporate{border-color:rgba(91,156,246,.3);color:var(--bl)}.wtag.family{border-color:rgba(201,168,76,.3);color:var(--gh)}.wtag.idiom,.wtag.academic{border-color:rgba(139,126,222,.3);color:var(--pu)}.wtag.emotion{border-color:rgba(255,95,95,.3);color:var(--rd)}.wtag.travel{border-color:rgba(62,207,142,.3);color:var(--gr)}
+.wtag.morning,.wtag.personal{border-color:rgba(249,115,22,.3);color:var(--or)}.wtag.midday,.wtag.deen{border-color:rgba(201,168,76,.35);color:var(--gh)}.wtag.evening,.wtag.work{border-color:rgba(139,126,222,.3);color:var(--pu)}.wtag.health{border-color:rgba(62,207,142,.3);color:var(--gr)}.wtag.learning{border-color:rgba(91,156,246,.3);color:var(--bl)}
+.rt-row{display:flex;align-items:center;gap:10px;padding:11px 14px;background:var(--sf);border:1px solid var(--bd);border-radius:var(--rsm);margin-bottom:8px;transition:all .15s;box-shadow:var(--card-shadow)}
+.rt-row:hover{border-color:var(--bd2)}
+.rt-row.done{opacity:.6}
+.rt-row.done .rt-name{text-decoration:line-through}
+.rt-ic{width:30px;height:30px;border-radius:8px;background:var(--sf2);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:15px;color:var(--gh)}
+.rt-info{flex:1;min-width:0}
+.rt-name{font-size:13px;font-weight:600;color:var(--tx)}
+.rt-ck{width:30px;height:30px;border-radius:8px;border:1px solid var(--bd);background:var(--sf2);cursor:pointer;display:grid;place-items:center;font-size:16px;transition:all .15s;color:var(--tx2);flex-shrink:0}
+.rt-ck:hover{transform:scale(1.08)}
+.rt-ck.on{background:var(--glo);border-color:rgba(62,207,142,.3);color:var(--gr)}
+.rt-cat-pick{display:flex;gap:6px;flex-wrap:wrap}
+.rt-cat-opt{padding:7px 12px;border-radius:20px;font-size:11px;font-weight:700;cursor:pointer;border:1px solid var(--bd);background:var(--sf2);color:var(--tx3);transition:all .15s;display:flex;align-items:center;gap:5px}
+.rt-cat-opt:hover{border-color:var(--bd2);color:var(--tx2)}
+.rt-cat-opt.on{background:var(--glo);border-color:rgba(201,168,76,.35);color:var(--gh)}
 .mode-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:18px}
 .fc-wrap{perspective:1000px;margin-bottom:14px}
 .fc{width:100%;min-height:180px;border-radius:var(--r);position:relative;transform-style:preserve-3d;transition:transform .5s cubic-bezier(.4,0,.2,1);cursor:pointer}
@@ -469,6 +483,7 @@ footer{text-align:center;padding:24px 0 40px;font-size:10px;color:var(--tx3);let
   <nav class="sb-nav">
     <div class="ni on" data-p="overview"><span class="ni-ic"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></span><span class="ni-lb">Overview</span></div>
     <div class="ni" data-p="habits"><span class="ni-ic"><svg viewBox="0 0 24 24"><path d="M12 2a5 5 0 0 1 5 5c0 3.5-5 9-5 9S7 10.5 7 7a5 5 0 0 1 5-5z"/><circle cx="12" cy="7" r="1.5" fill="currentColor" stroke="none"/></svg></span><span class="ni-lb">Habits</span><span class="nb" id="nb-h">0</span></div>
+    <div class="ni" data-p="routine"><span class="ni-ic"><svg viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 3v2a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1V3"/><polyline points="8,13 10,15 16,9"/></svg></span><span class="ni-lb">Daily Routine</span><span class="nb" id="nb-r">0</span></div>
     <div class="ni" data-p="challenges"><span class="ni-ic"><svg viewBox="0 0 24 24"><polygon points="12,2 15.5,8.5 23,9.5 17.5,14.5 19,22 12,18.5 5,22 6.5,14.5 1,9.5 8.5,8.5"/></svg></span><span class="ni-lb">Challenges</span><span class="nb" id="nb-c">0</span></div>
     <div class="ni" data-p="focus"><span class="ni-ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><polyline points="12,7 12,12 15,15"/></svg></span><span class="ni-lb">Focus Timer</span></div>
     <div class="ni" data-p="goals"><span class="ni-ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none"/></svg></span><span class="ni-lb">Goals</span></div>
@@ -498,12 +513,12 @@ footer{text-align:center;padding:24px 0 40px;font-size:10px;color:var(--tx3);let
   </div>
 </aside>
 
+<button id="mob-tog" onclick="mobNav()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
 <div id="sb-ov" onclick="mobNav()"></div>
 
 <!-- MAIN -->
 <div id="main">
   <div id="topbar">
-    <button id="mob-tog" onclick="mobNav()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
     <span class="tb-title" id="tbTitle">Overview</span>
     <span class="tb-date" id="tbDate"></span>
   </div>
@@ -567,6 +582,30 @@ footer{text-align:center;padding:24px 0 40px;font-size:10px;color:var(--tx3);let
         <button class="btn btn-g btn-sm" onclick="addHabit()"><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4,12 9,17 20,6"/></svg></span> Add Habit</button>
         <button class="btn btn-gh btn-sm" onclick="hideAddHabit()">Cancel</button>
       </div>
+    </div>
+  </div>
+
+  <!-- DAILY ROUTINE -->
+  <div class="page" id="page-routine">
+    <div class="ph"><h1><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-4px;margin-right:8px"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 3v2a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1V3"/><polyline points="8,13 10,15 16,9"/></svg>Daily Routine</h1><p>Design your ideal day, block by block.</p></div>
+    <div class="lv-strip" id="rtCatStrip" style="margin-bottom:16px"></div>
+    <div class="slbl">Today</div>
+    <div id="rtList" style="margin-bottom:20px"></div>
+    <div class="slbl">Add Routine Item</div>
+    <div class="gsm" style="padding:16px;margin-bottom:24px">
+      <div style="margin-bottom:12px">
+        <div style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--tx3);margin-bottom:6px">Name</div>
+        <input id="rtInput" class="inp" placeholder="e.g. Morning prayer, Read 20 pages, Gym session…" maxlength="60" style="width:100%">
+      </div>
+      <div style="margin-bottom:14px">
+        <div style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--tx3);margin-bottom:8px">Category</div>
+        <div class="rt-cat-pick" id="rtCatPicker"></div>
+      </div>
+      <button class="btn btn-g btn-sm" onclick="addRoutine()"><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4,12 9,17 20,6"/></svg></span> Add Routine</button>
+    </div>
+    <div class="slbl">Routine History</div>
+    <div class="glass" style="padding:20px">
+      <div id="rtHistory" style="display:flex;flex-direction:column;gap:6px"></div>
     </div>
   </div>
 
@@ -787,6 +826,18 @@ footer{text-align:center;padding:24px 0 40px;font-size:10px;color:var(--tx3);let
   </div>
 </div>
 
+<!-- EDIT ROUTINE MODAL -->
+<div class="cal-popup gone" id="editRoutineModal">
+  <div class="cal-popup-box">
+    <button class="cal-popup-close" onclick="closeEditRoutine()"><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg></span></button>
+    <div class="cal-popup-date"><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg></span> Edit Routine Item</div>
+    <input type="hidden" id="erId">
+    <div class="afield" style="margin-bottom:12px"><label style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--tx3);display:block;margin-bottom:5px">Name</label><input id="erName" class="ainp" placeholder="Routine item name…" maxlength="60"></div>
+    <div class="afield" style="margin-bottom:14px"><label style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--tx3);display:block;margin-bottom:8px">Category</label><div class="rt-cat-pick" id="erCatPicker"></div></div>
+    <div style="display:flex;gap:8px"><button class="btn btn-gh btn-sm" style="flex:1" onclick="closeEditRoutine()">Cancel</button><button class="btn btn-g btn-sm" style="flex:1" onclick="saveEditRoutine()">Save</button></div>
+  </div>
+</div>
+
 <!-- EDIT LEARNING ENTRY MODAL -->
 <div class="cal-popup gone" id="editLearnModal">
   <div class="cal-popup-box">
@@ -899,13 +950,29 @@ const ICONS = {
   people:'<circle cx="9" cy="8" r="2.5"/><circle cx="17" cy="9" r="2"/><path d="M4 19c0-3 2-5 5-5s5 2 5 5"/><path d="M14 19c.3-2 1.5-3.3 4-3.3 1.6 0 2.7.6 3 1.8"/>',
   mask:'<path d="M4 9c0-3 3.5-5 8-5s8 2 8 5c0 5-3 10-8 10S4 14 4 9z"/><circle cx="9" cy="9" r="1" fill="currentColor" stroke="none"/><circle cx="15" cy="9" r="1" fill="currentColor" stroke="none"/><path d="M9 13c1 1 2 1.4 3 1.4s2-.4 3-1.4"/>',
   heart:'<path d="M12 20s-7-4.5-9.5-9A5 5 0 0 1 12 6a5 5 0 0 1 9.5 5c-2.5 4.5-9.5 9-9.5 9z"/>',
-  plane:'<path d="M2 13l9-2v-7l3 2v5l7 1v2l-7 1v5l-3 2v-7l-9-2z"/>'
+  plane:'<path d="M2 13l9-2v-7l3 2v5l7 1v2l-7 1v5l-3 2v-7l-9-2z"/>',
+  pulse:'<polyline points="3,12 7,12 9,6 13,18 16,12 21,12"/>',
+  crescentStar:'<path d="M15.5 4.5a7.5 7.5 0 1 0 0 15 7.8 7.8 0 0 1 0-15z"/><path d="M18.5 5.2l.8 1.7 1.8.3-1.3 1.3.3 1.8-1.6-.9-1.6.9.3-1.8-1.3-1.3 1.8-.3z" fill="currentColor" stroke="none"/>',
+  user:'<circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.5-7 8-7s8 3 8 7"/>',
+  clipboard:'<rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 3v2a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1V3"/><polyline points="8,13 10,15 16,9"/>'
 };
 function ico(name){
   const inner = ICONS[name] || ICONS.target;
   return `<span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${inner}</svg></span>`;
 }
 function moodIcon(m){ return ico(m && ICONS[m] ? m : 'notebook'); }
+
+const ROUTINE_CATS={
+  morning:{ic:'sunrise',t:'Morning',col:'or'},
+  midday:{ic:'sun',t:'Midday',col:'gold'},
+  evening:{ic:'moon',t:'Evening',col:'pu'},
+  health:{ic:'pulse',t:'Health',col:'gr'},
+  learning:{ic:'cap',t:'Learning',col:'bl'},
+  deen:{ic:'crescentStar',t:'Deen',col:'gold'},
+  work:{ic:'briefcase',t:'Work',col:'pu'},
+  personal:{ic:'user',t:'Personal',col:'or'}
+};
+function rtCatLabel(c){const o=ROUTINE_CATS[c];return o?ico(o.ic)+' '+o.t:(c||'Personal');}
 
 const EMOJI_LIST=['target','dumbbell','book','lotus','run','droplet','salad','tired','edit','music','brain','leaf','ice','bolt','sunrise','ban','dumbbell','bike','broom','pill','openbook','palette','apple','sun','moon','bed','walk','stretch','lotus','laptop'];
 const CHALLENGE_ICONS=['ban','sword','trophy','ice','dumbbell','target','lock','paw','moon','bolt','flame','lotus','mute','run','droplet','leaf'];
@@ -916,7 +983,7 @@ const DEFAULT = {
   subjects:[{id:1,name:'English',color:'#5b9cf6',entries:[]},{id:2,name:'Programming',color:'#c9a84c',entries:[]},{id:3,name:'Fitness',color:'#3ecf8e',entries:[]}],
   journalEntries:[], sidebarCollapsed:false, theme:'dark',
   waterLog:{}, waterGoal:8,
-  focusLog:[], goals:[], gratitude:{},
+  focusLog:[], goals:[], gratitude:{}, routines:[],
 };
 
 // ═══════════════════════════════════════
@@ -1118,7 +1185,7 @@ document.getElementById('calPopup').addEventListener('click',e=>{if(e.target===d
 // ═══════════════════════════════════════
 // NAV
 // ═══════════════════════════════════════
-const PT={overview:'Overview',habits:'Habits',challenges:'Challenges',focus:'Focus Timer',goals:'Goals',water:'Water Tracker',gratitude:'Gratitude',english:'English',learning:'Learning',journal:'Journal'};
+const PT={overview:'Overview',habits:'Habits',routine:'Daily Routine',challenges:'Challenges',focus:'Focus Timer',goals:'Goals',water:'Water Tracker',gratitude:'Gratitude',english:'English',learning:'Learning',journal:'Journal'};
 function goTo(p){
   document.querySelectorAll('.page').forEach(x=>x.classList.remove('on'));
   document.querySelectorAll('.ni').forEach(x=>x.classList.remove('on'));
@@ -1164,6 +1231,7 @@ function renderOv(){
   const wc=S.waterLog&&S.waterLog[TKEY]||0, wg=S.waterGoal||8;
   document.getElementById('ovWater').innerHTML=`<div style="display:flex;align-items:center;gap:10px;padding:12px 16px;background:var(--sf);border:1px solid var(--bd);border-radius:var(--rsm);box-shadow:var(--card-shadow)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--bl)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3C12 3 5 11 5 15.5a7 7 0 0 0 14 0C19 11 12 3 12 3z"/></svg><div><div style="font-size:13px;font-weight:700;margin-bottom:3px">${wc}/${wg} glasses</div><div style="height:3px;width:120px;background:var(--bd);border-radius:2px;overflow:hidden"><div style="height:100%;width:${Math.min(100,wc/wg*100)}%;background:var(--bl);border-radius:2px"></div></div></div></div>`;
   document.getElementById('nb-h').textContent=S.habits.length;
+  document.getElementById('nb-r').textContent=(S.routines||[]).length;
   document.getElementById('nb-c').textContent=S.challenges.filter(c=>c.start&&!c.failed&&!c.done).length;
   document.getElementById('nb-j').textContent=S.journalEntries.length;
 }
@@ -1274,6 +1342,120 @@ async function delHabit(id){
 }
 
 document.getElementById('hInput').addEventListener('keydown',e=>{if(e.key==='Enter')addHabit();});
+
+// ═══════════════════════════════════════
+// DAILY ROUTINE
+// ═══════════════════════════════════════
+let _rtFilterCat='all';
+let _rtPickCat='morning';
+let _rtShowAll=false;
+
+function renderRtCatStrip(){
+  const all=`<div class="chip cat-chip${_rtFilterCat==='all'?' on':''}" onclick="setRtFilter('all')">All</div>`;
+  document.getElementById('rtCatStrip').innerHTML=all+Object.keys(ROUTINE_CATS).map(c=>`<div class="chip cat-chip${_rtFilterCat===c?' on':''}" onclick="setRtFilter('${c}')">${rtCatLabel(c)}</div>`).join('');
+}
+function setRtFilter(c){_rtFilterCat=c;renderRtCatStrip();renderRtList();}
+
+function renderRtCatPicker(){
+  document.getElementById('rtCatPicker').innerHTML=Object.keys(ROUTINE_CATS).map(c=>`<div class="rt-cat-opt${_rtPickCat===c?' on':''}" onclick="pickRtCat('${c}')">${rtCatLabel(c)}</div>`).join('');
+}
+function pickRtCat(c){_rtPickCat=c;renderRtCatPicker();}
+
+function renderEditRtCatPicker(sel){
+  document.getElementById('erCatPicker').innerHTML=Object.keys(ROUTINE_CATS).map(c=>`<div class="rt-cat-opt${sel===c?' on':''}" onclick="pickEditRtCat('${c}')">${rtCatLabel(c)}</div>`).join('');
+}
+function pickEditRtCat(c){document.getElementById('erId').dataset.cat=c;renderEditRtCatPicker(c);}
+
+function addRoutine(){
+  const n=document.getElementById('rtInput').value.trim();
+  if(!n)return;
+  if(!S.routines)S.routines=[];
+  S.routines.push({id:Date.now(),name:n,cat:_rtPickCat,log:{}});
+  document.getElementById('rtInput').value='';
+  save(); renderRtList(); renderRtHistory(); renderOv(); toast(`Routine added: ${n}`);
+}
+
+function toggleRoutine(id){
+  const r=S.routines.find(x=>x.id===id); if(!r)return;
+  if(!r.log)r.log={};
+  r.log[TKEY]=!r.log[TKEY];
+  save(); renderRtList(); renderRtHistory();
+}
+
+function renderRtList(){
+  const list=document.getElementById('rtList');
+  if(!S.routines)S.routines=[];
+  const items=S.routines.filter(r=>_rtFilterCat==='all'||r.cat===_rtFilterCat);
+  if(!items.length){
+    list.innerHTML=`<div style="padding:24px;text-align:center;font-size:13px;color:var(--tx3)">${S.routines.length?'No items in this category.':'No routine items yet. Add your first block below.'}</div>`;
+    return;
+  }
+  list.innerHTML=items.map(r=>{
+    const on=r.log&&r.log[TKEY];
+    const cat=ROUTINE_CATS[r.cat]||ROUTINE_CATS.personal;
+    return`<div class="rt-row${on?' done':''}">
+      <div class="rt-ic">${ico(cat.ic)}</div>
+      <div class="rt-info"><div class="rt-name">${r.name}</div><span class="wtag ${r.cat}">${rtCatLabel(r.cat)}</span></div>
+      <button class="rt-ck${on?' on':''}" onclick="toggleRoutine(${r.id})" title="${on?'Done':'Mark done'}">${on?ico('check'):''}</button>
+      <button class="dbtn" onclick="openEditRoutine(${r.id})" title="Edit" style="color:var(--tx3)">${ico('edit')}</button>
+      <button class="dbtn" onclick="delRoutine(${r.id})">${ico('close')}</button>
+    </div>`;
+  }).join('');
+}
+
+function openEditRoutine(id){
+  const r=S.routines.find(x=>x.id===id); if(!r)return;
+  document.getElementById('erId').value=id;
+  document.getElementById('erId').dataset.cat=r.cat;
+  document.getElementById('erName').value=r.name;
+  renderEditRtCatPicker(r.cat);
+  document.getElementById('editRoutineModal').classList.remove('gone');
+}
+function closeEditRoutine(){document.getElementById('editRoutineModal').classList.add('gone');}
+function saveEditRoutine(){
+  const id=parseInt(document.getElementById('erId').value);
+  const r=S.routines.find(x=>x.id===id); if(!r)return;
+  const n=document.getElementById('erName').value.trim(); if(!n)return;
+  r.name=n; r.cat=document.getElementById('erId').dataset.cat||r.cat;
+  save(); renderRtList(); renderRtCatStrip(); renderRtHistory(); closeEditRoutine(); toast('Routine updated.');
+}
+
+async function delRoutine(id){
+  const r=S.routines.find(x=>x.id===id); if(!r)return;
+  const ok=await confirm2('Delete routine item?',`"${r.name}" and all history will be removed.`);
+  if(!ok)return;
+  S.routines=S.routines.filter(x=>x.id!==id); save(); renderRtList(); renderRtHistory(); renderOv(); toast('Routine item deleted.');
+}
+
+function toggleRtHistory(){_rtShowAll=!_rtShowAll;renderRtHistory();}
+function renderRtHistory(){
+  const histEl=document.getElementById('rtHistory'); if(!histEl)return;
+  if(!S.routines)S.routines=[];
+  const byDay={};
+  S.routines.forEach(r=>{
+    Object.keys(r.log||{}).forEach(d=>{
+      if(d===TKEY||!r.log[d])return;
+      (byDay[d]=byDay[d]||[]).push(r);
+    });
+  });
+  const days=Object.keys(byDay).sort((a,b)=>b.localeCompare(a));
+  if(!days.length){histEl.innerHTML='<div style="font-size:12px;color:var(--tx3)">No past records yet. Complete some routine items to build your history.</div>';return;}
+  const shown=_rtShowAll?days:days.slice(0,7);
+  let html=shown.map(d=>{
+    const list=byDay[d];
+    return`<div style="margin-bottom:10px"><div style="font-size:10px;color:var(--tx3);margin-bottom:6px">${new Date(d+'T12:00:00').toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'})} · ${list.length} completed</div>${list.map(r=>{const cat=ROUTINE_CATS[r.cat]||ROUTINE_CATS.personal;return`<div style="display:flex;align-items:center;gap:8px;padding:7px 12px;background:var(--sf);border:1px solid var(--bd);border-radius:var(--rsm);margin-bottom:4px;font-size:12px;color:var(--tx2)"><span style="color:var(--gr)">${ico('doneCircle')}</span>${r.name}<span class="wtag ${r.cat}" style="margin-left:auto">${rtCatLabel(r.cat)}</span></div>`;}).join('')}</div>`;
+  }).join('');
+  if(days.length>7) html+=`<button class="btn btn-gh btn-sm" style="width:100%" onclick="toggleRtHistory()">${_rtShowAll?'Show recent only':'View all '+days.length+' days'}</button>`;
+  histEl.innerHTML=html;
+}
+
+function renderRoutine(){
+  renderRtCatStrip();
+  renderRtCatPicker();
+  renderRtList();
+  renderRtHistory();
+}
+document.getElementById('rtInput').addEventListener('keydown',e=>{if(e.key==='Enter')addRoutine();});
 
 // ═══════════════════════════════════════
 // CHALLENGES
@@ -1726,7 +1908,7 @@ function init(){
   document.getElementById('jDt').textContent=TODAY.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'});
   applyTheme(S.theme||'dark');
   if(S.sidebarCollapsed){document.getElementById('sb').classList.add('col');document.getElementById('main').classList.add('col');}
-  renderOv(); renderHabits(); renderCh(); renderEnglish(); renderLearn(); renderJournal();
+  renderOv(); renderHabits(); renderRoutine(); renderCh(); renderEnglish(); renderLearn(); renderJournal();
   renderFocus(); renderGoals(); renderWater(); renderGratitude(); renderChIconPicker();
   updateTimerDisplay();
   setInterval(()=>save(),60000);
