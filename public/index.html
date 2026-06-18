@@ -325,6 +325,20 @@ select.inp{cursor:pointer}
 .rt-cat-opt{padding:7px 12px;border-radius:20px;font-size:11px;font-weight:700;cursor:pointer;border:1px solid var(--bd);background:var(--sf2);color:var(--tx3);transition:all .15s;display:flex;align-items:center;gap:5px}
 .rt-cat-opt:hover{border-color:var(--bd2);color:var(--tx2)}
 .rt-cat-opt.on{background:var(--glo);border-color:rgba(201,168,76,.35);color:var(--gh)}
+.qa-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px}
+.qa-card{background:var(--sf);border:1px solid var(--bd);border-radius:var(--rsm);padding:14px;cursor:pointer;transition:all .18s;box-shadow:var(--card-shadow)}
+.qa-card:hover{border-color:var(--bd2);transform:translateY(-2px)}
+.qa-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.qa-ic{width:32px;height:32px;border-radius:9px;background:var(--sf2);display:flex;align-items:center;justify-content:center;color:var(--gh);font-size:16px}
+.qa-dot{width:7px;height:7px;border-radius:50%;background:var(--bd2);flex-shrink:0}
+.qa-dot.on{background:var(--gr)}
+.qa-val{font-size:19px;font-weight:700;color:var(--gh);line-height:1}
+.qa-title{font-size:11px;font-weight:700;color:var(--tx);margin-top:4px}
+.qa-sub{font-size:9px;color:var(--tx3);text-transform:uppercase;letter-spacing:1px;margin-top:1px}
+.af-item{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;background:var(--sf);border:1px solid var(--bd);border-radius:var(--rsm);margin-bottom:6px}
+.af-ic{width:28px;height:28px;border-radius:8px;background:var(--sf2);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--gh);font-size:14px}
+.af-txt{flex:1;min-width:0;font-size:12px;color:var(--tx2);line-height:1.4}
+.af-time{font-size:9px;color:var(--tx3);white-space:nowrap;margin-top:2px}
 .mode-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:18px}
 .fc-wrap{perspective:1000px;margin-bottom:14px}
 .fc{width:100%;min-height:180px;border-radius:var(--r);position:relative;transform-style:preserve-3d;transition:transform .5s cubic-bezier(.4,0,.2,1);cursor:pointer}
@@ -535,7 +549,15 @@ footer{text-align:center;padding:24px 0 40px;font-size:10px;color:var(--tx3);let
   <!-- OVERVIEW -->
   <div class="page on" id="page-overview">
     <div class="hero glass"><div class="hero-din">DİN</div><div class="hero-sl">Do It Now</div></div>
-    <div class="stats" id="statsGrid"></div>
+    <div class="cat-strip" id="ovViewToggle" style="margin-bottom:14px"></div>
+    <div class="stats" id="statsGrid" style="margin-bottom:24px"></div>
+
+    <div class="slbl">Quick Access</div>
+    <div class="qa-grid" id="qaGrid" style="margin-bottom:24px"></div>
+
+    <div class="slbl">Today's Checklist</div>
+    <div id="ovChecklist" style="margin-bottom:24px"></div>
+
     <div class="slbl">
       <button class="cal-nav-btn" id="cal-prev" onclick="calPrev()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
       <span style="font-size:11px;color:var(--tx3);letter-spacing:2px;text-transform:uppercase" id="mlbl"></span>
@@ -552,10 +574,10 @@ footer{text-align:center;padding:24px 0 40px;font-size:10px;color:var(--tx3);let
     </div>
     <div class="slbl">Active Challenges</div>
     <div id="ovCh" style="margin-bottom:24px"></div>
-    <div class="slbl">Today's Habits</div>
-    <div id="ovH" style="margin-bottom:24px"></div>
-    <div class="slbl">Today's Water</div>
-    <div id="ovWater" style="margin-bottom:24px"></div>
+    <div class="slbl">Goals Progress</div>
+    <div id="ovGoals" style="margin-bottom:24px"></div>
+    <div class="slbl">Recent Activity</div>
+    <div id="ovActivity" style="margin-bottom:24px"></div>
     <footer>DİN · Every day is a choice.</footer>
   </div>
 
@@ -983,7 +1005,8 @@ const ICONS = {
   crescentStar:'<path d="M15.5 4.5a7.5 7.5 0 1 0 0 15 7.8 7.8 0 0 1 0-15z"/><path d="M18.5 5.2l.8 1.7 1.8.3-1.3 1.3.3 1.8-1.6-.9-1.6.9.3-1.8-1.3-1.3 1.8-.3z" fill="currentColor" stroke="none"/>',
   user:'<circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.5-7 8-7s8 3 8 7"/>',
   clipboard:'<rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 3v2a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1V3"/><polyline points="8,13 10,15 16,9"/>',
-  clock:'<circle cx="12" cy="12" r="9"/><polyline points="12,7 12,12 15,15"/>'
+  clock:'<circle cx="12" cy="12" r="9"/><polyline points="12,7 12,12 15,15"/>',
+  repeat:'<path d="M17 2l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="M7 22l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/>'
 };
 function ico(name){
   const inner = ICONS[name] || ICONS.target;
@@ -1222,6 +1245,7 @@ function goTo(p){
   document.getElementById('page-'+p).classList.add('on');
   document.querySelector(`.ni[data-p="${p}"]`).classList.add('on');
   document.getElementById('tbTitle').textContent=PT[p];
+  if(p==='overview') renderOv();
   if(window.innerWidth<=900)closeMob();
 }
 document.querySelectorAll('.ni').forEach(el=>el.addEventListener('click',()=>goTo(el.dataset.p)));
@@ -1245,21 +1269,147 @@ function toast(m){const e=document.getElementById('toast');e.textContent=m;e.cla
 // ═══════════════════════════════════════
 // OVERVIEW
 // ═══════════════════════════════════════
-function renderOv(){
-  const str=calcStreak(), dn=S.habits.filter(h=>h.log&&h.log[TKEY]==='done').length, tot=S.habits.length;
-  const p=tot?Math.round(dn/tot*100):0;
+let _ovView='today';
+function last7Keys(){const arr=[];const d=new Date(TODAY);for(let i=0;i<7;i++){arr.push(fmtD(d));d.setDate(d.getDate()-1);}return arr;}
+
+function setOvView(v){_ovView=v;renderOvViewToggle();renderStats();}
+function renderOvViewToggle(){
+  document.getElementById('ovViewToggle').innerHTML=`<div class="chip cat-chip${_ovView==='today'?' on':''}" onclick="setOvView('today')">Today</div><div class="chip cat-chip${_ovView==='week'?' on':''}" onclick="setOvView('week')">This Week</div>`;
+}
+
+function renderStats(){
+  const str=calcStreak();
+  let habitsVal,habitsP,routineVal,routineP,focusVal,focusP,waterVal,waterP,gratVal,gratP,lbl;
+  if(_ovView==='today'){
+    lbl='Today';
+    const dn=S.habits.filter(h=>h.log&&h.log[TKEY]==='done').length, tot=S.habits.length;
+    habitsVal=`${dn}/${tot}`; habitsP=tot?Math.round(dn/tot*100):0;
+    const rToday=(S.routines||[]).filter(r=>!r.date||r.date===TKEY);
+    const rDone=rToday.filter(r=>r.log&&r.log[TKEY]).length;
+    routineVal=`${rDone}/${rToday.length}`; routineP=rToday.length?Math.round(rDone/rToday.length*100):0;
+    const fMins=(S.focusLog||[]).filter(f=>f.date===TKEY).reduce((a,b)=>a+b.mins,0);
+    focusVal=`${fMins}m`; focusP=Math.min(100,Math.round(fMins/60*100));
+    const wc=(S.waterLog&&S.waterLog[TKEY])||0, wg=S.waterGoal||8;
+    waterVal=`${wc}/${wg}`; waterP=Math.min(100,Math.round(wc/wg*100));
+    const gc=(S.gratitude&&S.gratitude[TKEY]||[]).length;
+    gratVal=`${gc}`; gratP=Math.min(100,gc*20);
+  }else{
+    lbl='This Week';
+    const keys=last7Keys();
+    let hDone=0,hTot=S.habits.length*7;
+    keys.forEach(k=>{hDone+=S.habits.filter(h=>h.log&&h.log[k]==='done').length;});
+    habitsVal=`${hDone}/${hTot}`; habitsP=hTot?Math.round(hDone/hTot*100):0;
+    const rAll=(S.routines||[]);
+    let rDone=0,rTot=0;
+    keys.forEach(k=>{rAll.forEach(r=>{if(!r.date||r.date===k){rTot++;if(r.log&&r.log[k])rDone++;}});});
+    routineVal=`${rDone}/${rTot}`; routineP=rTot?Math.round(rDone/rTot*100):0;
+    const fMins=(S.focusLog||[]).filter(f=>keys.includes(f.date)).reduce((a,b)=>a+b.mins,0);
+    focusVal=`${fMins}m`; focusP=Math.min(100,Math.round(fMins/300*100));
+    let wTotal=0; keys.forEach(k=>{wTotal+=(S.waterLog&&S.waterLog[k])||0;});
+    waterVal=`${wTotal}`; waterP=Math.min(100,Math.round(wTotal/((S.waterGoal||8)*7)*100));
+    let gTotal=0; keys.forEach(k=>{gTotal+=(S.gratitude&&S.gratitude[k]||[]).length;});
+    gratVal=`${gTotal}`; gratP=Math.min(100,gTotal*5);
+  }
+  const activeCh=S.challenges.filter(c=>c.start&&!c.failed&&!c.done).length;
+  const goalsAvg=S.goals.length?Math.round(S.goals.reduce((a,g)=>a+(g.steps.length?g.steps.filter(s=>s.done).length/g.steps.length:0),0)/S.goals.length*100):0;
   document.getElementById('statsGrid').innerHTML=`
     <div class="glass sc"><span class="sc-n">${str}</span><div class="sc-l">Day Streak</div><div class="sc-bar"><div class="sc-fill" style="width:${Math.min(100,str*5)}%"></div></div></div>
-    <div class="glass sc"><span class="sc-n">${dn}/${tot}</span><div class="sc-l">Habits Today</div><div class="sc-bar"><div class="sc-fill" style="width:${p}%"></div></div></div>
-    <div class="glass sc"><span class="sc-n">${S.challenges.filter(c=>c.start&&!c.failed&&!c.done).length}</span><div class="sc-l">Challenges</div><div class="sc-bar"><div class="sc-fill" style="width:${Math.min(100,S.challenges.filter(c=>c.start&&!c.failed&&!c.done).length*20)}%"></div></div></div>
-    <div class="glass sc"><span class="sc-n">${S.learnedWords.length}</span><div class="sc-l">Words</div><div class="sc-bar"><div class="sc-fill" style="width:${Math.min(100,S.learnedWords.length)}%"></div></div></div>
+    <div class="glass sc"><span class="sc-n">${habitsVal}</span><div class="sc-l">Habits · ${lbl}</div><div class="sc-bar"><div class="sc-fill" style="width:${habitsP}%"></div></div></div>
+    <div class="glass sc"><span class="sc-n">${routineVal}</span><div class="sc-l">Routine · ${lbl}</div><div class="sc-bar"><div class="sc-fill" style="width:${routineP}%"></div></div></div>
+    <div class="glass sc"><span class="sc-n">${focusVal}</span><div class="sc-l">Focus · ${lbl}</div><div class="sc-bar"><div class="sc-fill" style="width:${focusP}%"></div></div></div>
+    <div class="glass sc"><span class="sc-n">${waterVal}</span><div class="sc-l">Water · ${lbl}</div><div class="sc-bar"><div class="sc-fill" style="width:${waterP}%"></div></div></div>
+    <div class="glass sc"><span class="sc-n">${gratVal}</span><div class="sc-l">Gratitude · ${lbl}</div><div class="sc-bar"><div class="sc-fill" style="width:${gratP}%"></div></div></div>
+    <div class="glass sc"><span class="sc-n">${activeCh}</span><div class="sc-l">Challenges</div><div class="sc-bar"><div class="sc-fill" style="width:${Math.min(100,activeCh*20)}%"></div></div></div>
+    <div class="glass sc"><span class="sc-n">${goalsAvg}%</span><div class="sc-l">Goals Progress</div><div class="sc-bar"><div class="sc-fill" style="width:${goalsAvg}%"></div></div></div>
   `;
+}
+
+function renderQuickAccess(){
+  const today=TKEY;
+  const habitsDone=S.habits.filter(h=>h.log&&h.log[today]==='done').length;
+  const routineToday=(S.routines||[]).filter(r=>!r.date||r.date===today);
+  const routineDone=routineToday.filter(r=>r.log&&r.log[today]).length;
+  const activeCh=S.challenges.filter(c=>c.start&&!c.failed&&!c.done).length;
+  const focusToday=(S.focusLog||[]).filter(f=>f.date===today).reduce((a,b)=>a+b.mins,0);
+  const goalsAvg=S.goals.length?Math.round(S.goals.reduce((a,g)=>a+(g.steps.length?g.steps.filter(s=>s.done).length/g.steps.length:0),0)/S.goals.length*100):0;
+  const wc=(S.waterLog&&S.waterLog[today])||0, wg=S.waterGoal||8;
+  const gratToday=(S.gratitude&&S.gratitude[today]||[]).length;
+  const wordsCount=S.learnedWords.length;
+  const learnEntries=(S.subjects||[]).reduce((a,s)=>a+(s.entries?s.entries.length:0),0);
+  const journalCount=S.journalEntries.length;
+  const cards=[
+    {p:'habits',ic:'repeat',title:'Habits',val:`${habitsDone}/${S.habits.length}`,sub:'done today',on:S.habits.length>0&&habitsDone===S.habits.length},
+    {p:'routine',ic:'clipboard',title:'Daily Routine',val:`${routineDone}/${routineToday.length}`,sub:'completed today',on:routineToday.length>0&&routineDone===routineToday.length},
+    {p:'challenges',ic:'trophy',title:'Challenges',val:`${activeCh}`,sub:'active',on:activeCh>0},
+    {p:'focus',ic:'clock',title:'Focus Timer',val:`${focusToday}m`,sub:'focused today',on:focusToday>0},
+    {p:'goals',ic:'target',title:'Goals',val:`${goalsAvg}%`,sub:`${S.goals.length} goals`,on:S.goals.length>0&&goalsAvg===100},
+    {p:'water',ic:'droplet',title:'Water',val:`${wc}/${wg}`,sub:'glasses today',on:wc>=wg&&wg>0},
+    {p:'gratitude',ic:'heart',title:'Gratitude',val:`${gratToday}`,sub:'entries today',on:gratToday>0},
+    {p:'english',ic:'book',title:'English',val:`${wordsCount}`,sub:'words learned',on:false},
+    {p:'learning',ic:'cap',title:'Learning',val:`${learnEntries}`,sub:'entries logged',on:false},
+    {p:'journal',ic:'notebook',title:'Journal',val:`${journalCount}`,sub:'entries written',on:false}
+  ];
+  document.getElementById('qaGrid').innerHTML=cards.map(c=>`<div class="qa-card" onclick="goTo('${c.p}')"><div class="qa-top"><div class="qa-ic">${ico(c.ic)}</div><span class="qa-dot${c.on?' on':''}"></span></div><div class="qa-val">${c.val}</div><div class="qa-title">${c.title}</div><div class="qa-sub">${c.sub}</div></div>`).join('');
+}
+
+function renderOvChecklist(){
+  const el=document.getElementById('ovChecklist'); if(!el)return;
+  const rows=[];
+  S.habits.forEach(h=>{
+    const on=h.log&&h.log[TKEY]==='done';
+    rows.push({icon:ico(h.emojis?h.emojis[0]:h.emoji||'target'),name:h.name,tag:'Habit',on,oc:`setHabit(${h.id},'done')`});
+  });
+  (S.routines||[]).filter(r=>!r.date||r.date===TKEY).forEach(r=>{
+    const on=r.log&&r.log[TKEY];
+    const cat=ROUTINE_CATS[r.cat]||ROUTINE_CATS.personal;
+    rows.push({icon:ico(cat.ic),name:r.name,tag:cat.t,on,oc:`toggleRoutine(${r.id})`});
+  });
+  if(!rows.length){el.innerHTML='<p style="font-size:12px;color:var(--tx3)">Nothing scheduled — add a habit or routine item to get started.</p>';return;}
+  rows.sort((a,b)=>(a.on?1:0)-(b.on?1:0));
+  el.innerHTML=rows.map(r=>`<div class="rt-row${r.on?' done':''}"><div class="rt-ic">${r.icon}</div><div class="rt-info"><div class="rt-name">${r.name}</div><span class="wtag">${r.tag}</span></div><button class="rt-ck${r.on?' on':''}" onclick="${r.oc}">${r.on?ico('check'):''}</button></div>`).join('');
+}
+
+function renderOvGoals(){
+  const el=document.getElementById('ovGoals'); if(!el)return;
+  if(!S.goals.length){el.innerHTML='<p style="font-size:12px;color:var(--tx3)">No goals yet.</p>';return;}
+  el.innerHTML=S.goals.map(g=>{
+    const tot=g.steps.length, done=g.steps.filter(s=>s.done).length;
+    const pct=tot?Math.round(done/tot*100):0;
+    return`<div style="padding:12px 16px;background:var(--sf);border:1px solid var(--bd);border-radius:var(--rsm);margin-bottom:8px;cursor:pointer" onclick="goTo('goals')">
+      <div style="display:flex;justify-content:space-between;margin-bottom:6px"><span style="font-size:12px;font-weight:700">${g.title}</span><span style="font-size:11px;color:var(--tx3)">${done}/${tot}</span></div>
+      <div style="height:4px;background:var(--bd);border-radius:2px;overflow:hidden"><div style="height:100%;width:${pct}%;background:linear-gradient(90deg,var(--gold),var(--gh))"></div></div>
+    </div>`;
+  }).join('');
+}
+
+function getActivityFeed(limit=8){
+  const items=[];
+  (S.journalEntries||[]).forEach(e=>items.push({date:e.date,ts:e.ts||'',icon:'notebook',text:e.text.length>60?e.text.slice(0,60)+'…':e.text,label:'Journal'}));
+  Object.keys(S.gratitude||{}).forEach(d=>{(S.gratitude[d]||[]).forEach(t=>items.push({date:d,ts:'',icon:'heart',text:t.length>60?t.slice(0,60)+'…':t,label:'Gratitude'}));});
+  (S.subjects||[]).forEach(s=>{(s.entries||[]).forEach(e=>items.push({date:e.date,ts:'',icon:'cap',text:e.text.length>60?e.text.slice(0,60)+'…':e.text,label:s.name}));});
+  (S.writingLog||[]).forEach(w=>items.push({date:w.date,ts:'',icon:'edit',text:w.text.length>60?w.text.slice(0,60)+'…':w.text,label:'Writing'}));
+  (S.focusLog||[]).forEach(f=>items.push({date:f.date,ts:f.ts||'',icon:'clock',text:`${f.label} — ${f.mins} min`,label:'Focus'}));
+  (S.challenges||[]).forEach(c=>{Object.keys(c.log||{}).forEach(d=>{items.push({date:d,ts:'',icon:c.emoji,text:`${c.name} — day ${c.log[d]==='done'?'completed':'missed'}`,label:'Challenge'});});});
+  items.sort((a,b)=>{if(a.date!==b.date)return (b.date||'').localeCompare(a.date||'');return (b.ts||'').localeCompare(a.ts||'');});
+  return items.slice(0,limit);
+}
+function renderActivityFeed(){
+  const el=document.getElementById('ovActivity'); if(!el)return;
+  const items=getActivityFeed(8);
+  if(!items.length){el.innerHTML='<p style="font-size:12px;color:var(--tx3)">No activity yet — start logging something today!</p>';return;}
+  el.innerHTML=items.map(it=>`<div class="af-item"><div class="af-ic">${ico(it.icon)}</div><div style="flex:1;min-width:0"><div class="af-txt"><strong style="color:var(--tx)">${it.label}</strong> · ${it.text}</div><div class="af-time">${fmtRtDate(it.date)}</div></div></div>`).join('');
+}
+
+function renderOv(){
+  renderOvViewToggle();
+  renderStats();
   renderCalendar();
   const ach=S.challenges.filter(c=>c.start&&!c.failed&&!c.done);
-  document.getElementById('ovCh').innerHTML=ach.length?`<div style="display:flex;flex-wrap:wrap;gap:8px">${ach.map(c=>{const pp=Math.round(c.curr/c.totalDays*100);return`<div style="padding:12px 16px;background:var(--sf);border:1px solid var(--bd);border-radius:var(--rsm);display:flex;align-items:center;gap:10px;min-width:190px;box-shadow:var(--card-shadow)"><span style="font-size:22px">${ico(c.emoji)}</span><div><div style="font-size:12px;font-weight:700;margin-bottom:3px">${c.name}</div><div style="font-size:10px;color:var(--tx3)">Day ${c.curr}/${c.totalDays}</div><div style="margin-top:5px;height:2px;width:100px;background:var(--bd);border-radius:1px;overflow:hidden"><div style="height:100%;width:${pp}%;background:var(--gr);border-radius:1px"></div></div></div></div>`;}).join('')}</div>`:'<p style="font-size:12px;color:var(--tx3)">No active challenges yet.</p>';
-  document.getElementById('ovH').innerHTML=S.habits.length?`<div style="display:flex;flex-wrap:wrap;gap:6px">${S.habits.map(h=>{const s=h.log&&h.log[TKEY];const ic=s==='done'?ico('doneCircle'):s==='skip'?ico('skipFwd'):s==='fail'?ico('xCircle'):ico('circleOutline');return`<div style="display:flex;align-items:center;gap:7px;padding:7px 12px;background:var(--sf);border:1px solid var(--bd);border-radius:var(--rsm);box-shadow:var(--card-shadow)"><span>${ico(h.emojis?h.emojis[0]:h.emoji||'target')}</span><span style="font-size:12px;color:var(--tx2)">${h.name}</span><span style="font-size:14px">${ic}</span></div>`;}).join('')}</div>`:'<p style="font-size:12px;color:var(--tx3)">No habits yet.</p>';
-  const wc=S.waterLog&&S.waterLog[TKEY]||0, wg=S.waterGoal||8;
-  document.getElementById('ovWater').innerHTML=`<div style="display:flex;align-items:center;gap:10px;padding:12px 16px;background:var(--sf);border:1px solid var(--bd);border-radius:var(--rsm);box-shadow:var(--card-shadow)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--bl)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3C12 3 5 11 5 15.5a7 7 0 0 0 14 0C19 11 12 3 12 3z"/></svg><div><div style="font-size:13px;font-weight:700;margin-bottom:3px">${wc}/${wg} glasses</div><div style="height:3px;width:120px;background:var(--bd);border-radius:2px;overflow:hidden"><div style="height:100%;width:${Math.min(100,wc/wg*100)}%;background:var(--bl);border-radius:2px"></div></div></div></div>`;
+  document.getElementById('ovCh').innerHTML=ach.length?`<div style="display:flex;flex-wrap:wrap;gap:8px">${ach.map(c=>{const pp=Math.round(c.curr/c.totalDays*100);return`<div style="padding:12px 16px;background:var(--sf);border:1px solid var(--bd);border-radius:var(--rsm);display:flex;align-items:center;gap:10px;min-width:190px;box-shadow:var(--card-shadow);cursor:pointer" onclick="goTo('challenges')"><span style="font-size:22px">${ico(c.emoji)}</span><div><div style="font-size:12px;font-weight:700;margin-bottom:3px">${c.name}</div><div style="font-size:10px;color:var(--tx3)">Day ${c.curr}/${c.totalDays}</div><div style="margin-top:5px;height:2px;width:100px;background:var(--bd);border-radius:1px;overflow:hidden"><div style="height:100%;width:${pp}%;background:var(--gr);border-radius:1px"></div></div></div></div>`;}).join('')}</div>`:'<p style="font-size:12px;color:var(--tx3)">No active challenges yet.</p>';
+  renderOvChecklist();
+  renderOvGoals();
+  renderActivityFeed();
+  renderQuickAccess();
   document.getElementById('nb-h').textContent=S.habits.length;
   document.getElementById('nb-r').textContent=(S.routines||[]).length;
   document.getElementById('nb-c').textContent=S.challenges.filter(c=>c.start&&!c.failed&&!c.done).length;
