@@ -137,6 +137,7 @@ button,input,select,textarea{font-family:inherit}
   .eng-grid,.stats,.ch-grid,.learn-grid{grid-template-columns:1fr!important}
   .habit-row,.habit-head{grid-template-columns:1fr auto!important}
   .quiz-opts{grid-template-columns:1fr!important}
+  #sbTog{display:none!important}
 }
 
 /* ═══ MAIN ═══ */
@@ -853,6 +854,7 @@ footer{text-align:center;padding:24px 0 40px;font-size:10px;color:var(--tx3);let
     <button class="cal-popup-close" onclick="closeEditJournal()"><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg></span></button>
     <div class="cal-popup-date"><span class="icn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg></span> Edit Journal Entry</div>
     <input type="hidden" id="ejIdx">
+    <div class="afield" style="margin-bottom:12px"><label style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--tx3);display:block;margin-bottom:8px">Mood</label><div class="mood-row" id="ejMoodPicker"></div></div>
     <textarea id="ejText" class="ainp" rows="8" placeholder="Your journal entry…" style="width:100%;resize:vertical;line-height:1.7;margin-bottom:12px;font-family:inherit"></textarea>
     <div style="display:flex;gap:8px"><button class="btn btn-gh btn-sm" style="flex:1" onclick="closeEditJournal()">Cancel</button><button class="btn btn-g btn-sm" style="flex:1" onclick="saveEditJournal()">Save</button></div>
   </div>
@@ -866,7 +868,8 @@ footer{text-align:center;padding:24px 0 40px;font-size:10px;color:var(--tx3);let
     <input type="hidden" id="ehId">
     <div class="afield" style="margin-bottom:10px"><label style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--tx3);display:block;margin-bottom:5px">Name</label><input id="ehName" class="ainp" placeholder="Habit name…" maxlength="42"></div>
     <div class="afield" style="margin-bottom:10px"><label style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--tx3);display:block;margin-bottom:5px">Description</label><input id="ehDesc" class="ainp" placeholder="Brief description…" maxlength="80"></div>
-    <div class="afield" style="margin-bottom:14px"><label style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--tx3);display:block;margin-bottom:5px">Counter Unit</label><input id="ehUnit" class="ainp" placeholder="e.g. pages, km, glasses…" maxlength="20"></div>
+    <div class="afield" style="margin-bottom:10px"><label style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--tx3);display:block;margin-bottom:5px">Counter Unit</label><input id="ehUnit" class="ainp" placeholder="e.g. pages, km, glasses…" maxlength="20"></div>
+    <div class="afield" style="margin-bottom:14px"><label style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--tx3);display:block;margin-bottom:5px">Icon <span style="opacity:.6;font-weight:400;text-transform:none;letter-spacing:0">(pick up to 3)</span></label><div class="emoji-picker" id="ehEmojiPicker"></div></div>
     <div style="display:flex;gap:8px"><button class="btn btn-gh btn-sm" style="flex:1" onclick="closeEditHabit()">Cancel</button><button class="btn btn-g btn-sm" style="flex:1" onclick="saveEditHabit()">Save</button></div>
   </div>
 </div>
@@ -907,6 +910,7 @@ footer{text-align:center;padding:24px 0 40px;font-size:10px;color:var(--tx3);let
     <input type="hidden" id="echId">
     <div class="afield" style="margin-bottom:10px"><label style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--tx3);display:block;margin-bottom:5px">Name</label><input id="echName" class="ainp" placeholder="Challenge name…" maxlength="42"></div>
     <div class="afield" style="margin-bottom:14px"><label style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--tx3);display:block;margin-bottom:5px">Total Days</label><input id="echDays" class="ainp" type="number" min="1" max="999" placeholder="Days"></div>
+    <div class="afield" style="margin-bottom:14px"><label style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--tx3);display:block;margin-bottom:5px">Icon</label><div class="emoji-picker" id="echIconPicker"></div></div>
     <div style="display:flex;gap:8px"><button class="btn btn-gh btn-sm" style="flex:1" onclick="closeEditCh()">Cancel</button><button class="btn btn-g btn-sm" style="flex:1" onclick="saveEditCh()">Save</button></div>
   </div>
 </div>
@@ -1487,9 +1491,18 @@ function setHabit(id, status, key=TKEY){
   if(h.log[key]) toast(`${status==='done'?'Done':status==='skip'?'Skipped':'Failed'}: ${h.name}`);
 }
 
-function openEditHabit(id){const h=S.habits.find(x=>x.id===id);if(!h)return;document.getElementById('ehId').value=id;document.getElementById('ehName').value=h.name;document.getElementById('ehDesc').value=h.desc||'';document.getElementById('ehUnit').value=h.unit||'';document.getElementById('editHabitModal').classList.remove('gone');}
+let _ehEmojis=['target'];
+function renderEhEmojiPicker(){
+  document.getElementById('ehEmojiPicker').innerHTML=EMOJI_LIST.map(e=>`<div class="ep-opt${_ehEmojis.includes(e)?' on':''}" onclick="toggleEhEmoji('${e}')">${ico(e)}</div>`).join('');
+}
+function toggleEhEmoji(e){
+  if(_ehEmojis.includes(e)){if(_ehEmojis.length>1)_ehEmojis=_ehEmojis.filter(x=>x!==e);}
+  else if(_ehEmojis.length<3) _ehEmojis.push(e);
+  renderEhEmojiPicker();
+}
+function openEditHabit(id){const h=S.habits.find(x=>x.id===id);if(!h)return;document.getElementById('ehId').value=id;document.getElementById('ehName').value=h.name;document.getElementById('ehDesc').value=h.desc||'';document.getElementById('ehUnit').value=h.unit||'';_ehEmojis=[...(h.emojis&&h.emojis.length?h.emojis:[h.emoji||'target'])];renderEhEmojiPicker();document.getElementById('editHabitModal').classList.remove('gone');}
 function closeEditHabit(){document.getElementById('editHabitModal').classList.add('gone');}
-function saveEditHabit(){const id=parseInt(document.getElementById('ehId').value);const h=S.habits.find(x=>x.id===id);if(!h)return;const n=document.getElementById('ehName').value.trim();if(!n)return;h.name=n;h.desc=document.getElementById('ehDesc').value.trim();h.unit=document.getElementById('ehUnit').value.trim();save();renderHabits();closeEditHabit();toast('Habit updated.');}
+function saveEditHabit(){const id=parseInt(document.getElementById('ehId').value);const h=S.habits.find(x=>x.id===id);if(!h)return;const n=document.getElementById('ehName').value.trim();if(!n)return;h.name=n;h.desc=document.getElementById('ehDesc').value.trim();h.unit=document.getElementById('ehUnit').value.trim();h.emojis=[..._ehEmojis];save();renderHabits();renderOv();closeEditHabit();toast('Habit updated.');}
 
 function toggleExpand(id){
   const el=document.getElementById('exp'+id); el.classList.toggle('show');
@@ -1689,9 +1702,13 @@ function chTick(id){const c=S.challenges.find(x=>x.id===id);if(!c||c.done||c.fai
 function chFail(id){const c=S.challenges.find(x=>x.id===id);if(!c)return;c.failed=true;save();renderCh();renderOv();toast('Challenge paused.');}
 function chReset(id){const c=S.challenges.find(x=>x.id===id);if(!c)return;c.curr=0;c.start=null;c.failed=false;c.done=false;c.log={};save();renderCh();renderOv();toast(`↺ ${c.name} restarted.`);}
 async function delCh(id){const c=S.challenges.find(x=>x.id===id);if(!c)return;const ok=await confirm2('Delete challenge?',`"${c.name}" will be removed.`);if(!ok)return;S.challenges=S.challenges.filter(x=>x.id!==id);save();renderCh();renderOv();toast('Deleted.');}
-function openEditCh(id){const c=S.challenges.find(x=>x.id===id);if(!c)return;document.getElementById('echId').value=id;document.getElementById('echName').value=c.name;document.getElementById('echDays').value=c.totalDays;document.getElementById('editChModal').classList.remove('gone');}
+function renderEchIconPicker(sel){
+  document.getElementById('echIconPicker').innerHTML=CHALLENGE_ICONS.map(id=>`<div class="ep-opt${sel===id?' on':''}" onclick="pickEchIcon('${id}')">${ico(id)}</div>`).join('');
+}
+function pickEchIcon(id){document.getElementById('echId').dataset.icon=id;renderEchIconPicker(id);}
+function openEditCh(id){const c=S.challenges.find(x=>x.id===id);if(!c)return;document.getElementById('echId').value=id;document.getElementById('echId').dataset.icon=c.emoji;document.getElementById('echName').value=c.name;document.getElementById('echDays').value=c.totalDays;renderEchIconPicker(c.emoji);document.getElementById('editChModal').classList.remove('gone');}
 function closeEditCh(){document.getElementById('editChModal').classList.add('gone');}
-function saveEditCh(){const id=parseInt(document.getElementById('echId').value);const c=S.challenges.find(x=>x.id===id);if(!c)return;const n=document.getElementById('echName').value.trim(),d=parseInt(document.getElementById('echDays').value);if(!n||!d)return;c.name=n;c.totalDays=d;save();renderCh();closeEditCh();toast('✓ Challenge updated.');}
+function saveEditCh(){const id=parseInt(document.getElementById('echId').value);const c=S.challenges.find(x=>x.id===id);if(!c)return;const n=document.getElementById('echName').value.trim(),d=parseInt(document.getElementById('echDays').value);if(!n||!d)return;c.name=n;c.totalDays=d;c.emoji=document.getElementById('echId').dataset.icon||c.emoji;save();renderCh();renderOv();closeEditCh();toast('✓ Challenge updated.');}
 function openChLog(id){const c=S.challenges.find(x=>x.id===id);if(!c)return;const log=c.log||{};const days=Object.keys(log).sort((a,b)=>b.localeCompare(a));const html=days.length?days.map(k=>`<div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--sf2);border:1px solid var(--bd);border-radius:var(--rsm);margin-bottom:5px"><span style="font-size:16px">${log[k]==='done'?ico('doneCircle'):ico('xCircle')}</span><div style="font-size:12px;color:var(--tx2)">${new Date(k+'T12:00:00').toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'})}</div><span style="font-size:10px;color:var(--tx3);margin-left:auto">${log[k]}</span></div>`).join(''):'<div style="font-size:12px;color:var(--tx3)">No logs yet.</div>';document.getElementById('chLogTitle').innerHTML=ico(c.emoji)+' '+c.name;document.getElementById('chLogContent').innerHTML=html;document.getElementById('chLogModal').classList.remove('gone');}
 function closeChLog(){document.getElementById('chLogModal').classList.add('gone');}
 function addCh(){const n=document.getElementById('chName').value.trim(),days=parseInt(document.getElementById('chDays').value),e=document.getElementById('chEmoji').value;if(!n||!days)return;S.challenges.push({id:Date.now(),name:n,emoji:e,totalDays:days,curr:0,start:null,failed:false,done:false,log:{}});document.getElementById('chName').value='';document.getElementById('chDays').value='';save();renderCh();renderOv();toast(`⚔️ ${n} created!`);}
@@ -2083,9 +2100,20 @@ let _mood='';
 function pickMood(el){document.querySelectorAll('.mb').forEach(b=>b.classList.remove('on'));el.classList.add('on');_mood=el.dataset.m;}
 function saveJournal(){const t=document.getElementById('jInp').value.trim();if(!t)return;if(!S.journalEntries)S.journalEntries=[];S.journalEntries.unshift({text:t,mood:_mood,date:TKEY,ts:new Date().toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'})});document.getElementById('jInp').value='';_mood='';document.querySelectorAll('.mb').forEach(b=>b.classList.remove('on'));save();renderJournal();renderOv();toast('📓 Entry saved.');}
 async function delJE(i){const ok=await confirm2('Delete entry?','This journal entry will be permanently removed.');if(!ok)return;S.journalEntries.splice(i,1);save();renderJournal();renderOv();}
-function openEditJournal(i){const e=S.journalEntries[i];if(!e)return;document.getElementById('ejIdx').value=i;document.getElementById('ejText').value=e.text;document.getElementById('editJournalModal').classList.remove('gone');}
+const MOOD_LIST=[['happy','Happy'],['flame','Motivated'],['frustrated','Frustrated'],['sad','Sad'],['lotus','Calm'],['tired','Tired'],['bolt','Energized']];
+function renderEjMoodPicker(sel){
+  document.getElementById('ejMoodPicker').innerHTML=MOOD_LIST.map(([id,label])=>`<button class="mb${sel===id?' on':''}" type="button" onclick="pickEjMood(this,'${id}')" title="${label}">${ico(id)}</button>`).join('');
+}
+function pickEjMood(el,id){
+  const picker=document.getElementById('ejMoodPicker');
+  const already=el.classList.contains('on');
+  picker.querySelectorAll('.mb').forEach(b=>b.classList.remove('on'));
+  document.getElementById('ejIdx').dataset.mood = already?'':id;
+  if(!already) el.classList.add('on');
+}
+function openEditJournal(i){const e=S.journalEntries[i];if(!e)return;document.getElementById('ejIdx').value=i;document.getElementById('ejIdx').dataset.mood=e.mood||'';document.getElementById('ejText').value=e.text;renderEjMoodPicker(e.mood||'');document.getElementById('editJournalModal').classList.remove('gone');}
 function closeEditJournal(){document.getElementById('editJournalModal').classList.add('gone');}
-function saveEditJournal(){const i=parseInt(document.getElementById('ejIdx').value);const e=S.journalEntries[i];if(!e)return;const t=document.getElementById('ejText').value.trim();if(!t)return;e.text=t;save();renderJournal();closeEditJournal();toast('📓 Entry updated.');}
+function saveEditJournal(){const i=parseInt(document.getElementById('ejIdx').value);const e=S.journalEntries[i];if(!e)return;const t=document.getElementById('ejText').value.trim();if(!t)return;e.text=t;e.mood=document.getElementById('ejIdx').dataset.mood||'';save();renderJournal();renderOv();closeEditJournal();toast('📓 Entry updated.');}
 function renderJournal(){
   const c=document.getElementById('jList');
   if(!S.journalEntries||!S.journalEntries.length){c.innerHTML='<div style="padding:28px;text-align:center;font-size:13px;color:var(--tx3)">No entries yet.</div>';return;}
@@ -2112,7 +2140,7 @@ function init(){
   document.getElementById('tbDate').textContent=d;
   document.getElementById('jDt').textContent=TODAY.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'});
   applyTheme(S.theme||'dark');
-  if(S.sidebarCollapsed){document.getElementById('sb').classList.add('col');document.getElementById('main').classList.add('col');}
+  if(S.sidebarCollapsed&&window.innerWidth>900){document.getElementById('sb').classList.add('col');document.getElementById('main').classList.add('col');}
   renderOv(); renderHabits(); renderRoutine(); renderCh(); renderEnglish(); renderLearn(); renderJournal();
   renderFocus(); renderGoals(); renderWater(); renderGratitude(); renderChIconPicker();
   updateTimerDisplay();
